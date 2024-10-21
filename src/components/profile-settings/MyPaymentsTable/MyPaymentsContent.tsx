@@ -78,15 +78,13 @@ export const MyPaymentsContent = () => {
   })
 
   return (
-    <>
-      <TabsPrimitive.Content className={s.wrapperMyAllPay} value={'myPayments'}>
-        <table className={s.tablePayments}>
-          <thead className={s.thead}>
-            <tr className={s.tr}>{titlesHeadCells}</tr>
-          </thead>
-          <tbody className={s.tbody}>{payments}</tbody>
-        </table>
-      </TabsPrimitive.Content>
+    <TabsPrimitive.Content className={s.wrapperMyAllPay} value={'myPayments'}>
+      <table className={s.tablePayments}>
+        <thead className={s.thead}>
+          <tr className={s.tr}>{titlesHeadCells}</tr>
+        </thead>
+        <tbody className={s.tbody}>{payments}</tbody>
+      </table>
       <Paginator
         currentPage={currentPage}
         onPageChanged={setCurrentPage}
@@ -96,6 +94,6 @@ export const MyPaymentsContent = () => {
         pageSize={+pageSizeNumber as PageSizeType}
         totalItemsCount={data?.length}
       />
-    </>
+    </TabsPrimitive.Content>
   )
 }
