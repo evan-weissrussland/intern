@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
 
+import { PaginationLeft } from '@/assets/icons/PaginationLeft'
 import { MyPaymentsContent } from '@/components/profile-settings/MyPaymentsTable/MyPaymentsContent'
+import {
+  PageSizeType,
+  Paginator,
+} from '@/components/profile-settings/MyPaymentsTable/paginator/paginator'
 import { AccountManagmentContent } from '@/components/profile-settings/account-managment'
 import { DevicesSessionsContent } from '@/components/profile-settings/devices'
 import { GeneralInfoContent } from '@/components/profile-settings/general-info-settings'
@@ -10,7 +15,7 @@ import {
   useGetMyProfileQuery,
   useUpdateAvatarProfileMutation,
 } from '@/services/inctagram.profile.service'
-import { TabType } from '@chrizzo/ui-kit'
+import { Pagination, TabType } from '@chrizzo/ui-kit'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
 import { useRouter } from 'next/router'
 

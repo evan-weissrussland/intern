@@ -61,6 +61,10 @@ export const en: LocaleType = {
     signInButton: 'Log In',
     signUpButton: 'Sign up',
   },
+  pagination: {
+    onPage: 'on page',
+    show: 'Show',
+  },
   payments: {
     account: { accountType: 'Account type', business: 'Business', personal: 'Personal' },
     allPayments: {

@@ -1,3 +1,5 @@
+export { PaginationLeft } from './PaginationLeft'
+export { PaginationRight } from './PaginationRight'
 export { ArrowBack } from './arrowBack'
 export { Bookmark } from './bookmark'
 export { Chrome } from './chrome'

@@ -60,6 +60,10 @@ export const ru = {
     signInButton: 'Войти',
     signUpButton: 'Регистрация',
   },
+  pagination: {
+    onPage: 'на странице',
+    show: 'Показать',
+  },
   payments: {
     account: { accountType: 'Тип аккаунта', business: 'Бизнес', personal: 'Личный' },
     allPayments: {
