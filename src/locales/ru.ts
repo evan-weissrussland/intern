@@ -103,6 +103,7 @@ export const ru = {
     dontHaveAcc: 'Ещё нет аккаунта?',
     emailTitle: 'Почта',
     forgotPass: 'Забыли пароль',
+    noSpacesAllowed: 'Поле не должно содержать пробелов',
     passTitle: 'Пароль',
     signInButton: 'Войти',
     signUp: 'Создать аккаунт',
