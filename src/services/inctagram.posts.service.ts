@@ -23,8 +23,18 @@ export const inctagramPostsService = inctagramService.injectEndpoints({
           }
         },
       }),
+      deletePost: builder.mutation<void, number>({
+        invalidatesTags: ['getPostsByUserId'],
+        query: postId => {
+          return {
+            method: 'DELETE',
+            url: `/v1/posts/${postId}`,
+          }
+        },
+      }),
     }
   },
 })
 
-export const { useCreateImagesPostMutation, useCreatePostMutation } = inctagramPostsService
+export const { useCreateImagesPostMutation, useCreatePostMutation, useDeletePostMutation } =
+  inctagramPostsService

@@ -41,27 +41,29 @@ type RequestByComments = {
   postId: number
 }
 
-type ResponseCommentsForPost = {
-  items: {
-    answerCount: number
-    content: string
-    createdAt: string
-    from: {
-      avatars: {
-        createdAt: string
-        fileSize: number
-        height: number
-        url: string
-        width: number
-      }[]
-      id: number
-      username: string
-    }
+export type CommentType = {
+  answerCount: number
+  content: string
+  createdAt: string
+  from: {
+    avatars: {
+      createdAt: string
+      fileSize: number
+      height: number
+      url: string
+      width: number
+    }[]
     id: number
-    isLiked: true
-    likeCount: number
-    postId: number
-  }[]
+    username: string
+  }
+  id: number
+  isLiked: true
+  likeCount: number
+  postId: number
+}
+
+type ResponseCommentsForPost = {
+  items: CommentType[]
   pageSize: number
   totalCount: number
 }
@@ -70,19 +72,20 @@ type GetAllPostsType = {
   endCursorPostId?: number
   params?: { pageSize?: number; sortBy?: string; sortDirection?: string }
 }
+export type ImagesPost = {
+  createdAt: string
+  fileSize: number
+  height: number
+  uploadId: string
+  url: string
+  width: number
+}
 export type Post = {
   avatarOwner: string
   createdAt: string
   description: string
   id: number
-  images: {
-    createdAt: string
-    fileSize: number
-    height: number
-    uploadId: string
-    url: string
-    width: number
-  }[]
+  images: ImagesPost[]
   isLiked: boolean
   likesCount: number
   location: string
