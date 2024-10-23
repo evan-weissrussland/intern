@@ -171,7 +171,12 @@
     }
   }
 }
-
+.editLineBlock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 23px;
+}
 .contentPost {
   top: 84px;
   width: 100%;
