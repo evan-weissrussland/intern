@@ -18,7 +18,7 @@ type Props = {
   callback: () => void
 }
 
-export const DropDownProfileEdit = memo(({ callback }: Props) => {
+export const DropdownPostEdit = memo(({ callback }: Props) => {
   /**
    * открыть/закрыть модальное окно DropDown
    */
