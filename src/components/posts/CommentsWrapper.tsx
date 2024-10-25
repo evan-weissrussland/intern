@@ -3,6 +3,7 @@ import React from 'react'
 import { DropDownProfileEdit } from '@/components/dropdown-edit-profile'
 import { Comments } from '@/components/posts/Comments'
 import { DateTimeFormatOptions } from '@/components/posts/types'
+import { useAuthMeQuery } from '@/services/inctagram.auth.service'
 import { Post, useGetCommentsForPostQuery } from '@/services/inctagram.public-posts.service'
 import { Typography } from '@chrizzo/ui-kit'
 
@@ -14,8 +15,10 @@ type Propss = {
   callback: () => void
   open: boolean
   post: Post
+  userId: number
 }
-export const CommentsWrapper = ({ callback, open, post }: Propss) => {
+export const CommentsWrapper = ({ callback, open, post, userId }: Propss) => {
+  const { data: authMe } = useAuthMeQuery(undefined, { skip: !open })
   /**
    * запрос за комментариями к посту
    */
@@ -50,7 +53,9 @@ export const CommentsWrapper = ({ callback, open, post }: Propss) => {
           <img alt={'ava'} height={36} src={post.avatarOwner ?? defaultAva} width={36} />
           <Typography variant={'h3'}>{post.userName}</Typography>
         </div>
-        <DropDownProfileEdit callback={showModalConfirmDeletePostHandler} />
+        {authMe?.userId === userId && (
+          <DropDownProfileEdit callback={showModalConfirmDeletePostHandler} />
+        )}
       </div>
       <hr className={s.hr} />
       <ul className={s.commentsUl}>

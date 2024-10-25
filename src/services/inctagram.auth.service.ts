@@ -1,10 +1,11 @@
 import { inctagramService } from '@/services/inctagram.service'
 import { inctagramSessionsService } from '@/services/inctagram.sessions.service'
+import { ResponseAuthMe } from '@/services/types'
 
 export const inctagramAuthService = inctagramService.injectEndpoints({
   endpoints: builder => {
     return {
-      authMe: builder.query<any, void>({
+      authMe: builder.query<ResponseAuthMe, void>({
         providesTags: ['login'],
         query: () => {
           return { url: '/v1/auth/me' }

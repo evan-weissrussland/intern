@@ -101,3 +101,9 @@ export type RequestCreateSubscriptionType = {
   paymentType: string
   typeSubscription: DescriptionPaymentType
 }
+export type ResponseAuthMe = {
+  email: string
+  isBlocked: boolean
+  userId: number
+  userName: string
+}
