@@ -1,4 +1,5 @@
 export { CopyLink } from './CopyLink'
+export { DirectMessage } from './DirectMessage'
 export { FollowPost } from './FollowPost'
 export { PaginationLeft } from './PaginationLeft'
 export { PaginationRight } from './PaginationRight'
