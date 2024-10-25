@@ -224,7 +224,8 @@
         flex-grow: 1;
         padding-top: 16px;
         padding-left: 24px;
-        padding-right: 24px;
+        //padding-right: 24px;
+        overflow: hidden;
 
         // background: red;
         list-style: none;
@@ -237,7 +238,9 @@
     }
   }
 }
-
+.commentsBlock {
+  padding-right: 10px;
+}
 .postImageContent {
   position: relative;
   flex: 1 1 490px;

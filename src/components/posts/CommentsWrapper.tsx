@@ -4,6 +4,7 @@ import { DropdownPostEdit } from '@/components/dropdown-edit-profile'
 import { DropdownFollowPost } from '@/components/dropdown-follow-post'
 import { Comments } from '@/components/posts/Comments'
 import { DateTimeFormatOptions } from '@/components/posts/types'
+import { Scroll } from '@/components/scroll'
 import { useAuthMeQuery } from '@/services/inctagram.auth.service'
 import { Post, useGetCommentsForPostQuery } from '@/services/inctagram.public-posts.service'
 import { Typography } from '@chrizzo/ui-kit'
@@ -66,8 +67,12 @@ export const CommentsWrapper = ({ callback, open, post }: Props) => {
       </div>
       <hr className={s.hr} />
       <ul className={s.commentsUl}>
-        {isFetching && <>...Loading.....</>}
-        {!isFetching && <Comments comments={data?.items} />}
+        <Scroll>
+          <div className={s.commentsBlock}>
+            {isFetching && <>...Loading.....</>}
+            {!isFetching && <Comments comments={data?.items} />}
+          </div>
+        </Scroll>
       </ul>
       <hr className={s.hr} />
       <div className={s.likesBlock}>
