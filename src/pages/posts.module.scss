@@ -224,30 +224,10 @@
         flex-grow: 1;
         padding-top: 16px;
         padding-left: 24px;
+        padding-right: 24px;
 
         // background: red;
         list-style: none;
-
-        .commentWr {
-          display: flex;
-          gap: 12px;
-
-          & img {
-            margin-top: 8px;
-            border-radius: 50%;
-          }
-
-          .commentBlock {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-bottom: 15px;
-
-            .date {
-              @include date;
-            }
-          }
-        }
       }
 
       .likesBlock {
