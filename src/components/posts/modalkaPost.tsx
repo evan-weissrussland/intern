@@ -22,10 +22,9 @@ import defaultAva from '../../../public/defaultAva.jpg'
 
 type Props = {
   post: Post
-  showMore: boolean
 }
 
-const ModalkaPost = ({ post, showMore }: Props) => {
+const ModalkaPost = ({ post }: Props) => {
   const router = useRouter()
   const queryParams = router.query
   /**
@@ -97,7 +96,7 @@ const ModalkaPost = ({ post, showMore }: Props) => {
             </ModalkaButtonCancel>
           </ModalkaTitle>
           <Card className={s.card} variant={'dark300'}>
-            <CarouselImagesPost images={post?.images} showMore={showMore} />
+            <CarouselImagesPost images={post?.images} />
             <CommentsWrapper callback={showModalConfirmDeletePostHandler} open={open} post={post} />
           </Card>
         </ModalkaContent>

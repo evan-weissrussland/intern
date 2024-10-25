@@ -24,7 +24,7 @@ export const GetPostsUser = () => {
     return (
       <li className={s.card} key={u.id} onClick={() => {}}>
         <div>
-          <ModalkaPost post={u} showMore={false} />
+          <ModalkaPost post={u} />
         </div>
       </li>
     )

@@ -116,9 +116,13 @@
 }
 
 .postImage {
-  aspect-ratio: 1;
+  &[data-showmore] {
+    aspect-ratio: 1;
+    width: 100%;
+    transition: all linear 0.2s;
+  }
+
   width: 100%;
-  transition: all linear 0.2s;
 
   &[data-showmore='true'] {
     aspect-ratio: 2;

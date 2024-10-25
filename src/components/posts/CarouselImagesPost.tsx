@@ -14,9 +14,8 @@ import defaultAva from '../../../public/defaultAva.jpg'
 
 type Props = {
   images: ImagesPost[] | undefined
-  showMore: boolean
 }
-export const CarouselImagesPost = ({ images, showMore }: Props) => {
+export const CarouselImagesPost = ({ images }: Props) => {
   /**
    * хук из библиотеки карусели для контента модалки (там, где большое изображение нужно прокручивать)
    */
@@ -37,7 +36,7 @@ export const CarouselImagesPost = ({ images, showMore }: Props) => {
   const imagesPostArray = images?.map(image => {
     return (
       <div className={s.emblaSlide} key={image.uploadId}>
-        <div className={s.postImage} data-showmore={showMore}>
+        <div className={s.postImage}>
           <Image
             alt={'image'}
             height={image?.height}
