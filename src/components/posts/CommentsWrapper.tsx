@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Bookmark, DirectMessage, Herz } from '@/assets/icons'
 import { DropdownPostEdit } from '@/components/dropdown-edit-profile'
 import { DropdownFollowPost } from '@/components/dropdown-follow-post'
 import { Comments } from '@/components/posts/Comments'
@@ -7,10 +8,10 @@ import { DateTimeFormatOptions } from '@/components/posts/types'
 import { Scroll } from '@/components/scroll'
 import { useAuthMeQuery } from '@/services/inctagram.auth.service'
 import { Post, useGetCommentsForPostQuery } from '@/services/inctagram.public-posts.service'
-import { Typography } from '@chrizzo/ui-kit'
+import { Button, TextField, Typography } from '@chrizzo/ui-kit'
 import { useRouter } from 'next/router'
 
-import s from '@/pages/posts.module.scss'
+import s from './commentWrapper.module.scss'
 
 import defaultAva from '../../../public/defaultAva.jpg'
 
@@ -76,17 +77,39 @@ export const CommentsWrapper = ({ callback, open, post }: Props) => {
       </ul>
       <hr className={s.hr} />
       <div className={s.likesBlock}>
-        <div className={s.avatarsLiked}></div>
-        <Typography as={'span'} variant={'regular14'}>
-          {post.likesCount}{' '}
+        <div className={s.iconsBlock}>
+          <div className={s.iconsHerzAndDirect}>
+            <button className={s.button}>
+              <Herz height={24} width={24} />
+            </button>
+            <button className={s.button}>
+              <DirectMessage />
+            </button>
+          </div>
+          <button className={s.button}>
+            <Bookmark />
+          </button>
+        </div>
+        <div>
+          <div className={s.avatarsLiked}></div>
+          <Typography as={'span'} variant={'regular14'}>
+            {post.likesCount}{' '}
+          </Typography>
           <Typography as={'span'} variant={'regularBold14'}>
             &quot;Like&quot;
           </Typography>
-        </Typography>
-        <Typography className={s.date} variant={'small'}>
-          {formattedDate}
-        </Typography>
+          <Typography className={s.date} variant={'small'}>
+            {formattedDate}
+          </Typography>
+        </div>
       </div>
+      <hr className={s.hr} />
+      <section className={s.form}>
+        <TextField className={s.input} name={'addComment'} placeholder={'Add a comment...'} />
+        <Button type={'submit'} variant={'text'}>
+          Publish
+        </Button>
+      </section>
     </div>
   )
 }
