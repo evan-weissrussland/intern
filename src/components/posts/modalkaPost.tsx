@@ -97,12 +97,7 @@ const ModalkaPost = ({ post }: Props) => {
           </ModalkaTitle>
           <Card className={s.card} variant={'dark300'}>
             <CarouselImagesPost images={post?.images} />
-            <CommentsWrapper
-              callback={showModalConfirmDeletePostHandler}
-              open={open}
-              post={post}
-              userId={Number(queryParams.id)}
-            />
+            <CommentsWrapper callback={showModalConfirmDeletePostHandler} open={open} post={post} />
           </Card>
         </ModalkaContent>
       </Modalka>
