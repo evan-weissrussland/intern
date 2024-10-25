@@ -1,0 +1,90 @@
+@mixin ava-user-name-block {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 12px 0;
+
+  img {
+    border-radius: 50%;
+  }
+}
+@mixin date {
+  color: var(--color-light-900);
+}
+.commentsWr {
+  display: flex;
+  flex: 1 1 480px;
+  flex-direction: column;
+
+  .avaUserNameBlock {
+    @include ava-user-name-block;
+
+    padding-left: 24px;
+  }
+
+  .hr {
+    width: 100%;
+
+    border-top: none;
+    border-right: none;
+    border-bottom: 1px solid var(--color-dark-100);
+    border-left: none;
+  }
+
+  .commentsUl {
+    padding-top: 16px;
+    padding-left: 24px;
+    overflow: hidden;
+    list-style: none;
+  }
+
+  .likesBlock {
+    min-height: 83px;
+    padding: 12px 24px 7px;
+  }
+}
+.editLineBlock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 23px;
+}
+.avaUserNameBlock {
+  @include ava-user-name-block;
+}
+.commentsBlock {
+  padding-right: 10px;
+}
+.date {
+  @include date;
+}
+.button {
+  all: unset;
+  height: 24px;
+  svg {
+    fill: currentColor;
+  }
+}
+.iconsHerzAndDirect {
+  display: flex;
+  gap: 24px;
+}
+.iconsBlock {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 19px;
+}
+.form {
+  display: flex;
+
+  .input {
+    flex-grow: 1;
+    & input {
+      line-height: 59px;
+      outline-color: transparent;
+      &:hover {
+        outline-color: transparent;
+      }
+    }
+  }
+}

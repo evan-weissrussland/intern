@@ -1,14 +1,3 @@
-@mixin ava-user-name-block {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  margin: 12px 0;
-
-  img {
-    border-radius: 50%;
-  }
-}
-
 @mixin date {
   color: var(--color-light-900);
 }
@@ -36,10 +25,6 @@
   }
 }
 
-.date {
-  @include date;
-}
-
 .postsWrapper {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -57,10 +42,6 @@
   max-width: 234px;
   height: 100%;
   max-height: 391px;
-
-  .avaUserNameBlock {
-    @include ava-user-name-block;
-  }
 
   .date {
     margin-bottom: 3px;
@@ -175,12 +156,7 @@
     }
   }
 }
-.editLineBlock {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-right: 23px;
-}
+
 .contentPost {
   top: 84px;
   width: 100%;
@@ -199,48 +175,9 @@
     padding: 0;
 
     border-color: var(--color-dark-100);
-
-    .commentsWr {
-      display: flex;
-      flex: 1 1 480px;
-      flex-direction: column;
-
-      .avaUserNameBlock {
-        @include ava-user-name-block;
-
-        padding-left: 24px;
-      }
-
-      .hr {
-        width: 100%;
-
-        border-top: none;
-        border-right: none;
-        border-bottom: 1px solid var(--color-dark-100);
-        border-left: none;
-      }
-
-      .commentsUl {
-        flex-grow: 1;
-        padding-top: 16px;
-        padding-left: 24px;
-        //padding-right: 24px;
-        overflow: hidden;
-
-        // background: red;
-        list-style: none;
-      }
-
-      .likesBlock {
-        height: 83px;
-        padding-left: 24px;
-      }
-    }
   }
 }
-.commentsBlock {
-  padding-right: 10px;
-}
+
 .postImageContent {
   position: relative;
   flex: 1 1 490px;
