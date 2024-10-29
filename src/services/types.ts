@@ -125,3 +125,9 @@ export type ResponseCreateCommentType = {
   likeCount: number
   postId: number
 }
+export type LikeSTatusType = 'DISLIKE' | 'LIKE' | 'NONE'
+export type RequestUpdateLikeStatusCommentType = {
+  body: { likeStatus: LikeSTatusType }
+  commentId: number
+  postId: number
+}

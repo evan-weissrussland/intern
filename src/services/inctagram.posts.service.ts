@@ -2,6 +2,7 @@ import { inctagramService } from '@/services/inctagram.service'
 import {
   RequestCreateCommentType,
   RequestCreatePost,
+  RequestUpdateLikeStatusCommentType,
   ResponseCreateCommentType,
   ResponseCreateImagesPost,
   ResponseCreatePost,
@@ -48,6 +49,16 @@ export const inctagramPostsService = inctagramService.injectEndpoints({
           }
         },
       }),
+      updateLikeStatusForComment: builder.mutation<void, RequestUpdateLikeStatusCommentType>({
+        invalidatesTags: ['getComments'],
+        query: arg => {
+          return {
+            body: arg.body,
+            method: 'PUT',
+            url: `/v1/posts/${arg.postId}/comments/${arg.commentId}/like-status`,
+          }
+        },
+      }),
     }
   },
 })
@@ -57,4 +68,5 @@ export const {
   useCreateImagesPostMutation,
   useCreatePostMutation,
   useDeletePostMutation,
+  useUpdateLikeStatusForCommentMutation,
 } = inctagramPostsService

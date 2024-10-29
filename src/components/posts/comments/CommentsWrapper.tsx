@@ -114,7 +114,7 @@ export const CommentsWrapper = ({ callback, open, post }: Props) => {
         <Scroll>
           <div className={s.commentsBlock}>
             {isFetching && <>...Loading.....</>}
-            {!isFetching && <Comments comments={data?.items} />}
+            {!isFetching && <Comments comments={data?.items} myUserId={authMe?.userId} />}
           </div>
         </Scroll>
       </ul>

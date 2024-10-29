@@ -3,23 +3,30 @@ import ReactTimeAgo from 'react-time-ago'
 
 import { Herz, LikedHerz } from '@/assets/icons'
 import { CommentType } from '@/services/inctagram.public-posts.service'
-import { Button, Typography } from '@chrizzo/ui-kit'
-import { useRouter } from 'next/router'
+import { LikeSTatusType } from '@/services/types'
+import { Typography } from '@chrizzo/ui-kit'
 
 import s from './commentItem.module.scss'
 
 import defaultAva from '../../../../../public/defaultAva.jpg'
 
 type Props = {
+  changeLikeCommentCallback: (postId: number, commentId: number, likeStatus: LikeSTatusType) => void
   comment: CommentType
+  myUserId: number | undefined
 }
-export const CommentItem = ({ comment }: Props) => {
-  const router = useRouter()
-  const userId = Number(router.query.id)
+export const CommentItem = ({ changeLikeCommentCallback, comment, myUserId }: Props) => {
   /**
    * дата создания комментария
    */
   const dateAgo = new Date(comment.createdAt)
+
+  /**
+   * поставить/убрать лайк комментарию
+   */
+  const changeLikeCommentHandler = () => {
+    changeLikeCommentCallback(comment.postId, comment.id, comment.isLiked ? 'NONE' : 'LIKE')
+  }
 
   return (
     <li className={s.commentWr}>
@@ -53,8 +60,10 @@ export const CommentItem = ({ comment }: Props) => {
           </div>
         </div>
         <div className={s.buttonLike}>
-          {userId !== comment.from.id && (
-            <button type={'button'}>{comment.isLiked ? <LikedHerz /> : <Herz />}</button>
+          {myUserId && myUserId !== comment.from.id && (
+            <button onClick={changeLikeCommentHandler} type={'button'}>
+              {comment.isLiked ? <LikedHerz /> : <Herz />}
+            </button>
           )}
         </div>
       </div>
