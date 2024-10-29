@@ -2,6 +2,17 @@
   color: var(--color-light-900);
 }
 
+@mixin ava-user-name-block {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 12px 0;
+
+  img {
+    border-radius: 50%;
+  }
+}
+
 @mixin carousel-button {
   all: unset;
 
@@ -10,6 +21,10 @@
   transform: translateY(-50%);
 
   display: none;
+}
+
+.avaUserNameBlock {
+  @include ava-user-name-block;
 }
 
 .embla {
