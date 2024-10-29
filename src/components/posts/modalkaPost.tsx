@@ -10,7 +10,7 @@ import {
 } from '@/components/modal'
 import { ModalConfirmDeletePost } from '@/components/modalConfirmDeletePost'
 import { CarouselImagesPost } from '@/components/posts/CarouselImagesPost'
-import { CommentsWrapper } from '@/components/posts/CommentsWrapper'
+import { CommentsWrapper } from '@/components/posts/comments/CommentsWrapper'
 import { useDeletePostMutation } from '@/services/inctagram.posts.service'
 import { Post } from '@/services/inctagram.public-posts.service'
 import { Button, Card, Typography } from '@chrizzo/ui-kit'

@@ -1,9 +1,25 @@
 import { inctagramService } from '@/services/inctagram.service'
-import { RequestCreatePost, ResponseCreateImagesPost, ResponseCreatePost } from '@/services/types'
+import {
+  RequestCreateCommentType,
+  RequestCreatePost,
+  ResponseCreateCommentType,
+  ResponseCreateImagesPost,
+  ResponseCreatePost,
+} from '@/services/types'
 
 export const inctagramPostsService = inctagramService.injectEndpoints({
   endpoints: builder => {
     return {
+      createComment: builder.mutation<ResponseCreateCommentType, RequestCreateCommentType>({
+        invalidatesTags: ['getComments'],
+        query: arg => {
+          return {
+            body: arg.body,
+            method: 'POST',
+            url: `/v1/posts/${arg.postId}/comments`,
+          }
+        },
+      }),
       createImagesPost: builder.mutation<ResponseCreateImagesPost, FormData>({
         query: body => {
           return {
@@ -36,5 +52,9 @@ export const inctagramPostsService = inctagramService.injectEndpoints({
   },
 })
 
-export const { useCreateImagesPostMutation, useCreatePostMutation, useDeletePostMutation } =
-  inctagramPostsService
+export const {
+  useCreateCommentMutation,
+  useCreateImagesPostMutation,
+  useCreatePostMutation,
+  useDeletePostMutation,
+} = inctagramPostsService

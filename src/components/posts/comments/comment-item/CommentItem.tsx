@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 
 import s from './commentItem.module.scss'
 
-import defaultAva from '../../../public/defaultAva.jpg'
+import defaultAva from '../../../../../public/defaultAva.jpg'
 
 type Props = {
   comment: CommentType

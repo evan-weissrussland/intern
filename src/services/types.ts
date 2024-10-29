@@ -107,3 +107,21 @@ export type ResponseAuthMe = {
   userId: number
   userName: string
 }
+export type RequestCreateCommentType = {
+  body: { content: string }
+  postId: number
+}
+export type ResponseCreateCommentType = {
+  answerCount: number
+  content: string
+  createdAt: string
+  from: {
+    avatars: {}[]
+    id: number
+    username: string
+  }
+  id: number
+  isLiked: true
+  likeCount: number
+  postId: number
+}

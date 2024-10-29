@@ -36,6 +36,7 @@
     padding-left: 24px;
     overflow: hidden;
     list-style: none;
+    flex-grow: 1;
   }
 
   .likesBlock {
@@ -76,6 +77,7 @@
 }
 .form {
   display: flex;
+  padding-left: 12px;
 
   .input {
     flex-grow: 1;

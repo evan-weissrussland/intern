@@ -12,5 +12,6 @@ export const inctagramService = createApi({
     'getMyProfile',
     'getPostsByUserId',
     'getSessions',
+    'getComments',
   ],
 })

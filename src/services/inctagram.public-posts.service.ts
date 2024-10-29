@@ -1,5 +1,57 @@
 import { inctagramService } from '@/services/inctagram.service'
 
+const mockDataGetProfile = {
+  items: [
+    {
+      answerCount: 100,
+      content:
+        'dvjjd wjefjwefj wej fowjefj  wefjwejf k wefk kew k -wefwe-fk k -wef kok wefk kK EWF J0JEQWFI JEFJ J',
+      createdAt: '2024-10-25T17:28:49.827Z',
+      from: {
+        avatars: [{}],
+        id: 1819,
+        username: 'Derftyu',
+      },
+      id: 1234,
+      isLiked: false,
+      likeCount: 12345,
+      postId: 111,
+    },
+    {
+      answerCount: 100,
+      content:
+        'dvjjd wjefjwefj wej fowjefj  wefjwejf k wefk kew k -wefwe-fk k -wef kok wefk kK EWF J0JEQWFI JEFJ J dvjjd wjefjwefj wej fowjefj  wefjwejf k wefk kew k -wefwe-fk k -wef kok wefk kK EWF J0JEQWFI JEFJ J dvjjd wjefjwefj wej fowjefj  wefjwejf k wefk kew k -wefwe-fk k -wef kok wefk kK EWF J0JEQWFI JEFJ J dvjjd wjefjwefj wej fowjefj  wefjwejf k wefk kew k -wefwe-fk k -wef kok wefk kK EWF J0JEQWFI JEFJ J',
+      createdAt: '2024-10-25T17:28:49.827Z',
+      from: {
+        avatars: [{}],
+        id: 819,
+        username: 'Derftyu',
+      },
+      id: 134,
+      isLiked: true,
+      likeCount: 0,
+      postId: 111,
+    },
+    {
+      answerCount: 100,
+      content:
+        'dvjjd wjefjwefj wej fowjefj  wefjwejf k wefk kew k -wefwe-fk k -wef kok wefk kK EWF J0JEQWFI JEFJ J dvjjd wjefjwefj wej fowjefj  wefjwejf k wefk kew k -wefwe-fk k -wef kok wefk kK EWF J0JEQWFI JEFJ J dvjjd wjefjwefj wej fowjefj  wefjwejf k wefk kew k -wefwe-fk k -wef kok wefk kK EWF J0JEQWFI JEFJ J dvjjd wjefjwefj wej fowjefj  wefjwejf k wefk kew k -wefwe-fk k -wef kok wefk kK EWF J0JEQWFI JEFJ J',
+      createdAt: '2024-10-25T17:28:49.827Z',
+      from: {
+        avatars: [{}],
+        id: 819,
+        username: 'Derftyu',
+      },
+      id: 134,
+      isLiked: true,
+      likeCount: 0,
+      postId: 111,
+    },
+  ],
+  pageSize: 12,
+  totalCount: 90,
+}
+
 export const inctagramPublicPostsService = inctagramService.injectEndpoints({
   endpoints: builder => {
     return {
@@ -9,9 +61,14 @@ export const inctagramPublicPostsService = inctagramService.injectEndpoints({
         },
       }),
       getCommentsForPost: builder.query<ResponseCommentsForPost, RequestByComments>({
+        providesTags: ['getComments'],
         query: args => {
           return { params: args.params, url: `/v1/public-posts/${args.postId}/comments` }
         },
+        // getCommentsForPost: builder.query<any, RequestByComments>({
+        //   async queryFn() {
+        //     return { data: mockDataGetProfile }
+        //   },
       }),
       getPostsByUserId: builder.query<ResponsePostsByUsedId, RequestToPostsByUserId>({
         providesTags: ['getPostsByUserId'],
@@ -57,7 +114,7 @@ export type CommentType = {
     username: string
   }
   id: number
-  isLiked: true
+  isLiked: boolean
   likeCount: number
   postId: number
 }
