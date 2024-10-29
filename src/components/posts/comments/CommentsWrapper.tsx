@@ -1,9 +1,7 @@
-import React, { MutableRefObject, useRef } from 'react'
+import React from 'react'
 import { useForm } from 'react-hook-form'
 
 import { Bookmark, DirectMessage, Herz } from '@/assets/icons'
-import { logInSchema } from '@/components/auth/logIn/logIn-schema'
-import { FormValues } from '@/components/auth/logIn/types'
 import { DropdownPostEdit } from '@/components/dropdown-edit-profile'
 import { DropdownFollowPost } from '@/components/dropdown-follow-post'
 import { Comments } from '@/components/posts/comments/Comments'
@@ -18,6 +16,7 @@ import { useCreateCommentMutation } from '@/services/inctagram.posts.service'
 import { Post, useGetCommentsForPostQuery } from '@/services/inctagram.public-posts.service'
 import { Button, TextField, Typography } from '@chrizzo/ui-kit'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { clsx } from 'clsx'
 import { useRouter } from 'next/router'
 
 import s from './commentWrapper.module.scss'
@@ -32,7 +31,6 @@ type Props = {
 export const CommentsWrapper = ({ callback, open, post }: Props) => {
   const router = useRouter()
   const userId = Number(router.query.id)
-
   /**
    * Переменные для обработки форм из react-hook-form
    */
@@ -121,26 +119,28 @@ export const CommentsWrapper = ({ callback, open, post }: Props) => {
         </Scroll>
       </ul>
       <hr className={s.hr} />
-      <div className={s.likesBlock}>
-        <div className={s.iconsBlock}>
-          <div className={s.iconsHerzAndDirect}>
+      <div className={clsx(s.likesBlock, !authMe?.userId && s.public)}>
+        {authMe?.userId && (
+          <div className={s.iconsBlock}>
+            <div className={s.iconsHerzAndDirect}>
+              <button className={s.button} type={'button'}>
+                <Herz height={24} width={24} />
+              </button>
+              <button className={s.button} type={'button'}>
+                <DirectMessage />
+              </button>
+            </div>
             <button className={s.button} type={'button'}>
-              <Herz height={24} width={24} />
-            </button>
-            <button className={s.button} type={'button'}>
-              <DirectMessage />
+              <Bookmark />
             </button>
           </div>
-          <button className={s.button} type={'button'}>
-            <Bookmark />
-          </button>
-        </div>
+        )}
         <div>
           <div className={s.avatarsLiked}></div>
-          <Typography as={'span'} variant={'regular14'}>
-            {post.likesCount}{' '}
+          <Typography as={'span'} className={s.span} variant={'regular14'}>
+            {post.likesCount}&nbsp;
           </Typography>
-          <Typography as={'span'} variant={'regularBold14'}>
+          <Typography as={'span'} className={s.span} variant={'regularBold14'}>
             &quot;Like&quot;
           </Typography>
           <Typography className={s.date} variant={'small'}>
@@ -148,13 +148,21 @@ export const CommentsWrapper = ({ callback, open, post }: Props) => {
           </Typography>
         </div>
       </div>
-      <hr className={s.hr} />
-      <form className={s.form} onSubmit={handleSubmit(addCommentHandler)}>
-        <TextField className={s.input} {...register('comment')} placeholder={'Add a comment...'} />
-        <Button type={'submit'} variant={'text'}>
-          Publish
-        </Button>
-      </form>
+      {authMe?.userId && (
+        <>
+          <hr className={s.hr} />
+          <form className={s.form} onSubmit={handleSubmit(addCommentHandler)}>
+            <TextField
+              className={s.input}
+              {...register('comment')}
+              placeholder={'Add a comment...'}
+            />
+            <Button type={'submit'} variant={'text'}>
+              Publish
+            </Button>
+          </form>
+        </>
+      )}
     </div>
   )
 }

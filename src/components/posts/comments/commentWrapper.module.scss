@@ -40,8 +40,10 @@
   }
 
   .likesBlock {
-    min-height: 83px;
-    padding: 12px 24px 7px;
+    &.public {
+      min-height: 83px;
+    }
+    padding: 11px 24px 7px;
   }
 }
 .editLineBlock {
@@ -58,6 +60,7 @@
 }
 .date {
   @include date;
+  margin-top: 5px;
 }
 .button {
   all: unset;
@@ -77,11 +80,12 @@
 }
 .form {
   display: flex;
-  padding-left: 12px;
+  padding-left: 24px;
 
   .input {
     flex-grow: 1;
     & input {
+      padding: 0;
       line-height: 59px;
       outline-color: transparent;
       &:hover {
@@ -89,4 +93,8 @@
       }
     }
   }
+}
+
+span.span {
+  display: inline-block;
 }
