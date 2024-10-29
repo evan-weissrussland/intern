@@ -20,17 +20,11 @@ import s from './modalFollowers.module.scss'
 type Props = {
   className?: string
   followersCount?: number | string
-  myProfileId: null | number
+  isMyProfile: boolean
   userName: string | undefined
 }
 
-export const ModalFollowers: FC<Props> = memo(({ followersCount, myProfileId, userName }) => {
-  /**
-   * вытягиваем id юзера из URL
-   */
-  const {
-    query: { id },
-  } = useRouter()
+export const ModalFollowers = memo(({ followersCount, isMyProfile, userName }: Props) => {
   /**
    * хук useState для управления open/close AlertDialog.Root. Нужен для того,
    * чтобы модалка закрывалась после передачи на сервер данных из формы,
@@ -55,7 +49,7 @@ export const ModalFollowers: FC<Props> = memo(({ followersCount, myProfileId, us
       params: { search: inputValue.textFromDebounceInput },
       username: userName,
     },
-    { skip: !open }
+    { skip: !open && isMyProfile }
   )
 
   /**
@@ -65,7 +59,7 @@ export const ModalFollowers: FC<Props> = memo(({ followersCount, myProfileId, us
   const onChangeInputValue = useDebounceFollowers(setInputValue)
 
   return (
-    <Modalka onOpenChange={setOpen} open={myProfileId === Number(id) ? open : false}>
+    <Modalka onOpenChange={setOpen} open={isMyProfile ? open : false}>
       <ModalkaTrigger asChild>
         <div className={s.followers}>
           <Typography variant={'regularBold14'}>{followersCount}</Typography>

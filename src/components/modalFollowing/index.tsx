@@ -25,17 +25,11 @@ import defaultAva from '../../../public/defaultAva.jpg'
 type Props = {
   className?: string
   followingCount?: number | string
-  myProfileId: null | number
+  isMyProfile: boolean
   userName: string | undefined
 }
 
-export const ModalFollowing: FC<Props> = memo(({ followingCount, myProfileId, userName }) => {
-  /**
-   * вытягиваем id юзера из URL
-   */
-  const {
-    query: { id },
-  } = useRouter()
+export const ModalFollowing = memo(({ followingCount, isMyProfile, userName }: Props) => {
   /**
    * хук useState для управления open/close AlertDialog.Root. Нужен для того,
    * чтобы модалка закрывалась после передачи на сервер данных из формы,
@@ -61,7 +55,7 @@ export const ModalFollowing: FC<Props> = memo(({ followingCount, myProfileId, us
       params: { search: inputValue.textFromDebounceInput },
       username: userName,
     },
-    { skip: !open }
+    { skip: !open && isMyProfile }
   )
 
   /**
@@ -139,7 +133,7 @@ export const ModalFollowing: FC<Props> = memo(({ followingCount, myProfileId, us
   }, [data])
 
   return (
-    <Modalka onOpenChange={setOpen} open={myProfileId === Number(id) ? open : false}>
+    <Modalka onOpenChange={setOpen} open={isMyProfile ? open : false}>
       <ModalkaTrigger asChild>
         <div className={s.following}>
           <Typography variant={'regularBold14'}>{followingCount}</Typography>

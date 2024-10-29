@@ -24,6 +24,10 @@ type Props = {
 export function UserProfile({ dataProfile, myProfileId }: Props) {
   const router = useRouter()
   /**
+   * Првоерка на мой аккаунт
+   */
+  const isMyProfile = myProfileId === Number(router.query.id)
+  /**
    * запрос на сервер за профилем юзера по имени, чтобы забрать число followers
    */
   const { data } = useGetUserProfileByUserNameQuery(dataProfile?.userName, {})
@@ -122,12 +126,12 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
           <div className={s.countsFolowwers}>
             <ModalFollowing
               followingCount={data?.followingCount ?? 'X'}
-              myProfileId={myProfileId}
+              isMyProfile={isMyProfile}
               userName={dataProfile.userName}
             />
             <ModalFollowers
               followersCount={data?.followersCount ?? 'X'}
-              myProfileId={myProfileId}
+              isMyProfile={isMyProfile}
               userName={dataProfile.userName}
             />
             <div className={s.publications} onClick={openPublications}>
