@@ -103,6 +103,7 @@ export const en: LocaleType = {
     dontHaveAcc: `Don't have an account?`,
     emailTitle: 'Email',
     forgotPass: 'Forgot Password',
+    noSpacesAllowed: 'No spaces allowed',
     passTitle: 'Password',
     signInButton: 'Sign In',
     signUp: 'Sign Up',
