@@ -5,6 +5,13 @@ export const en: LocaleType = {
     ok: 'OK',
   },
   error: 'Error',
+  common: {
+    incorrectEmail: 'The email must match the format example@example.com',
+    recaptchaCheckFailed: '"I am not a robot" check failed. Try again',
+    requiredField: 'Fill in the field',
+    save: 'Save',
+    selectFromComputer: 'Select from computer',
+  },
   forgotPassword: {
     common: {
       inProgress: 'Sending the request...',
@@ -31,6 +38,7 @@ export const en: LocaleType = {
       title: 'Create new password',
       tooSmallError: 'Password has to be at least 6 characters long',
     },
+
     startPage: {
       backToSignIn: 'Back to Sign-in page',
       emailNotFound: "User with this email doesn't exist",
@@ -52,6 +60,43 @@ export const en: LocaleType = {
     signInButton: 'Log In',
     signUpButton: 'Sign up',
   },
+  modal: {
+    modalConfirmButtons: {
+      no: 'No',
+      yes: 'Yes',
+    },
+  },
+  profile: {
+    avatar: {
+      deletePhotoModalDescription: 'Are you sure you want to delete the photo?',
+      deletePhotoModalTitle: 'Delete Photo',
+    },
+    common: {
+      saveChanges: 'Save changes',
+    },
+    settings: {
+      aboutMe: 'About me',
+      aboutMePlaceholder: 'Tell about yourself',
+      accountManagement: 'Account management',
+      addProfilePhoto: 'Add profile photo',
+      birthDate: 'Date of birth',
+      birthDatePlaceholder: 'mm.dd.YYYY',
+      devices: 'Devices',
+      generalInformation: 'General information',
+      imageSizeExceeded: 'Photo size must be less than 10 MB!',
+      myPayments: 'My payments',
+      saveChangeButton: 'Save change',
+      selectYourCity: 'Choose your city',
+      selectYourCityPlaceholder: 'City',
+      selectYourCountry: 'Choose your country',
+      selectYourCountryPlaceholder: 'Country',
+      toast: {
+        error: 'Error! Server is not available',
+        success: 'Your settings are saved',
+      },
+      wrongFileFormat: 'Error! The format of the uploaded photo must be \nPNG and JPEG',
+    },
+  },
   publicPage: {
     title: 'Public Page',
   },
@@ -59,10 +104,12 @@ export const en: LocaleType = {
     dontHaveAcc: `Don't have an account?`,
     emailTitle: 'Email',
     forgotPass: 'Forgot Password',
+    noSpacesAllowed: 'No spaces allowed',
     passTitle: 'Password',
     signInButton: 'Sign In',
     signUp: 'Sign Up',
     title: 'Sign In',
+    wrongCredentials: 'The email or password are incorrect. Try again please',
   },
   signUp: {
     confirmPass: 'Confirm Password',
