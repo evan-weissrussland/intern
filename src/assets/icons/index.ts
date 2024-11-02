@@ -1,5 +1,6 @@
 export { DeleteAvatar } from './DeleteAva'
 export { ImageIcon } from './ImageIcon'
+export { Return } from './Return'
 export { ArrowBack } from './arrowBack'
 export { Bookmark } from './bookmark'
 export { Create } from './create'

@@ -1,5 +1,6 @@
 import React, { ChangeEvent, ReactNode, useRef, useState } from 'react'
 
+import { Return } from '@/assets/icons'
 import { ModalTrigger } from '@/components/modal'
 import { ModalCloseCreatePost } from '@/components/modal-close-create-post'
 import { CarouselCreatePost } from '@/components/modalCreatePost/CarouselCreatePost'
@@ -202,6 +203,24 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
     return { id: Math.random() + i, url: pr }
   })
 
+  const onclickReturnAddPhoto = () => {
+    if (toLoadImages) {
+      if (preview.preview.length) {
+        preview.preview.forEach(pr => {
+          URL.revokeObjectURL(pr)
+        })
+      }
+      imageError && setImageError(null)
+      setPreview({ file: [], preview: [] })
+      setToLoadForm(false)
+      setToLoadImages(false)
+    }
+    if (toLoadForm) {
+      setToLoadForm(false)
+      setToLoadImages(true)
+    }
+  }
+
   return (
     <>
       <Dialog {...props} onOpenChange={openModalHandler} open={openModal}>
@@ -218,9 +237,16 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
           }}
         >
           <DialogHeader>
+            {(toLoadForm || toLoadImages) && (
+              <Button className={s.closeButton} onClick={onclickReturnAddPhoto} variant={'text'}>
+                <Return />
+              </Button>
+            )}
             <DialogTitle asChild>
               <Typography as={'h1'} variant={'h1'}>
-                Add Photo
+                {!toLoadImages && !toLoadForm && 'Add Photo'}
+                {toLoadImages && !toLoadForm && 'Edit Photo'}
+                {toLoadForm && 'Publications'}
               </Typography>
             </DialogTitle>
             <VisuallyHidden>
