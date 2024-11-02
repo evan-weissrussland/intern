@@ -31,7 +31,8 @@ export const BaseLayout: NextPage<PropsWithChildren> = ({ children }) => {
       {!isLoading && (
         <>
           <Header isAuthMe={authenticated} />
-          {authenticated && <Nav isSpecialAccount />}
+          {/*{authenticated && <Nav isSpecialAccount />}*/}
+          <Nav isSpecialAccount />
           <main className={clsx(s.mainContent, !authenticated && s.marginAuto)}>{children}</main>
           <Toaster />
         </>
