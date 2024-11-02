@@ -1,3 +1,4 @@
+import { db } from '@/services/db'
 import { isRefreshTokenResponse } from '@/services/incta-team-api/auth/instagram.auth.type'
 import { ACCESS_TOKEN_STORAGE_NAME } from '@/services/incta-team-api/common/const'
 import { isFetchBaseQueryError, isFetchBaseQueryErrorData } from '@/types'
@@ -56,6 +57,7 @@ export const baseQueryWithReauth: BaseQueryFn<
         }
         if (!res.data) {
           // void Router.push('/login')
+          await db.delete()
         }
       } finally {
         release()

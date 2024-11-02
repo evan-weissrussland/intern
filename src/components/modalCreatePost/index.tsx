@@ -1,12 +1,14 @@
-import React, { ChangeEvent, ReactNode, useRef, useState } from 'react'
+import React, { ChangeEvent, ReactNode, useEffect, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
 
 import { Return } from '@/assets/icons'
+import { Toast } from '@/components/layouts/Toast'
 import { ModalTrigger } from '@/components/modal'
 import { ModalCloseCreatePost } from '@/components/modal-close-create-post'
 import { CarouselCreatePost } from '@/components/modalCreatePost/CarouselCreatePost'
 import { FormCreatePost } from '@/components/modalCreatePost/FormCreatePost'
 import { LoadImageFromPCBlock } from '@/components/modalCreatePost/LoadImageFromPCBlock'
-import { CreatePostData } from '@/components/modalCreatePost/schema'
+import { CreatePostData, createPostSchema } from '@/components/modalCreatePost/schema'
 import {
   Dialog,
   DialogClose,
@@ -16,13 +18,18 @@ import {
   DialogTitle,
 } from '@/components/uikit-temp-replacement/regular-dialog/RegularDialog'
 import { useTranslation } from '@/hooks/useTranslation'
+import { db } from '@/services/db'
 import { useCreatePostMutation } from '@/services/incta-team-api/posts/posts-service'
 import { useGetProfileQuery } from '@/services/incta-team-api/profile/profile-service'
 import { Button, Card, Typography } from '@chrizzo/ui-kit'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { DialogProps } from '@radix-ui/react-dialog'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import clsx from 'clsx'
+import { liveQuery } from 'dexie'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { CloseIcon } from 'next/dist/client/components/react-dev-overlay/internal/icons/CloseIcon'
+import { toast } from 'sonner'
 
 import s from './modalCreatePost.module.scss'
 
@@ -193,6 +200,7 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
       formData.append('description', data.descriptionPost as string)
 
       await createPost(formData)
+      await db.draftPost.clear()
       clearStatesCreatePost()
     }
   }
@@ -202,7 +210,9 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
   const carouselArray = preview.preview.map((pr, i) => {
     return { id: Math.random() + i, url: pr }
   })
-
+  /**
+   * обработчик нажатия на клавишу НАЗАД в хедере модалки создания поста
+   */
   const onclickReturnAddPhoto = () => {
     if (toLoadImages) {
       if (preview.preview.length) {
@@ -218,6 +228,66 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
     if (toLoadForm) {
       setToLoadForm(false)
       setToLoadImages(true)
+    }
+  }
+
+  /**
+   * react hook form
+   */
+  const formState = useForm<CreatePostData>({
+    mode: 'onChange',
+    resolver: zodResolver(createPostSchema),
+  })
+
+  /**
+   * сохранить черновик поста
+   */
+  async function saveDraftPost() {
+    try {
+      await db.draftPost.put({
+        description: formState.getValues().descriptionPost ?? '',
+        id: 1,
+        photo: preview.file,
+      })
+      toast.custom(
+        toast => <Toast text={'Post has been saved successfully'} variant={'success'} />,
+        {
+          duration: 5000,
+        }
+      )
+      clearStatesCreatePost()
+      setIsShowModalConfirmCloseModalCreatePost(false)
+      formState.reset()
+    } catch (error) {
+      toast.custom(toast => <Toast text={"Error. Post can't been saved"} variant={'error'} />, {
+        duration: 5000,
+      })
+    }
+  }
+
+  const getDraftPost = async () => {
+    try {
+      const draft = await db.draftPost.get(1) // Здесь 1 — это предполагаемый ID
+
+      if (draft) {
+        const previewArray = [] as string[]
+
+        draft.photo.forEach(file => {
+          const newPreview = URL.createObjectURL(file)
+
+          previewArray.push(newPreview)
+        })
+
+        setPreview({ file: draft.photo, preview: previewArray })
+        formState.setValue('descriptionPost', draft.description)
+        setToLoadForm(true)
+      } else {
+        toast.custom(toast => <Toast text={'Draft is empty'} variant={'info'} />, {
+          duration: 5000,
+        })
+      }
+    } catch (error) {
+      console.error('Ошибка при получении черновика:', error)
     }
   }
 
@@ -262,6 +332,7 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
             {isShowModalConfirmCloseModalCreatePost && (
               <ModalCloseCreatePost
                 clearParentStates={clearStatesCreatePost}
+                saveDraftPost={saveDraftPost}
                 showModal={setIsShowModalConfirmCloseModalCreatePost}
                 title={'Close'}
               >
@@ -292,6 +363,7 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
           </DialogHeader>
           <div style={{ height: 'calc(100% - 61px)', position: 'relative' }}>
             <LoadImageFromPCBlock
+              getDraftPost={getDraftPost}
               imageError={imageError}
               isPreview={!!preview.preview.length}
               onChange={imageSelectHandler}
@@ -310,7 +382,11 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
                   />
                 )}
                 {toLoadForm && (
-                  <FormCreatePost submitForm={submitFormHandler} userName={profile?.userName} />
+                  <FormCreatePost
+                    formState={formState}
+                    submitForm={submitFormHandler}
+                    userName={profile?.userName}
+                  />
                 )}
               </Card>
             )}

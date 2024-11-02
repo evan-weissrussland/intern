@@ -27,6 +27,7 @@ export const CarouselCreatePost = ({
   toLoadForm,
   toLoadImages,
 }: CarouselProps) => {
+  console.log(imagesPost)
   /**
    * массив картинок в виде ссылок для src карусели и редактора фото
    */

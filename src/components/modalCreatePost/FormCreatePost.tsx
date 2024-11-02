@@ -1,32 +1,38 @@
 import React from 'react'
-import { useForm } from 'react-hook-form'
+import { UseFormReturn } from 'react-hook-form'
 
 import { FormTextArea } from '@/components/controll/FormTextArea'
-import { CreatePostData, createPostSchema } from '@/components/modalCreatePost/schema'
+import { CreatePostData } from '@/components/modalCreatePost/schema'
 import { Typography } from '@chrizzo/ui-kit'
-import { zodResolver } from '@hookform/resolvers/zod'
 
 import s from '@/components/modalCreatePost/modalCreatePost.module.scss'
 
 import defaultAva from '../../../public/defaultAva.jpg'
 
 type Props = {
+  formState: UseFormReturn<CreatePostData>
   submitForm: (data: CreatePostData) => void
   userName: string | undefined
 }
-export const FormCreatePost = ({ submitForm, userName }: Props) => {
-  /**
-   * react hook form
-   */
+export const FormCreatePost = ({ formState, submitForm, userName }: Props) => {
   const {
     control,
     formState: { errors },
     handleSubmit,
     watch,
-  } = useForm<CreatePostData>({
-    mode: 'onChange',
-    resolver: zodResolver(createPostSchema),
-  })
+  } = formState
+  /**
+   * react hook form
+   */
+  // const {
+  //   control,
+  //   formState: { errors },
+  //   handleSubmit,
+  //   watch,
+  // } = useForm<CreatePostData>({
+  //   mode: 'onChange',
+  //   resolver: zodResolver(createPostSchema),
+  // })
   /**
    * контроль за данными из поля даты рождения
    */
