@@ -1,8 +1,7 @@
-import React, { ChangeEvent, ReactNode, useEffect, useRef, useState } from 'react'
+import React, { ChangeEvent, ReactNode, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { Return } from '@/assets/icons'
-import { Toast } from '@/components/layouts/Toast'
 import { ModalTrigger } from '@/components/modal'
 import { ModalCloseCreatePost } from '@/components/modal-close-create-post'
 import { CarouselCreatePost } from '@/components/modalCreatePost/CarouselCreatePost'
@@ -17,6 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/uikit-temp-replacement/regular-dialog/RegularDialog'
+import { useIndexedDB } from '@/hooks/useIndexedDB'
 import { useTranslation } from '@/hooks/useTranslation'
 import { db } from '@/services/db'
 import { useCreatePostMutation } from '@/services/incta-team-api/posts/posts-service'
@@ -26,10 +26,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { DialogProps } from '@radix-ui/react-dialog'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import clsx from 'clsx'
-import { liveQuery } from 'dexie'
-import { useLiveQuery } from 'dexie-react-hooks'
 import { CloseIcon } from 'next/dist/client/components/react-dev-overlay/internal/icons/CloseIcon'
-import { toast } from 'sonner'
 
 import s from './modalCreatePost.module.scss'
 
@@ -169,6 +166,7 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
     setToLoadForm(false)
     setToLoadImages(false)
     setOpenModal(false)
+    formState.reset()
   }
   /**
    * Обработчик открытия/закрытия модалки создания поста. Если закрываем модалку, то очищаем все стейты,
@@ -224,6 +222,7 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
       setPreview({ file: [], preview: [] })
       setToLoadForm(false)
       setToLoadImages(false)
+      formState.reset()
     }
     if (toLoadForm) {
       setToLoadForm(false)
@@ -239,57 +238,14 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
     resolver: zodResolver(createPostSchema),
   })
 
-  /**
-   * сохранить черновик поста
-   */
-  async function saveDraftPost() {
-    try {
-      await db.draftPost.put({
-        description: formState.getValues().descriptionPost ?? '',
-        id: 1,
-        photo: preview.file,
-      })
-      toast.custom(
-        toast => <Toast text={'Post has been saved successfully'} variant={'success'} />,
-        {
-          duration: 5000,
-        }
-      )
-      clearStatesCreatePost()
-      setIsShowModalConfirmCloseModalCreatePost(false)
-      formState.reset()
-    } catch (error) {
-      toast.custom(toast => <Toast text={"Error. Post can't been saved"} variant={'error'} />, {
-        duration: 5000,
-      })
-    }
-  }
-
-  const getDraftPost = async () => {
-    try {
-      const draft = await db.draftPost.get(1) // Здесь 1 — это предполагаемый ID
-
-      if (draft) {
-        const previewArray = [] as string[]
-
-        draft.photo.forEach(file => {
-          const newPreview = URL.createObjectURL(file)
-
-          previewArray.push(newPreview)
-        })
-
-        setPreview({ file: draft.photo, preview: previewArray })
-        formState.setValue('descriptionPost', draft.description)
-        setToLoadForm(true)
-      } else {
-        toast.custom(toast => <Toast text={'Draft is empty'} variant={'info'} />, {
-          duration: 5000,
-        })
-      }
-    } catch (error) {
-      console.error('Ошибка при получении черновика:', error)
-    }
-  }
+  const { getDraftPost, saveDraftPost } = useIndexedDB({
+    clearStatesCreatePost,
+    formState,
+    preview,
+    setIsShowModalConfirmCloseModalCreatePost,
+    setPreview,
+    setToLoadForm,
+  })
 
   return (
     <>
