@@ -5,7 +5,6 @@ import { ModalCloseCreatePost } from '@/components/modal-close-create-post'
 import { CarouselCreatePost } from '@/components/modalCreatePost/CarouselCreatePost'
 import { FormCreatePost } from '@/components/modalCreatePost/FormCreatePost'
 import { LoadImageFromPCBlock } from '@/components/modalCreatePost/LoadImageFromPCBlock'
-import { PhotoEditorForCreatePost } from '@/components/modalCreatePost/PhotoEditorForCreatePost'
 import { CreatePostData } from '@/components/modalCreatePost/schema'
 import {
   Dialog,
@@ -19,7 +18,6 @@ import { useTranslation } from '@/hooks/useTranslation'
 import { useCreatePostMutation } from '@/services/incta-team-api/posts/posts-service'
 import { useGetProfileQuery } from '@/services/incta-team-api/profile/profile-service'
 import { Button, Card, Typography } from '@chrizzo/ui-kit'
-import { PinturaDefaultImageWriterResult } from '@pqina/pintura'
 import { DialogProps } from '@radix-ui/react-dialog'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import clsx from 'clsx'
@@ -41,6 +39,12 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
    * стейт контроля открытия/закрытия модалки создания поста
    */
   const [openModal, setOpenModal] = useState(false)
+
+  /**
+   * блокировка кнопки Next, когда открыли редактор фото
+   */
+  const [isDIsabledNextButton, setIsDIsabledNextButton] = useState(false)
+
   /**
    * Запрос на своим профилем юзера для отображения вытягивания userName
    */
@@ -53,9 +57,9 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
    * ссылка на загруженную картинку с ПК. Нужно для логики отображения/сокрытия редактора фото и других элементов,
    * а также для src самого редактора фото
    */
-  const [preview, setPreview] = useState<{ file: File | null; preview: null | string }>({
-    file: null,
-    preview: null,
+  const [preview, setPreview] = useState<{ file: File[]; preview: string[] }>({
+    file: [],
+    preview: [],
   })
   /**
    * стейт ошибки загрузки с инпута type=file файла большого размера или недопустимого типа
@@ -73,6 +77,10 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
    */
   const [toLoadForm, setToLoadForm] = useState(false)
   /**
+   * стейт перехода к карусели после загрузки картинок с ПК
+   */
+  const [toLoadImages, setToLoadImages] = useState(false)
+  /**
    * интернационализация
    */
   const { t } = useTranslation()
@@ -88,32 +96,44 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
    * @param e - event onChange input type=file
    */
   const imageSelectHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0]
+    const fileList = e.target.files
 
-      if (!file) {
-        console.warn('error getting file from the input')
-      }
-      if (!file.type.includes('png') && !file.type.includes('jpg') && !file.type.includes('jpeg')) {
-        //todo fix layout - png and jbg have to be on a new line ('\n doesn't work for some reason')
-        //implement dynamic content for locales https://safronman.gitbook.io/next-i18n-rree78-ewe#id-8-dinamicheskii-perevod
-        setImageError(t.profile.settings.wrongFileFormat)
+    if (fileList && fileList.length > 0) {
+      const fileArray = Array.from(fileList)
+      const previewArray: string[] = []
+      const arrayFiles: File[] = []
 
-        return
-      }
+      fileArray.forEach(file => {
+        if (!file) {
+          console.warn('error getting file from the input')
 
-      if (file.size >= maxImageSizeBytes) {
-        setImageError(t.profile.settings.imageSizeExceeded)
+          return
+        }
+        if (
+          !file.type.includes('png') &&
+          !file.type.includes('jpg') &&
+          !file.type.includes('jpeg')
+        ) {
+          //todo fix layout - png and jbg have to be on a new line ('\n doesn't work for some reason')
+          //implement dynamic content for locales https://safronman.gitbook.io/next-i18n-rree78-ewe#id-8-dinamicheskii-perevod
+          setImageError(t.profile.settings.wrongFileFormat)
 
-        return
-      }
+          return
+        }
 
-      const newPreview = URL.createObjectURL(file)
+        if (file.size >= maxImageSizeBytes) {
+          setImageError(t.profile.settings.imageSizeExceeded)
 
-      if (preview.preview) {
-        URL.revokeObjectURL(preview.preview)
-      }
-      setPreview({ ...preview, preview: newPreview })
+          return
+        }
+
+        const newPreview = URL.createObjectURL(file)
+
+        previewArray.push(newPreview)
+        arrayFiles.push(file)
+      })
+      setPreview({ ...preview, file: arrayFiles, preview: previewArray })
+      setToLoadImages(true)
     }
   }
   /**
@@ -131,10 +151,15 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
    * Хелпер очистки стейтов при закрыти модалки создания поста
    */
   const clearStatesCreatePost = () => {
-    preview.preview && URL.revokeObjectURL(preview.preview)
+    if (preview.preview.length) {
+      preview.preview.forEach(pr => {
+        URL.revokeObjectURL(pr)
+      })
+    }
     imageError && setImageError(null)
-    setPreview({ file: null, preview: null })
+    setPreview({ file: [], preview: [] })
     setToLoadForm(false)
+    setToLoadImages(false)
     setOpenModal(false)
   }
   /**
@@ -152,34 +177,30 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
   }
 
   /**
-   * коллбэк события onProcess (событие сохранения отредактированной картинки поста) из редактора фото.
-   * Создаём объект formData и сохраняем в нём file из редактора. Отправляем file на сервер.
-   * Если запрос успешный, то окрываем форму описания поста.
-   * @param dest - File отредактированный
-   */
-  const loadEditedImageHandler = async ({ dest }: PinturaDefaultImageWriterResult) => {
-    const newPreview = URL.createObjectURL(dest)
-
-    setPreview({ file: dest, preview: newPreview })
-    setToLoadForm(true)
-  }
-  /**
    * обработчик формы создания поста. Если есть данные из формы и есть загруженная ранее картинка поста,
    * то отправляем описание поста и id картинки на сервер. Если запрос успешен, то сбрасываем превью, закрываем
    * вывод формы описания поста и закрываем модалку создания поста
    * @param data - данные из формы (пока что только описание поста)
    */
   const submitFormHandler = async (data: CreatePostData) => {
-    if (preview.file) {
+    if (preview.file.length) {
       const formData = new FormData()
 
-      formData.append('image', preview.file)
+      preview.file.forEach(f => {
+        formData.append('image', f)
+      })
       formData.append('description', data.descriptionPost as string)
 
       await createPost(formData)
       clearStatesCreatePost()
     }
   }
+  /**
+   * массив для карусели на основе загруженных с ПК картинок, добавляем id
+   */
+  const carouselArray = preview.preview.map((pr, i) => {
+    return { id: Math.random() + i, url: pr }
+  })
 
   return (
     <>
@@ -188,7 +209,7 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
           {props.trigger}
         </ModalTrigger>
         <DialogContent
-          className={clsx(s.content, preview && toLoadForm && s.widthBig)}
+          className={clsx(s.content, toLoadForm && s.widthBig)}
           onInteractOutside={event => {
             event.preventDefault()
             if (preview && toLoadForm) {
@@ -205,7 +226,7 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
             <VisuallyHidden>
               <DialogDescription>Select image from your computer</DialogDescription>
             </VisuallyHidden>
-            {!toLoadForm && (
+            {!toLoadForm && !toLoadImages && (
               <DialogClose asChild>
                 <Button className={s.closeButton} variant={'text'}>
                   <CloseIcon />
@@ -229,22 +250,42 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
                 <Typography variant={'h3'}>Publish</Typography>
               </Button>
             )}
+            {toLoadImages && (
+              <Button
+                className={s.publisheButton}
+                disabled={isDIsabledNextButton || !!imageError}
+                onClick={() => {
+                  setToLoadImages(false)
+                  setToLoadForm(true)
+                }}
+                variant={'text'}
+              >
+                <Typography variant={'h3'}>Next</Typography>
+              </Button>
+            )}
           </DialogHeader>
           <div style={{ height: 'calc(100% - 61px)', position: 'relative' }}>
             <LoadImageFromPCBlock
               imageError={imageError}
+              isPreview={!!preview.preview.length}
               onChange={imageSelectHandler}
-              preview={preview.preview}
               ref={inputRef}
               triggerFileInput={triggerFileInputHandler}
             />
-            {preview.preview && !toLoadForm && (
-              <PhotoEditorForCreatePost callback={loadEditedImageHandler} src={preview.preview} />
-            )}
-            {preview.preview && toLoadForm && (
+            {!!preview.preview.length && (
               <Card className={s.cardPost} variant={'dark300'}>
-                <CarouselCreatePost imagesPost={[{ id: 1, url: preview.preview }]} />
-                <FormCreatePost submitForm={submitFormHandler} userName={profile?.userName} />
+                {(toLoadImages || toLoadForm) && (
+                  <CarouselCreatePost
+                    imagesPost={carouselArray}
+                    setDisabledNextButton={setIsDIsabledNextButton}
+                    setFile={setPreview}
+                    toLoadForm={toLoadForm}
+                    toLoadImages={toLoadImages}
+                  />
+                )}
+                {toLoadForm && (
+                  <FormCreatePost submitForm={submitFormHandler} userName={profile?.userName} />
+                )}
               </Card>
             )}
           </div>

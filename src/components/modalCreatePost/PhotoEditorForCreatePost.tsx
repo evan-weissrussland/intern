@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 
 import {
   PinturaDefaultImageWriterResult,
@@ -46,14 +46,17 @@ const editorDefaults = {
 
 type EditorProps = {
   callback: (d: PinturaDefaultImageWriterResult) => void
+  setDisabledNextButton: Dispatch<SetStateAction<boolean>>
   src: null | string
 }
-export const PhotoEditorForCreatePost = ({ callback, src }: EditorProps) => {
+export const PhotoEditorForCreatePost = ({ callback, setDisabledNextButton, src }: EditorProps) => {
   return (
     <PinturaEditor
       {...editorDefaults}
       className={`${st.pintura}`}
-      onLoad={res => {}}
+      onLoad={() => {
+        setDisabledNextButton(true)
+      }}
       onProcess={callback}
       src={src ?? undefined}
     />
