@@ -2,7 +2,6 @@ export const ru = {
   buzzWords: {
     ok: 'ДА',
   },
-  error: 'Ошибка',
   common: {
     incorrectEmail: 'Введите корректный адрес',
     recaptchaCheckFailed:
@@ -11,6 +10,7 @@ export const ru = {
     save: 'Сохранить',
     selectFromComputer: 'Выбрать с диска',
   },
+  error: 'Ошибка',
   forgotPassword: {
     common: {
       inProgress: 'Отправка запроса...',

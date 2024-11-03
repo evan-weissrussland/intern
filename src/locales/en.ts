@@ -4,7 +4,6 @@ export const en: LocaleType = {
   buzzWords: {
     ok: 'OK',
   },
-  error: 'Error',
   common: {
     incorrectEmail: 'The email must match the format example@example.com',
     recaptchaCheckFailed: '"I am not a robot" check failed. Try again',
@@ -12,6 +11,7 @@ export const en: LocaleType = {
     save: 'Save',
     selectFromComputer: 'Select from computer',
   },
+  error: 'Error',
   forgotPassword: {
     common: {
       inProgress: 'Sending the request...',
