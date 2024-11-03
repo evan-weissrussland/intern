@@ -1,39 +1,26 @@
 import React, { ChangeEvent, ReactNode, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { Return } from '@/assets/icons'
 import { ModalTrigger } from '@/components/modal'
-import { ModalCloseCreatePost } from '@/components/modal-close-create-post'
-import { CarouselCreatePost } from '@/components/modalCreatePost/CarouselCreatePost'
-import { FormCreatePost } from '@/components/modalCreatePost/FormCreatePost'
-import { LoadImageFromPCBlock } from '@/components/modalCreatePost/LoadImageFromPCBlock'
+import { HeaderBody } from '@/components/modalCreatePost/HeaderBody'
+import { HeaderContent } from '@/components/modalCreatePost/HeaderContent'
+import { maxImageSizeBytes } from '@/components/modalCreatePost/consts'
+import { useAddIdToArray } from '@/components/modalCreatePost/hook/useAddIdToArray'
 import { CreatePostData, createPostSchema } from '@/components/modalCreatePost/schema'
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
 } from '@/components/uikit-temp-replacement/regular-dialog/RegularDialog'
 import { useIndexedDB } from '@/hooks/useIndexedDB'
 import { useTranslation } from '@/hooks/useTranslation'
 import { db } from '@/services/db'
 import { useCreatePostMutation } from '@/services/incta-team-api/posts/posts-service'
 import { useGetProfileQuery } from '@/services/incta-team-api/profile/profile-service'
-import { Button, Card, Typography } from '@chrizzo/ui-kit'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DialogProps } from '@radix-ui/react-dialog'
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import clsx from 'clsx'
-import { CloseIcon } from 'next/dist/client/components/react-dev-overlay/internal/icons/CloseIcon'
 
 import s from './modalCreatePost.module.scss'
-
-const BYTES_IN_MB = 1024 * 1024
-const IMAGE_SIZE_MAX_MB = 10
-
-const maxImageSizeBytes = BYTES_IN_MB * IMAGE_SIZE_MAX_MB
 
 export type AvatarSelectionDialogProps = {
   trigger: ReactNode
@@ -44,15 +31,15 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
    * стейт контроля открытия/закрытия модалки создания поста
    */
   const [openModal, setOpenModal] = useState(false)
-
   /**
    * блокировка кнопки Next, когда открыли редактор фото
    */
   const [isDIsabledNextButton, setIsDIsabledNextButton] = useState(false)
-
   /**
    * Запрос на своим профилем юзера для отображения вытягивания userName
    */
+  //TODO т.к. не реализована главная страница с постами и мы не можем перейти к профилю юзера,
+  // потому что в URL должен быть id юзера, то id юзера захардкоден, а возвращаемые данные фейковые
   const { data: profile } = useGetProfileQuery({ id: 'q1' }, { skip: !openModal })
   /**
    * ref для инпута с type=file
@@ -71,7 +58,6 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
    * массива берём оригинальную картинку и заменяем ей отредактирвоанную картинку в карусели
    */
   const [loadedFiles, setLoadedFiles] = useState<File[]>([])
-
   /**
    * стейт ошибки загрузки с инпута type=file файла большого размера или недопустимого типа
    */
@@ -95,12 +81,10 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
    * интернационализация
    */
   const { t } = useTranslation()
-
   /**
    * хук RTKQ отправки на сервер описания поста
    */
   const [createPost] = useCreatePostMutation()
-
   /**
    * Обработчик загрузки файла с инпута type=file. Валидируем на загрузку нужного типа и размера файла - картинка.
    * Сетаем ошибки. Сохраняем сам файл и строковую ссылку на файл.
@@ -153,11 +137,9 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
    */
   const triggerFileInputHandler = () => {
     imageError && setImageError(null)
-
-    if (!inputRef.current) {
-      return
+    if (inputRef.current) {
+      inputRef.current.click()
     }
-    inputRef.current.click()
   }
   /**
    * Хелпер очистки стейтов при закрыти модалки создания поста
@@ -184,15 +166,21 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
     if (!open) {
       clearStatesCreatePost()
 
-      return
+      return null
     }
     setOpenModal(open)
   }
-
+  /**
+   * react hook form
+   */
+  const formState = useForm<CreatePostData>({
+    mode: 'onChange',
+    resolver: zodResolver(createPostSchema),
+  })
   /**
    * обработчик формы создания поста. Если есть данные из формы и есть загруженная ранее картинка поста,
    * то отправляем описание поста и id картинки на сервер. Если запрос успешен, то сбрасываем превью, закрываем
-   * вывод формы описания поста и закрываем модалку создания поста
+   * вывод формы описания поста, закрываем модалку создания поста и очищаем базу данных indexedDB
    * @param data - данные из формы (пока что только описание поста)
    */
   const submitFormHandler = async (data: CreatePostData) => {
@@ -212,13 +200,11 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
   /**
    * массив для карусели на основе загруженных с ПК картинок, добавляем id
    */
-  const carouselArray = preview.preview.map((pr, i) => {
-    return { id: Math.random() + i, url: pr }
-  })
+  const carouselArray = useAddIdToArray(preview.preview)
   /**
    * обработчик нажатия на клавишу НАЗАД в хедере модалки создания поста
    */
-  const onclickReturnAddPhoto = () => {
+  const onClickReturnAddPhoto = () => {
     if (toLoadImages) {
       if (preview.preview.length) {
         preview.preview.forEach(pr => {
@@ -237,13 +223,6 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
     }
   }
   /**
-   * react hook form
-   */
-  const formState = useForm<CreatePostData>({
-    mode: 'onChange',
-    resolver: zodResolver(createPostSchema),
-  })
-  /**
    * кастомный хук работы с базой indexedDB. Возвращает функции сохранения в базу данных и чтения из базы
    */
   const { getDraftPost, saveDraftPost } = useIndexedDB({
@@ -254,6 +233,13 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
     setPreview,
     setToLoadForm,
   })
+  /**
+   * обраьотчик кнопки NEXT: переход к форме описания поста
+   */
+  const onClickNextButtonHandler = () => {
+    setToLoadImages(false)
+    setToLoadForm(true)
+  }
 
   return (
     <>
@@ -270,97 +256,36 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
             }
           }}
         >
-          <DialogHeader>
-            {(toLoadForm || toLoadImages) && (
-              <Button
-                className={s.closeButton}
-                disabled={isDIsabledNextButton}
-                onClick={onclickReturnAddPhoto}
-                variant={'text'}
-              >
-                <Return />
-              </Button>
-            )}
-            <DialogTitle asChild>
-              <Typography as={'h1'} variant={'h1'}>
-                {!toLoadImages && !toLoadForm && 'Add Photo'}
-                {toLoadImages && !toLoadForm && 'Edit Photo'}
-                {toLoadForm && 'Publications'}
-              </Typography>
-            </DialogTitle>
-            <VisuallyHidden>
-              <DialogDescription>Select image from your computer</DialogDescription>
-            </VisuallyHidden>
-            {!toLoadForm && !toLoadImages && (
-              <DialogClose asChild>
-                <Button className={s.closeButton} variant={'text'}>
-                  <CloseIcon />
-                </Button>
-              </DialogClose>
-            )}
-            {isShowModalConfirmCloseModalCreatePost && (
-              <ModalCloseCreatePost
-                clearParentStates={clearStatesCreatePost}
-                saveDraftPost={saveDraftPost}
-                showModal={setIsShowModalConfirmCloseModalCreatePost}
-                title={'Close'}
-              >
-                <Typography as={'span'} className={s.questionConfirm} variant={'regular16'}>
-                  Do you really want to close the creation of a publication? <br /> If you close
-                  everything will be deleted
-                </Typography>
-              </ModalCloseCreatePost>
-            )}
-            {preview && toLoadForm && (
-              <Button className={s.publisheButton} form={'submitPostForm'} variant={'text'}>
-                <Typography variant={'h3'}>Publish</Typography>
-              </Button>
-            )}
-            {toLoadImages && (
-              <Button
-                className={s.publisheButton}
-                disabled={isDIsabledNextButton || !!imageError}
-                onClick={() => {
-                  setToLoadImages(false)
-                  setToLoadForm(true)
-                }}
-                variant={'text'}
-              >
-                <Typography variant={'h3'}>Next</Typography>
-              </Button>
-            )}
-          </DialogHeader>
-          <div style={{ height: 'calc(100% - 61px)', position: 'relative' }}>
-            <LoadImageFromPCBlock
-              getDraftPost={getDraftPost}
-              imageError={imageError}
-              isPreview={!!preview.preview.length}
-              onChange={imageSelectHandler}
-              ref={inputRef}
-              triggerFileInput={triggerFileInputHandler}
-            />
-            {!!preview.preview.length && (
-              <Card className={s.cardPost} variant={'dark300'}>
-                {(toLoadImages || toLoadForm) && (
-                  <CarouselCreatePost
-                    imagesPost={carouselArray}
-                    loadedFiles={loadedFiles}
-                    setDisabledNextButton={setIsDIsabledNextButton}
-                    setFile={setPreview}
-                    toLoadForm={toLoadForm}
-                    toLoadImages={toLoadImages}
-                  />
-                )}
-                {toLoadForm && (
-                  <FormCreatePost
-                    formState={formState}
-                    submitForm={submitFormHandler}
-                    userName={profile?.userName}
-                  />
-                )}
-              </Card>
-            )}
-          </div>
+          <HeaderContent
+            clearStatesCreatePost={clearStatesCreatePost}
+            imageError={imageError ?? ''}
+            isDIsabledNextButton={isDIsabledNextButton}
+            isPreview={!!preview.preview.length}
+            isShowModalConfirmCloseModalCreatePost={isShowModalConfirmCloseModalCreatePost}
+            onClickNextButtonHandler={onClickNextButtonHandler}
+            onClickReturnAddPhoto={onClickReturnAddPhoto}
+            saveDraftPost={saveDraftPost}
+            setIsShowModalConfirmCloseModalCreatePost={setIsShowModalConfirmCloseModalCreatePost}
+            toLoadForm={toLoadForm}
+            toLoadImages={toLoadImages}
+          />
+          <HeaderBody
+            carouselArray={carouselArray}
+            formState={formState}
+            getDraftPost={getDraftPost}
+            imageError={imageError ?? ''}
+            imageSelectHandler={imageSelectHandler}
+            isPreview={!!preview.preview.length}
+            loadedFiles={loadedFiles}
+            ref={inputRef}
+            setIsDIsabledNextButton={setIsDIsabledNextButton}
+            setPreview={setPreview}
+            submitFormHandler={submitFormHandler}
+            toLoadForm={toLoadForm}
+            toLoadImages={toLoadImages}
+            triggerFileInputHandler={triggerFileInputHandler}
+            userName={profile?.userName ?? 'No userName'}
+          />
         </DialogContent>
       </Dialog>
     </>
