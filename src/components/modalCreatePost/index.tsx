@@ -67,6 +67,12 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
     preview: [],
   })
   /**
+   * массив оригинальных картинок с ПК. Если мы отредактировали картинку и она нам не понравилась, то из этого
+   * массива берём оригинальную картинку и заменяем ей отредактирвоанную картинку в карусели
+   */
+  const [loadedFiles, setLoadedFiles] = useState<File[]>([])
+
+  /**
    * стейт ошибки загрузки с инпута type=file файла большого размера или недопустимого типа
    */
   const [imageError, setImageError] = useState<null | string>(null)
@@ -137,7 +143,8 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
         previewArray.push(newPreview)
         arrayFiles.push(file)
       })
-      setPreview({ ...preview, file: arrayFiles, preview: previewArray })
+      setPreview({ file: arrayFiles, preview: previewArray })
+      setLoadedFiles(arrayFiles)
       setToLoadImages(true)
     }
   }
@@ -229,7 +236,6 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
       setToLoadImages(true)
     }
   }
-
   /**
    * react hook form
    */
@@ -237,7 +243,9 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
     mode: 'onChange',
     resolver: zodResolver(createPostSchema),
   })
-
+  /**
+   * кастомный хук работы с базой indexedDB. Возвращает функции сохранения в базу данных и чтения из базы
+   */
   const { getDraftPost, saveDraftPost } = useIndexedDB({
     clearStatesCreatePost,
     formState,
@@ -264,7 +272,12 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
         >
           <DialogHeader>
             {(toLoadForm || toLoadImages) && (
-              <Button className={s.closeButton} onClick={onclickReturnAddPhoto} variant={'text'}>
+              <Button
+                className={s.closeButton}
+                disabled={isDIsabledNextButton}
+                onClick={onclickReturnAddPhoto}
+                variant={'text'}
+              >
                 <Return />
               </Button>
             )}
@@ -331,6 +344,7 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
                 {(toLoadImages || toLoadForm) && (
                   <CarouselCreatePost
                     imagesPost={carouselArray}
+                    loadedFiles={loadedFiles}
                     setDisabledNextButton={setIsDIsabledNextButton}
                     setFile={setPreview}
                     toLoadForm={toLoadForm}

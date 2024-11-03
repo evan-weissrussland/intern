@@ -15,6 +15,7 @@ import defaultAva from '../../../public/defaultAva.jpg'
 
 type CarouselProps = {
   imagesPost: { id: number; url: string }[]
+  loadedFiles: File[]
   setDisabledNextButton: Dispatch<SetStateAction<boolean>>
   setFile: Dispatch<SetStateAction<{ file: File[]; preview: string[] }>>
   toLoadForm: boolean
@@ -22,16 +23,16 @@ type CarouselProps = {
 }
 export const CarouselCreatePost = ({
   imagesPost,
+  loadedFiles,
   setDisabledNextButton,
   setFile,
   toLoadForm,
   toLoadImages,
 }: CarouselProps) => {
-  console.log(imagesPost)
   /**
-   * массив картинок в виде ссылок для src карусели и редактора фото
+   * массив индексов отредактированных картинок
    */
-  const [preview, setPreview] = useState(imagesPost)
+  const [indexesEditedFiles, setIndexesEditedFiles] = useState<number[]>([])
   /**
    * флаг загрузки картинки в редактор фото
    */
@@ -52,7 +53,7 @@ export const CarouselCreatePost = ({
   /**
    * массив images поста для карусели
    */
-  const imagesPostArray = preview?.map((image: any) => {
+  const imagesPostArray = imagesPost?.map((image: any) => {
     return (
       <div className={s.emblaSlide} key={image.id}>
         <div className={s.postImage}>
@@ -61,7 +62,6 @@ export const CarouselCreatePost = ({
       </div>
     )
   })
-
   /**
    * коллбэк события onProcess (событие сохранения отредактированной картинки поста) из редактора фото.
    * В исходном массиве картинок заменяем исходную ссылку на картинку на ссылку отредактированной картинки. Это
@@ -74,17 +74,38 @@ export const CarouselCreatePost = ({
   const loadEditedImageHandler = async ({ dest }: PinturaDefaultImageWriterResult) => {
     const newPreview = URL.createObjectURL(dest)
 
-    const editedArray = preview.map((pr, i) =>
-      i === selectedIndexBig ? { ...pr, url: newPreview } : pr
-    )
-
     setFile(data => {
-      return { ...data, file: data.file.map((f, i) => (i === selectedIndexBig ? dest : f)) }
+      return {
+        file: data.file.map((f, i) => (i === selectedIndexBig ? dest : f)),
+        preview: data.preview.map((f, i) => (i === selectedIndexBig ? newPreview : f)),
+      }
     })
-    setPreview(editedArray)
     setIsEditPhoto(false)
+    setIndexesEditedFiles(data => [...data, selectedIndexBig])
     setDisabledNextButton(false)
   }
+  /**
+   * обработчик кнопки загрузки оригинальной картинки после её редактирования
+   */
+  const returnToOriginImage = () => {
+    const originFile = loadedFiles.find((_, i) => i === selectedIndexBig)
+
+    if (originFile) {
+      const newPreview = URL.createObjectURL(originFile)
+
+      setFile(data => {
+        return {
+          file: data.file.map((f, i) => (i === selectedIndexBig ? originFile : f)),
+          preview: data.preview.map((f, i) => (i === selectedIndexBig ? newPreview : f)),
+        }
+      })
+      setIndexesEditedFiles(data => data.filter(f => f !== selectedIndexBig))
+    }
+  }
+  /**
+   * флаг отображения кнопки ORIGIN: возврат к оригинальной картинке
+   */
+  const searchEditedImage = indexesEditedFiles.includes(selectedIndexBig)
 
   return (
     <div className={clsx(s.postImageContent, toLoadImages && s.fullWidth)}>
@@ -95,11 +116,23 @@ export const CarouselCreatePost = ({
           </div>
 
           {!toLoadForm && (
-            <span className={s.button} onClick={() => setIsEditPhoto(true)} role={'button'}>
+            <span
+              className={clsx(s.button, s.edit)}
+              onClick={() => setIsEditPhoto(true)}
+              role={'button'}
+            >
               edit
             </span>
           )}
-
+          {!toLoadForm && searchEditedImage && (
+            <span
+              className={clsx(s.button, s.origin)}
+              onClick={returnToOriginImage}
+              role={'button'}
+            >
+              origin
+            </span>
+          )}
           <Button
             className={s.prevModalButton}
             onClick={() => {
@@ -133,7 +166,7 @@ export const CarouselCreatePost = ({
         <PhotoEditorForCreatePost
           callback={loadEditedImageHandler}
           setDisabledNextButton={setDisabledNextButton}
-          src={preview[selectedIndexBig].url}
+          src={imagesPost[selectedIndexBig].url}
         />
       )}
     </div>

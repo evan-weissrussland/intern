@@ -94,10 +94,16 @@ div.cardPost {
     display: inline-block;
     cursor: default;
     position: absolute;
-    right: 35px;
+
     bottom: 15px;
     padding: 5px;
     background-color: var(--color-dark-500-opacity);
+    &.edit {
+      right: 35px;
+    }
+    &.origin {
+      left: 35px;
+    }
   }
 
   .postImage {
