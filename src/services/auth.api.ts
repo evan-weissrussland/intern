@@ -20,7 +20,7 @@ const slice = createSlice({
       action: PayloadAction<{
         authData: {
           email: string | undefined
-          isBlocked: false
+          isBlocked: boolean
           userId: number | undefined
           userName: string | undefined
         }

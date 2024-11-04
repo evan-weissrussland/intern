@@ -9,10 +9,17 @@ import s from './modalCloseCreatePost.module.scss'
 type Props = {
   children: ReactNode
   clearParentStates: () => void
+  saveDraftPost: () => void
   showModal: (open: boolean) => void
   title: string
 }
-export const ModalCloseCreatePost = ({ children, clearParentStates, showModal, title }: Props) => {
+export const ModalCloseCreatePost = ({
+  children,
+  clearParentStates,
+  saveDraftPost,
+  showModal,
+  title,
+}: Props) => {
   /**
    * функция вызова коллбэка из пропсов по клику на кнопку
    */
@@ -52,13 +59,7 @@ export const ModalCloseCreatePost = ({ children, clearParentStates, showModal, t
                 <Typography variant={'h3'}>Discard</Typography>
               </Button>
             </ModalkaButtonCancel>
-            <Button
-              className={s.saveDraftButton}
-              onClick={() => {
-                alert('не реализовано!')
-              }}
-              variant={'primary'}
-            >
+            <Button className={s.saveDraftButton} onClick={saveDraftPost} variant={'primary'}>
               <Typography variant={'h3'}>Save draft</Typography>
             </Button>
           </div>

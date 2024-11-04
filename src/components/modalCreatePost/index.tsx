@@ -1,12 +1,15 @@
-import React, { ChangeEvent, ReactNode, useRef, useState } from 'react'
+import React, { ChangeEvent, Dispatch, ReactNode, SetStateAction, useRef, useState } from 'react'
+import { useForm } from 'react-hook-form'
 
+import { Return } from '@/assets/icons'
 import { ModalkaTrigger } from '@/components/modal'
 import { ModalCloseCreatePost } from '@/components/modalCloseCreatePost'
 import { CarouselCreatePost } from '@/components/modalCreatePost/CarouselCreatePost'
 import { FormCreatePost } from '@/components/modalCreatePost/FormCreatePost'
 import { LoadImageFromPCBlock } from '@/components/modalCreatePost/LoadImageFromPCBlock'
-import { PhotoEditorForCreatePost } from '@/components/modalCreatePost/PhotoEditorForCreatePost'
-import { CreatePostData } from '@/components/modalCreatePost/schema'
+import { maxImageSizeBytes } from '@/components/modalCreatePost/consts'
+import { useAddIdToArray } from '@/components/modalCreatePost/hook/useAddIdToArray'
+import { CreatePostData, createPostSchema } from '@/components/modalCreatePost/schema'
 import {
   Dialog,
   DialogClose,
@@ -15,13 +18,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/uikit-temp-replacements/regular-dialog/RegularDialog'
+import { useIndexedDB } from '@/hooks/useIndexedDB'
 import { useTranslation } from '@/hooks/useTranslation'
+import { db } from '@/services/db'
 import {
   useCreateImagesPostMutation,
   useCreatePostMutation,
 } from '@/services/inctagram.posts.service'
-import { useGetMyProfileQuery } from '@/services/inctagram.profile.service'
 import { Button, Card, Typography } from '@chrizzo/ui-kit'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { PinturaDefaultImageWriterResult } from '@pqina/pintura'
 import { DialogProps } from '@radix-ui/react-dialog'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
@@ -29,11 +34,6 @@ import clsx from 'clsx'
 import { CloseIcon } from 'next/dist/client/components/react-dev-overlay/internal/icons/CloseIcon'
 
 import s from './modalCreatePost.module.scss'
-
-const BYTES_IN_MB = 1024 * 1024
-const IMAGE_SIZE_MAX_MB = 10
-
-const maxImageSizeBytes = BYTES_IN_MB * IMAGE_SIZE_MAX_MB
 
 export type AvatarSelectionDialogProps = {
   trigger: ReactNode
@@ -45,6 +45,10 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
    */
   const [openModal, setOpenModal] = useState(false)
   /**
+   * блокировка кнопки Next, когда открыли редактор фото
+   */
+  const [isDIsabledNextButton, setIsDIsabledNextButton] = useState(false)
+  /**
    * ref для инпута с type=file
    */
   const inputRef = useRef<HTMLInputElement>(null)
@@ -52,7 +56,11 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
    * ссылка на загруженную картинку с ПК. Нужно для логики отображения/сокрытия редактора фото и других элементов,
    * а также для src самого редактора фото
    */
-  const [preview, setPreview] = useState<null | string>(null)
+  const [preview, setPreview] = useState<PreviewStateType>({
+    files: [],
+    originFiles: [],
+    previews: [],
+  })
   /**
    * стейт ошибки загрузки с инпута type=file файла большого размера или недопустимого типа
    */
@@ -68,6 +76,10 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
    * стейт перехода к форме поста после загрузки картинок поста
    */
   const [toLoadForm, setToLoadForm] = useState(false)
+  /**
+   * стейт перехода к карусели после загрузки картинок с ПК
+   */
+  const [toLoadImages, setToLoadImages] = useState(false)
   /**
    * интернационализация
    */
@@ -88,32 +100,42 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
    * @param e - event onChange input type=file
    */
   const imageSelectHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0]
+    const fileList = e.target.files
 
-      if (!file) {
-        console.warn('error getting file from the input')
-      }
-      if (!file.type.includes('png') && !file.type.includes('jpg') && !file.type.includes('jpeg')) {
-        //todo fix layout - png and jbg have to be on a new line ('\n doesn't work for some reason')
-        //implement dynamic content for locales https://safronman.gitbook.io/next-i18n-rree78-ewe#id-8-dinamicheskii-perevod
-        setImageError(t.profile.settings.wrongFileFormat)
+    if (fileList && fileList.length > 0) {
+      const fileArray = Array.from(fileList)
+      const previewArray: string[] = []
+      const arrayFiles: File[] = []
 
-        return
-      }
+      fileArray.forEach(file => {
+        if (!file) {
+          console.warn('error getting file from the input')
+        }
+        if (
+          !file.type.includes('png') &&
+          !file.type.includes('jpg') &&
+          !file.type.includes('jpeg')
+        ) {
+          //todo fix layout - png and jbg have to be on a new line ('\n doesn't work for some reason')
+          //implement dynamic content for locales https://safronman.gitbook.io/next-i18n-rree78-ewe#id-8-dinamicheskii-perevod
+          setImageError(t.profile.settings.wrongFileFormat)
 
-      if (file.size >= maxImageSizeBytes) {
-        setImageError(t.profile.settings.imageSizeExceeded)
+          return
+        }
 
-        return
-      }
+        if (file.size >= maxImageSizeBytes) {
+          setImageError(t.profile.settings.imageSizeExceeded)
 
-      const newPreview = URL.createObjectURL(file)
+          return
+        }
 
-      if (preview) {
-        URL.revokeObjectURL(preview)
-      }
-      setPreview(newPreview)
+        const newPreview = URL.createObjectURL(file)
+
+        previewArray.push(newPreview)
+        arrayFiles.push(file)
+      })
+      setPreview({ files: arrayFiles, originFiles: arrayFiles, previews: previewArray })
+      setToLoadImages(true)
     }
   }
   /**
@@ -122,20 +144,25 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
   const triggerFileInputHandler = () => {
     imageError && setImageError(null)
 
-    if (!inputRef.current) {
-      return
+    if (inputRef.current) {
+      inputRef.current.click()
     }
-    inputRef.current.click()
   }
   /**
    * Хелпер очистки стейтов при закрыти модалки создания поста
    */
   const clearStatesCreatePost = () => {
-    preview && URL.revokeObjectURL(preview)
+    if (preview.previews.length) {
+      preview.previews.forEach(pr => {
+        URL.revokeObjectURL(pr)
+      })
+    }
     imageError && setImageError(null)
-    setPreview(null)
+    setPreview({ files: [], originFiles: [], previews: [] })
     setToLoadForm(false)
+    setToLoadImages(false)
     setOpenModal(false)
+    formState.reset()
   }
   /**
    * Обработчик открытия/закрытия модалки создания поста. Если закрываем модалку, то очищаем все стейты,
@@ -150,20 +177,13 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
     }
     setOpenModal(open)
   }
-
   /**
-   * коллбэк события onProcess (событие сохранения отредактированной картинки поста) из редактора фото.
-   * Создаём объект formData и сохраняем в нём file из редактора. Отправляем file на сервер.
-   * Если запрос успешный, то окрываем форму описания поста.
-   * @param dest - File отредактированный
+   * react hook form
    */
-  const loadEditedImageHandler = async ({ dest }: PinturaDefaultImageWriterResult) => {
-    const formData = new FormData()
-
-    formData.append('file', dest)
-    await createImagesPost(formData)
-    setToLoadForm(true)
-  }
+  const formState = useForm<CreatePostData>({
+    mode: 'onChange',
+    resolver: zodResolver(createPostSchema),
+  })
   /**
    * обработчик формы создания поста. Если есть данные из формы и есть загруженная ранее картинка поста,
    * то отправляем описание поста и id картинки на сервер. Если запрос успешен, то сбрасываем превью, закрываем
@@ -171,16 +191,73 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
    * @param data - данные из формы (пока что только описание поста)
    */
   const submitFormHandler = async (data: CreatePostData) => {
-    if (data && imagesPost) {
-      const post = {
-        childrenMetadata: [{ uploadId: imagesPost?.images[0].uploadId }],
-        description: data.descriptionPost,
-      }
+    if (preview.files.length) {
+      const formData = new FormData()
 
-      await createPost(post)
+      preview.files.forEach(f => {
+        formData.append('file', f)
+      })
+      await createImagesPost(formData)
+      if (imagesPost) {
+        const post = {
+          childrenMetadata: imagesPost.images.map(img => ({ uploadId: img.uploadId })),
+          description: data.descriptionPost ?? '',
+        }
+
+        await createPost(post)
+      }
+      await db.draftPost.clear()
       clearStatesCreatePost()
     }
   }
+  /**
+   * массив для карусели на основе загруженных с ПК картинок, добавляем id
+   */
+  const carouselArray = useAddIdToArray(preview.previews)
+  /**
+   * обработчик нажатия на клавишу НАЗАД в хедере модалки создания поста
+   */
+  const onClickReturnAddPhoto = () => {
+    if (toLoadImages) {
+      if (preview.previews.length) {
+        preview.previews.forEach(pr => {
+          URL.revokeObjectURL(pr)
+        })
+      }
+      imageError && setImageError(null)
+      setPreview(data => ({ ...data, files: [], previews: [] }))
+      setToLoadForm(false)
+      setToLoadImages(false)
+      formState.reset()
+    }
+    if (toLoadForm) {
+      setToLoadForm(false)
+      setToLoadImages(true)
+    }
+  }
+  /**
+   * кастомный хук работы с базой indexedDB. Возвращает функции сохранения в базу данных и чтения из базы
+   */
+  const { getDraftPost, saveDraftPost } = useIndexedDB({
+    clearStatesCreatePost,
+    formState,
+    preview,
+    setIsShowModalConfirmCloseModalCreatePost,
+    setPreview,
+    setToLoadForm,
+  })
+
+  /**
+   * обраьотчик кнопки NEXT: переход к форме описания поста
+   */
+  const onClickNextButtonHandler = () => {
+    setToLoadImages(false)
+    setToLoadForm(true)
+  }
+  /**
+   * Флаг показа/скрытия карусели и блока загрузки фото
+   */
+  const isPreview = !!preview.previews.length
 
   return (
     <>
@@ -198,15 +275,27 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
           }}
         >
           <DialogHeader>
+            {(toLoadForm || toLoadImages) && (
+              <Button
+                className={s.closeButton}
+                disabled={isDIsabledNextButton}
+                onClick={onClickReturnAddPhoto}
+                variant={'text'}
+              >
+                <Return />
+              </Button>
+            )}
             <DialogTitle asChild>
               <Typography as={'h1'} variant={'h1'}>
-                Add Photo
+                {!toLoadImages && !toLoadForm && 'Add Photo'}
+                {toLoadImages && !toLoadForm && 'Edit Photo'}
+                {toLoadForm && 'Publications'}
               </Typography>
             </DialogTitle>
             <VisuallyHidden>
               <DialogDescription>Select image from your computer</DialogDescription>
             </VisuallyHidden>
-            {!toLoadForm && (
+            {!toLoadForm && !toLoadImages && (
               <DialogClose asChild>
                 <Button className={s.closeButton} variant={'text'}>
                   <CloseIcon />
@@ -216,6 +305,7 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
             {isShowModalConfirmCloseModalCreatePost && (
               <ModalCloseCreatePost
                 clearParentStates={clearStatesCreatePost}
+                saveDraftPost={saveDraftPost}
                 showModal={setIsShowModalConfirmCloseModalCreatePost}
                 title={'Close'}
               >
@@ -225,27 +315,48 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
                 </Typography>
               </ModalCloseCreatePost>
             )}
-            {preview && toLoadForm && (
+            {isPreview && toLoadForm && (
               <Button className={s.publisheButton} form={'submitPostForm'} variant={'text'}>
                 <Typography variant={'h3'}>Publish</Typography>
               </Button>
             )}
+            {toLoadImages && (
+              <Button
+                className={s.publisheButton}
+                disabled={isDIsabledNextButton || !!imageError}
+                onClick={onClickNextButtonHandler}
+                variant={'text'}
+              >
+                <Typography variant={'h3'}>Next</Typography>
+              </Button>
+            )}
           </DialogHeader>
+
           <div style={{ height: 'calc(100% - 61px)', position: 'relative' }}>
             <LoadImageFromPCBlock
+              getDraftPost={getDraftPost}
               imageError={imageError}
+              isPreview={isPreview}
+              multiple
               onChange={imageSelectHandler}
-              preview={preview}
               ref={inputRef}
               triggerFileInput={triggerFileInputHandler}
             />
-            {preview && !toLoadForm && (
-              <PhotoEditorForCreatePost callback={loadEditedImageHandler} src={preview} />
-            )}
-            {preview && toLoadForm && (
+            {isPreview && (
               <Card className={s.cardPost} variant={'dark300'}>
-                <CarouselCreatePost imagesPost={imagesPost} />
-                <FormCreatePost submitForm={submitFormHandler} />
+                {(toLoadImages || toLoadForm) && (
+                  <CarouselCreatePost
+                    imagesPost={carouselArray}
+                    loadedFiles={preview.originFiles}
+                    setDisabledNextButton={setIsDIsabledNextButton}
+                    setFile={setPreview}
+                    toLoadForm={toLoadForm}
+                    toLoadImages={toLoadImages}
+                  />
+                )}
+                {toLoadForm && (
+                  <FormCreatePost formState={formState} submitForm={submitFormHandler} />
+                )}
               </Card>
             )}
           </div>
@@ -254,3 +365,6 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
     </>
   )
 }
+
+export type PreviewStateType = { files: File[]; originFiles: File[]; previews: string[] }
+export type SetPreviewStateType = Dispatch<SetStateAction<PreviewStateType>>

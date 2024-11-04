@@ -87,12 +87,31 @@ div.cardPost {
   flex-basis: 50%;
   height: 100%;
   position: relative;
+  &.fullWidth {
+    flex-basis: 100%;
+  }
+
+  .button {
+    display: inline-block;
+    cursor: default;
+    position: absolute;
+
+    bottom: 15px;
+    padding: 5px;
+    background-color: var(--color-dark-500-opacity);
+    &.edit {
+      right: 35px;
+    }
+    &.origin {
+      left: 35px;
+    }
+  }
 
   .postImage {
     position: relative;
     height: 100%;
     img {
-      object-fit: cover;
+      object-fit: contain;
     }
   }
 
