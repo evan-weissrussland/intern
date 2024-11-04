@@ -6,11 +6,11 @@ import { ResponseDataUserProfile } from '@/components/posts/types'
 import { DatePIckerForProfileSettings } from '@/components/profile-settings/general-info-settings/general-info-form/DatePIckerForProfileSettings'
 import { FormInputGroup } from '@/components/profile-settings/general-info-settings/general-info-form/FormInputGroup'
 import { SelectBlock } from '@/components/profile-settings/general-info-settings/general-info-form/SelectBlock'
-import { Toast } from '@/components/profile-settings/general-info-settings/general-info-form/Toast'
 import {
   UserGeneralInfoData,
   userGeneralInfoSchema,
 } from '@/components/profile-settings/general-info-settings/general-info-form/schema'
+import { Toast } from '@/components/toast/Toast'
 import { useTranslation } from '@/hooks/useTranslation'
 import { useUpdateProfileMutation } from '@/services/inctagram.profile.service'
 import { Button } from '@chrizzo/ui-kit'
@@ -20,6 +20,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import { toast } from 'sonner'
 
 import pageStyles from './form.module.scss'
+import s from '@/components/toast/toast.module.scss'
 
 type Props = {
   profile: ResponseDataUserProfile | undefined
@@ -88,7 +89,7 @@ export function GeneralInfoForm(props: Props) {
           <Toast onDismiss={() => toast.dismiss(jsx)} title={t.profile.settings.toast.success} />
         ),
         {
-          className: pageStyles.succesToast,
+          className: s.succesToast,
           duration: Infinity,
         }
       )
@@ -102,7 +103,7 @@ export function GeneralInfoForm(props: Props) {
           <Toast onDismiss={() => toast.dismiss(jsx)} title={t.profile.settings.toast.error} />
         ),
         {
-          className: pageStyles.errorToast,
+          className: s.errorToast,
         }
       )
     }

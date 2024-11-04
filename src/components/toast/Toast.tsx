@@ -1,7 +1,7 @@
 import { Close } from '@/assets/icons/close'
 import { Button, Typography } from '@chrizzo/ui-kit'
 
-import pageStyles from './form.module.scss'
+import s from '@/components/toast/toast.module.scss'
 
 type Props = {
   onDismiss: () => void
@@ -9,9 +9,11 @@ type Props = {
 }
 export const Toast = ({ onDismiss, title }: Props) => {
   return (
-    <div className={pageStyles.toastWrapper}>
-      <Typography variant={'regular16'}>{title}</Typography>
-      <Button className={pageStyles.close} onClick={onDismiss} variant={'text'}>
+    <div className={s.toastWrapper}>
+      <Typography className={s.typographyToast} variant={'regular16'}>
+        {title}
+      </Typography>
+      <Button className={s.close} onClick={onDismiss} variant={'text'}>
         <Close />
       </Button>
     </div>
