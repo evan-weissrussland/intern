@@ -13,7 +13,9 @@
 }
 .commentsWr {
   display: flex;
-  flex: 1 1 480px;
+  //flex: 1 1 482px;
+  max-width: 482px;
+  width: 100%;
   flex-direction: column;
 
   .avaUserNameBlock {

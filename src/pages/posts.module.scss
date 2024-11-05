@@ -174,16 +174,15 @@
 
 .contentPost {
   top: 84px;
-  width: 100%;
 
-  // max-width: 972px;
-  max-width: 1114px;
+  //max-width: 972px;
+  max-width: 1014px;
+  width: 100%;
   padding-right: 42px;
 
   .card {
     display: flex;
     flex-direction: row;
-
     width: 100%;
     max-width: inherit;
     height: 562px;
@@ -195,7 +194,8 @@
 
 .postImageContent {
   position: relative;
-  flex: 1 1 490px;
+  //flex: 1 1 490px;
+  max-width: 490px;
   width: 100%;
   height: 100%;
 
