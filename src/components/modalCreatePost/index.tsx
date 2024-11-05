@@ -27,7 +27,6 @@ import {
 } from '@/services/inctagram.posts.service'
 import { Button, Card, Typography } from '@chrizzo/ui-kit'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { PinturaDefaultImageWriterResult } from '@pqina/pintura'
 import { DialogProps } from '@radix-ui/react-dialog'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
 import clsx from 'clsx'
@@ -93,7 +92,7 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
   /**
    * хук RTKQ отправки на сервер картинок поста
    */
-  const [createImagesPost, { data: imagesPost }] = useCreateImagesPostMutation()
+  const [createImagesPost] = useCreateImagesPostMutation()
   /**
    * Обработчик загрузки файла с инпута type=file. Валидируем на загрузку нужного типа и размера файла - картинка.
    * Сетаем ошибки. Сохраняем сам файл и строковую ссылку на файл.
@@ -197,10 +196,11 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
       preview.files.forEach(f => {
         formData.append('file', f)
       })
-      await createImagesPost(formData)
-      if (imagesPost) {
+      const res = await createImagesPost(formData)
+
+      if (res.data) {
         const post = {
-          childrenMetadata: imagesPost.images.map(img => ({ uploadId: img.uploadId })),
+          childrenMetadata: res.data.images.map(img => ({ uploadId: img.uploadId })),
           description: data.descriptionPost ?? '',
         }
 
