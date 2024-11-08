@@ -35,5 +35,6 @@ type ResponsePublicProfileUser = {
   aboutMe: string
   avatars: Avatars[]
   id: number
+  userMetadata: { followers: number; following: number; publications: number }
   userName: string
 }
