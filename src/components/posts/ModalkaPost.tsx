@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 import { Close } from '@/assets/icons/close'
 import {
@@ -22,9 +22,10 @@ import defaultAva from '../../../public/defaultAva.jpg'
 
 type Props = {
   post: Post
+  setEditModalPost: Dispatch<SetStateAction<boolean>>
 }
 
-const ModalkaPost = ({ post }: Props) => {
+const ModalkaPost = ({ post, setEditModalPost }: Props) => {
   const router = useRouter()
   const queryParams = router.query
   /**
@@ -87,7 +88,13 @@ const ModalkaPost = ({ post }: Props) => {
             width={post?.images[0]?.width}
           />
         </ModalkaTrigger>
-        <ModalkaContent aria-describedby={undefined} className={s.contentPost}>
+        <ModalkaContent
+          aria-describedby={undefined}
+          className={s.contentPost}
+          onInteractOutside={event => {
+            event.preventDefault()
+          }}
+        >
           <ModalkaTitle className={s.title}>
             <ModalkaButtonCancel asChild>
               <Button variant={'text'}>
@@ -97,7 +104,12 @@ const ModalkaPost = ({ post }: Props) => {
           </ModalkaTitle>
           <Card className={s.card} variant={'dark300'}>
             <CarouselImagesPost images={post?.images} />
-            <CommentsWrapper callback={showModalConfirmDeletePostHandler} open={open} post={post} />
+            <CommentsWrapper
+              callback={showModalConfirmDeletePostHandler}
+              open={open}
+              post={post}
+              setEditModalPost={setEditModalPost}
+            />
           </Card>
         </ModalkaContent>
       </Modalka>

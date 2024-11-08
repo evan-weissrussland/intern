@@ -7,8 +7,8 @@ import s from './modal.module.scss'
 
 type OwnerModalProps = {
   children: ReactNode
-  onOpenChange: (open: boolean) => void
-  open: boolean
+  onOpenChange?: (open: boolean) => void
+  open?: boolean
 }
 
 export const Modalka: FC<OwnerModalProps> = memo(props => {

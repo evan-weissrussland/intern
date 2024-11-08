@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { Bookmark, DirectMessage, Herz } from '@/assets/icons'
@@ -27,8 +27,9 @@ type Props = {
   callback: () => void
   open: boolean
   post: Post
+  setEditModalPost: Dispatch<SetStateAction<boolean>>
 }
-export const CommentsWrapper = ({ callback, open, post }: Props) => {
+export const CommentsWrapper = ({ callback, open, post, setEditModalPost }: Props) => {
   const router = useRouter()
   const userId = Number(router.query.id)
   /**
@@ -105,7 +106,10 @@ export const CommentsWrapper = ({ callback, open, post }: Props) => {
           <Typography variant={'h3'}>{post.userName}</Typography>
         </div>
         {authMe?.userId && authMe?.userId === userId && (
-          <DropdownPostEdit callback={showModalConfirmDeletePostHandler} />
+          <DropdownPostEdit
+            callback={showModalConfirmDeletePostHandler}
+            setEditModalPost={setEditModalPost}
+          />
         )}
         {authMe?.userId && authMe?.userId !== userId && <DropdownFollowPost callback={() => {}} />}
       </div>

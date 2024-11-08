@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react'
+import React, { Dispatch, SetStateAction, memo, useCallback, useState } from 'react'
 
 import { DeletePost, EditIcon } from '@/assets/icons'
 import { DropDownTriggerIcon } from '@/assets/icons/dropDownTriggerIcon'
@@ -16,9 +16,10 @@ import s from './dropDownEditProfile.module.scss'
 
 type Props = {
   callback: () => void
+  setEditModalPost: Dispatch<SetStateAction<boolean>>
 }
 
-export const DropdownPostEdit = memo(({ callback }: Props) => {
+export const DropdownPostEdit = memo(({ callback, setEditModalPost }: Props) => {
   /**
    * открыть/закрыть модальное окно DropDown
    */
@@ -26,7 +27,9 @@ export const DropdownPostEdit = memo(({ callback }: Props) => {
   /**
    * обработчик навигации + закрытие модального окна dropDown
    */
-  const getToEditPostHandler = useCallback(() => {}, [])
+  const getToEditPostHandler = useCallback(() => {
+    setEditModalPost(true)
+  }, [])
 
   /**
    * обработчик навигации + закрытие модального окна dropDown

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import ModalkaPost from '@/components/posts/modalkaPost'
+import { ModalPostItem } from '@/components/userProfile/getPostsUser/ModalPostItem'
 import { useGetPostsByUserIdQuery } from '@/services/inctagram.public-posts.service'
 import { useRouter } from 'next/router'
 
@@ -11,23 +11,17 @@ export const GetPostsUser = () => {
   /**
    * запрос на сервер за постами юзера
    */
-  const { data, isFetching } = useGetPostsByUserIdQuery({
+  const { data, isLoading } = useGetPostsByUserIdQuery({
     params: undefined,
     userId: Number(router.query.id),
   })
 
-  if (isFetching) {
-    return <div>....LOADING...</div>
+  if (isLoading) {
+    return <div>....LOADING.118..</div>
   }
 
   const users = data?.items.map(u => {
-    return (
-      <li className={s.card} key={u.id} onClick={() => {}}>
-        <div>
-          <ModalkaPost post={u} />
-        </div>
-      </li>
-    )
+    return <ModalPostItem key={u.id} post={u} />
   })
 
   return <ul className={s.cardsBlock}>{users}</ul>
