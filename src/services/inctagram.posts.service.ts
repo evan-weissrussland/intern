@@ -2,12 +2,14 @@ import { inctagramService } from '@/services/inctagram.service'
 import {
   RequestCreateCommentType,
   RequestCreatePost,
+  RequestToUsersWhoLikedPost,
   RequestUpdateLikeStatusCommentType,
   RequestUpdateLikeStatusPostType,
   RequestUpdatePostType,
   ResponseCreateCommentType,
   ResponseCreateImagesPost,
   ResponseCreatePost,
+  ResponseUsersWhoLikedPost,
 } from '@/services/types'
 
 export const inctagramPostsService = inctagramService.injectEndpoints({
@@ -51,6 +53,15 @@ export const inctagramPostsService = inctagramService.injectEndpoints({
           }
         },
       }),
+      getUsersWhoLikedPost: builder.query<ResponseUsersWhoLikedPost, RequestToUsersWhoLikedPost>({
+        providesTags: ['usersWhoLikedPost'],
+        query: args => {
+          return {
+            params: args.params,
+            url: `/v1/posts/${args.postId}/likes`,
+          }
+        },
+      }),
       updateLikeStatusForComment: builder.mutation<void, RequestUpdateLikeStatusCommentType>({
         invalidatesTags: ['getComments'],
         query: arg => {
@@ -90,6 +101,7 @@ export const {
   useCreateImagesPostMutation,
   useCreatePostMutation,
   useDeletePostMutation,
+  useGetUsersWhoLikedPostQuery,
   useUpdateLikeStatusForCommentMutation,
   useUpdateLikeStatusForPostMutation,
   useUpdatePostMutation,

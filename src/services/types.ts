@@ -139,3 +139,21 @@ export type RequestUpdateLikeStatusPostType = {
   body: { likeStatus: LikeSTatusType }
   postId: number
 }
+export type RequestToUsersWhoLikedPost = {
+  params: {
+    cursor?: number
+    pageNumber?: number
+    pageSize?: number
+    search?: string
+  }
+  postId: number
+}
+export type ResponseUsersWhoLikedPost = {
+  params: {
+    cursor?: number
+    pageNumber?: number
+    pageSize?: number
+    search?: string
+  }
+  postId: number
+}
