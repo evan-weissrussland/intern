@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { Bookmark, DirectMessage, Herz } from '@/assets/icons'
+import { Bookmark, DirectMessage, Herz, LikedHerz } from '@/assets/icons'
 import { DropdownPostEdit } from '@/components/dropdown-edit-profile'
 import { DropdownFollowPost } from '@/components/dropdown-follow-post'
 import { Comments } from '@/components/posts/comments/Comments'
@@ -12,7 +12,10 @@ import {
 import { DateTimeFormatOptions } from '@/components/posts/types'
 import { Scroll } from '@/components/scroll'
 import { useAuthMeQuery } from '@/services/inctagram.auth.service'
-import { useCreateCommentMutation } from '@/services/inctagram.posts.service'
+import {
+  useCreateCommentMutation,
+  useUpdateLikeStatusForPostMutation,
+} from '@/services/inctagram.posts.service'
 import { Post, useGetCommentsForPostQuery } from '@/services/inctagram.public-posts.service'
 import { Button, TextField, Typography } from '@chrizzo/ui-kit'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -97,6 +100,19 @@ export const CommentsWrapper = ({ callback, open, post, setEditModalPost }: Prop
         reset()
       })
   }
+  /**
+   * Запрос на сервер: Поставить/снять свой лайк посту
+   */
+  const [updateLikeStatusForPost] = useUpdateLikeStatusForPostMutation()
+  /**
+   * Поставить/снять свой лайк посту
+   */
+  const updateLikeStatusForPostHandler = () => {
+    updateLikeStatusForPost({
+      body: { likeStatus: post.isLiked ? 'NONE' : 'LIKE' },
+      postId: post.id,
+    })
+  }
 
   return (
     <div className={s.commentsWr}>
@@ -129,8 +145,12 @@ export const CommentsWrapper = ({ callback, open, post, setEditModalPost }: Prop
         {authMe?.userId && (
           <div className={s.iconsBlock}>
             <div className={s.iconsHerzAndDirect}>
-              <button className={s.button} type={'button'}>
-                <Herz height={24} width={24} />
+              <button className={s.button} onClick={updateLikeStatusForPostHandler} type={'button'}>
+                {post.isLiked ? (
+                  <LikedHerz height={24} width={24} />
+                ) : (
+                  <Herz height={24} width={24} />
+                )}
               </button>
               <button className={s.button} type={'button'}>
                 <DirectMessage />

@@ -135,3 +135,7 @@ export type RequestUpdatePostType = {
   body: { description: string }
   postId: number
 }
+export type RequestUpdateLikeStatusPostType = {
+  body: { likeStatus: LikeSTatusType }
+  postId: number
+}
