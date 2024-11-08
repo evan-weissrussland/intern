@@ -131,3 +131,7 @@ export type RequestUpdateLikeStatusCommentType = {
   commentId: number
   postId: number
 }
+export type RequestUpdatePostType = {
+  body: { description: string }
+  postId: number
+}

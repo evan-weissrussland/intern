@@ -3,6 +3,7 @@ import {
   RequestCreateCommentType,
   RequestCreatePost,
   RequestUpdateLikeStatusCommentType,
+  RequestUpdatePostType,
   ResponseCreateCommentType,
   ResponseCreateImagesPost,
   ResponseCreatePost,
@@ -59,6 +60,16 @@ export const inctagramPostsService = inctagramService.injectEndpoints({
           }
         },
       }),
+      updatePost: builder.mutation<void, RequestUpdatePostType>({
+        invalidatesTags: ['getPostsByUserId'],
+        query: args => {
+          return {
+            body: args.body,
+            method: 'PUT',
+            url: `/v1/posts/${args.postId}`,
+          }
+        },
+      }),
     }
   },
 })
@@ -69,4 +80,5 @@ export const {
   useCreatePostMutation,
   useDeletePostMutation,
   useUpdateLikeStatusForCommentMutation,
+  useUpdatePostMutation,
 } = inctagramPostsService
