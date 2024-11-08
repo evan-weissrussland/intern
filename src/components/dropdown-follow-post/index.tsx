@@ -1,7 +1,12 @@
 import React, { memo, useCallback, useState } from 'react'
 
-import { CopyLink, DeletePost, EditIcon, UnfollowPost } from '@/assets/icons'
+import { CopyLink, FollowPost, UnfollowPost } from '@/assets/icons'
 import { DropDownTriggerIcon } from '@/assets/icons/dropDownTriggerIcon'
+import {
+  useFollowToUserMutation,
+  useUnfollowFromUserMutation,
+} from '@/services/inctagram.followings.service'
+import { useGetUserProfileByUserNameQuery } from '@/services/inctagram.profile.service'
 import {
   DropDown,
   DropDownContent,
@@ -16,24 +21,45 @@ import s from './dropdownFollowPost.module.scss'
 
 type Props = {
   callback: () => void
+  ownerPostUserName: string
 }
 
-export const DropdownFollowPost = memo(({ callback }: Props) => {
+export const DropdownFollowPost = memo(({ callback, ownerPostUserName }: Props) => {
+  /**
+   * хук RTKQ. Подписка на юзера
+   */
+  const [followingToUser] = useFollowToUserMutation()
+  /**
+   * хук RTKQ. Отписаться от юзера
+   */
+  const [unfollow] = useUnfollowFromUserMutation()
   /**
    * открыть/закрыть модальное окно DropDown
    */
   const [open, setOpen] = useState(false)
   /**
-   * обработчик навигации + закрытие модального окна dropDown
+   * запрос на сервер за профилем юзера по имени, чтобы забрать число followers
    */
-  const getToEditPostHandler = useCallback(() => {}, [])
-
+  const { data: profile } = useGetUserProfileByUserNameQuery(ownerPostUserName, { skip: !open })
   /**
    * обработчик навигации + закрытие модального окна dropDown
    */
-  const showModalConfirmDeletePostHandler = useCallback(() => {
+  const getToEditPostHandler = async () => {
+    if (profile && profile.isFollowing) {
+      await unfollow(profile?.id)
+      setOpen(false)
+    }
+    if (profile && !profile.isFollowing) {
+      await followingToUser({ selectedUserId: profile.id })
+      setOpen(false)
+    }
+  }
+  /**
+   * скопировать URL и закрыть  окно dropDown
+   */
+  const getCopyURLHandler = useCallback(async () => {
+    await navigator.clipboard.writeText(window.location.href)
     setOpen(false)
-    callback()
   }, [])
 
   return (
@@ -48,10 +74,12 @@ export const DropdownFollowPost = memo(({ callback }: Props) => {
           <div>
             <DropDownGroup className={s.group}>
               <DropDownItem className={s.item} onclick={getToEditPostHandler}>
-                <UnfollowPost />
-                <Typography variant={'regular14'}>Unfollow</Typography>
+                {profile?.isFollowing ? <UnfollowPost /> : <FollowPost />}
+                <Typography variant={'regular14'}>
+                  {profile?.isFollowing ? 'Unfollow' : 'Follow'}
+                </Typography>
               </DropDownItem>
-              <DropDownItem className={s.item} onclick={showModalConfirmDeletePostHandler}>
+              <DropDownItem className={s.item} onclick={getCopyURLHandler}>
                 <CopyLink />
                 <Typography variant={'regular14'}>Copy Link</Typography>
               </DropDownItem>

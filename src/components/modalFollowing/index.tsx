@@ -11,8 +11,8 @@ import {
 } from '@/components/modal'
 import { ModalConfirm } from '@/components/modalConfirm'
 import {
-  useDeleteFolowerFromFolowersMutation,
   useGetFollowingUsersQuery,
+  useUnfollowFromUserMutation,
 } from '@/services/inctagram.followings.service'
 import { Button, Card, TextField, Typography } from '@chrizzo/ui-kit'
 import Image from 'next/image'
@@ -61,7 +61,7 @@ export const ModalFollowing = memo(({ followingCount, isMyProfile, userName }: P
   /**
    * хук RTKQ. Отписаться от юзера
    */
-  const [unfollow] = useDeleteFolowerFromFolowersMutation()
+  const [unfollow] = useUnfollowFromUserMutation()
   /**
    * коллбэк для отподписки на юзера
    * @param selectedUserId - id юзера, на которого хотим подпсаться

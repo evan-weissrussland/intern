@@ -3,8 +3,8 @@ import { useMemo } from 'react'
 import { FollowersUsersType } from '@/components/ModalFollowers/types'
 import { ModalConfirm } from '@/components/modalConfirm'
 import {
-  useDeleteFolowerFromFolowersMutation,
   useFollowToUserMutation,
+  useUnfollowFromUserMutation,
 } from '@/services/inctagram.followings.service'
 import { Button, Typography } from '@chrizzo/ui-kit'
 import Image from 'next/image'
@@ -22,9 +22,9 @@ export const Followers = ({ items = [] }: Propss) => {
    */
   const [followingToUser] = useFollowToUserMutation()
   /**
-   * хук RTKQ. Убрать юзера из подписчиков
+   * хук RTKQ. Отписаться от юзера
    */
-  const [unfollow] = useDeleteFolowerFromFolowersMutation()
+  const [unfollow] = useUnfollowFromUserMutation()
   /**
    * коллбэк для подписки на юзера
    * @param selectedUserId - id юзера, на которого хотим подпсаться

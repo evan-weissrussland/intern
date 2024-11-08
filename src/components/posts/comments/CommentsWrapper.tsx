@@ -111,7 +111,9 @@ export const CommentsWrapper = ({ callback, open, post, setEditModalPost }: Prop
             setEditModalPost={setEditModalPost}
           />
         )}
-        {authMe?.userId && authMe?.userId !== userId && <DropdownFollowPost callback={() => {}} />}
+        {authMe?.userId && authMe?.userId !== userId && (
+          <DropdownFollowPost callback={() => {}} ownerPostUserName={post.userName} />
+        )}
       </div>
       <hr className={s.hr} />
       <ul className={s.commentsUl}>

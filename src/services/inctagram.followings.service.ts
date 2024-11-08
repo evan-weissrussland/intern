@@ -9,16 +9,6 @@ import { inctagramService } from '@/services/inctagram.service'
 export const inctagramUsersFollowingsService = inctagramService.injectEndpoints({
   endpoints: builder => {
     return {
-      deleteFolowerFromFolowers: builder.mutation<void, number>({
-        async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-          await queryFulfilled
-
-          dispatch(inctagramUsersFollowingsService.util.invalidateTags(['getFollowing']))
-        },
-        query: userId => {
-          return { method: 'DELETE', url: `/v1/users/follower/${userId}` }
-        },
-      }),
       followToUser: builder.mutation<void, { selectedUserId: number }>({
         async onQueryStarted(arg, { dispatch, queryFulfilled }) {
           await queryFulfilled
@@ -52,14 +42,24 @@ export const inctagramUsersFollowingsService = inctagramService.injectEndpoints(
           return { url: `/v1/users` }
         },
       }),
+      unfollowFromUser: builder.mutation<void, number>({
+        async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+          await queryFulfilled
+
+          dispatch(inctagramUsersFollowingsService.util.invalidateTags(['getFollowing']))
+        },
+        query: userId => {
+          return { method: 'DELETE', url: `/v1/users/follower/${userId}` }
+        },
+      }),
     }
   },
 })
 
 export const {
-  useDeleteFolowerFromFolowersMutation,
   useFollowToUserMutation,
   useGetFollowersUsersQuery,
   useGetFollowingUsersQuery,
   useGetProfileUsersQuery,
+  useUnfollowFromUserMutation,
 } = inctagramUsersFollowingsService

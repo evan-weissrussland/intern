@@ -3,8 +3,8 @@ import { ModalFollowers } from '@/components/ModalFollowers'
 import { ModalFollowing } from '@/components/modalFollowing'
 import { GetPostsUser } from '@/components/userProfile/getPostsUser'
 import {
-  useDeleteFolowerFromFolowersMutation,
   useFollowToUserMutation,
+  useUnfollowFromUserMutation,
 } from '@/services/inctagram.followings.service'
 import { useGetUserProfileByUserNameQuery } from '@/services/inctagram.profile.service'
 import { useGetMyCurrentSubscriptionQuery } from '@/services/inctagram.subscriptions.service'
@@ -60,9 +60,9 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
    */
   const [followingToUser] = useFollowToUserMutation()
   /**
-   * хук RTKQ. Убрать юзера из подписчиков
+   * хук RTKQ. Отписаться от юзера
    */
-  const [unfollow] = useDeleteFolowerFromFolowersMutation()
+  const [unfollow] = useUnfollowFromUserMutation()
 
   /**
    * коллбэк для подписки на юзера
