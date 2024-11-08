@@ -42,14 +42,14 @@ export const ModalFollowers = memo(({ followersCount, isMyProfile, userName }: P
 
   /**
    * хук RTKQ. запрос за подписчиками. params - это query-параметры, username используется, как uri.
-   * skip - пока модальное окно подписчиков не открыто, не делаем запрос
+   * skip - пока модальное окно подписчиков не открыто или это не мой аккаунт, не делаем запрос
    */
   const { data, isFetching: isFetchingGetFollowers } = useGetFollowersUsersQuery(
     {
       params: { search: inputValue.textFromDebounceInput },
       username: userName,
     },
-    { skip: !open && isMyProfile }
+    { skip: !open || !isMyProfile }
   )
 
   /**

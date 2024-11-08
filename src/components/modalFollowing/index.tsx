@@ -48,14 +48,14 @@ export const ModalFollowing = memo(({ followingCount, isMyProfile, userName }: P
 
   /**
    * хук RTKQ. запрос за юзерами, на которых подписан. params - это query-параметры, username используется, как uri.
-   * skip - пока модальное окно юзеров, на которых подписан, не открыто, не делаем запрос
+   * skip - пока модальное окно юзеров, на которых подписан, не открыто или это не мой аккаунт, не делаем запрос
    */
   const { data, isFetching: isFetchingGetFollowing } = useGetFollowingUsersQuery(
     {
       params: { search: inputValue.textFromDebounceInput },
       username: userName,
     },
-    { skip: !open && isMyProfile }
+    { skip: !open || !isMyProfile }
   )
 
   /**
