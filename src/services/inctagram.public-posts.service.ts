@@ -139,6 +139,7 @@ export type ImagesPost = {
 }
 export type Post = {
   avatarOwner: string
+  avatarWhoLikes: string[]
   createdAt: string
   description: string
   id: number
