@@ -157,3 +157,41 @@ export type ResponseUsersWhoLikedPost = {
   }
   postId: number
 }
+export type RequestToPostsByUserName = {
+  params: {
+    pageNumber?: number
+    pageSize?: number
+    sortBy?: number
+    sortDirection?: string
+  }
+  userName: string
+}
+export type ResponsePostsByUserName = {
+  items: {
+    avatarOwner: string
+    avatarWhoLikes: string[]
+    createdAt: string
+    description: string
+    id: number
+    images: {
+      createdAt: string
+      fileSize: number
+      height: number
+      uploadId: string
+      url: string
+      width: number
+    }[]
+    isLiked: boolean
+    likesCount: number
+    location: string
+    owner: {
+      firstName: string
+      lastName: string
+    }
+    ownerId: number
+    updatedAt: string
+    userName: string
+  }[]
+  pageSize: number
+  totalCount: number
+}

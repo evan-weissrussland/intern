@@ -2,6 +2,7 @@ import { inctagramService } from '@/services/inctagram.service'
 import {
   RequestCreateCommentType,
   RequestCreatePost,
+  RequestToPostsByUserName,
   RequestToUsersWhoLikedPost,
   RequestUpdateLikeStatusCommentType,
   RequestUpdateLikeStatusPostType,
@@ -9,6 +10,7 @@ import {
   ResponseCreateCommentType,
   ResponseCreateImagesPost,
   ResponseCreatePost,
+  ResponsePostsByUserName,
   ResponseUsersWhoLikedPost,
 } from '@/services/types'
 
@@ -50,6 +52,15 @@ export const inctagramPostsService = inctagramService.injectEndpoints({
           return {
             method: 'DELETE',
             url: `/v1/posts/${postId}`,
+          }
+        },
+      }),
+      getPostsByUserName: builder.query<ResponsePostsByUserName, RequestToPostsByUserName>({
+        providesTags: ['getPostsByUserId'],
+        query: args => {
+          return {
+            params: args.params,
+            url: `/v1/posts/${args.userName}`,
           }
         },
       }),
@@ -101,6 +112,7 @@ export const {
   useCreateImagesPostMutation,
   useCreatePostMutation,
   useDeletePostMutation,
+  useGetPostsByUserNameQuery,
   useGetUsersWhoLikedPostQuery,
   useUpdateLikeStatusForCommentMutation,
   useUpdateLikeStatusForPostMutation,

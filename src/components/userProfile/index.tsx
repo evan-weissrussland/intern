@@ -7,6 +7,7 @@ import {
   useUnfollowFromUserMutation,
 } from '@/services/inctagram.followings.service'
 import { useGetUserProfileByUserNameQuery } from '@/services/inctagram.profile.service'
+import { useGetPublicProfileForUserByIdQuery } from '@/services/inctagram.public-user.service'
 import { useGetMyCurrentSubscriptionQuery } from '@/services/inctagram.subscriptions.service'
 import { Button, Typography } from '@chrizzo/ui-kit'
 import Image from 'next/image'
@@ -28,10 +29,20 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
    */
   const isMyProfile = myProfileId === Number(router.query.id)
   /**
-   * запрос на сервер за профилем юзера по имени, чтобы забрать число followers
+   * запрос на закрытый эндпоинт за профилем юзера по имени. Если я залогинен,
+   * то этот запрос выполняется
    */
-  const { data } = useGetUserProfileByUserNameQuery(dataProfile?.userName, {})
-
+  const { data: privateProfile } = useGetUserProfileByUserNameQuery(dataProfile?.userName, {
+    skip: !myProfileId,
+  })
+  /**
+   * запрос на публичный эндпоинт за профилем юзера по id. Этот запрос нужен,
+   * если я НЕ залогинен, иначе мы не сможем вытянуть информацию о юзере. Потмоу, что смотреть профиль я
+   * должен даже при отсутствии залогиненности
+   */
+  const { data: publicProfile } = useGetPublicProfileForUserByIdQuery(Number(router.query.id), {
+    skip: !!myProfileId,
+  })
   /**
    * запрос за проверкой подписки (для отображения вкладки статистики)
    */
@@ -88,14 +99,14 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
         <Image
           alt={'avatar'}
           className={s.image}
-          height={data?.avatars[0]?.height ?? 204}
-          src={data?.avatars[0]?.url ?? defaultAva}
-          width={data?.avatars[0]?.width ?? 204}
+          height={(privateProfile?.avatars[0]?.height || publicProfile?.avatars[0]?.height) ?? 204}
+          src={(privateProfile?.avatars[0]?.url || publicProfile?.avatars[0]?.url) ?? defaultAva}
+          width={(privateProfile?.avatars[0]?.width || publicProfile?.avatars[0]?.width) ?? 204}
         />
         <section className={s.aboutUserBlock}>
           <div className={s.userNameSettingsButtonBlock}>
             <Typography className={s.userName} variant={'h1'}>
-              {data?.userName ?? 'UserName'}
+              {(privateProfile?.userName || publicProfile?.userName) ?? 'UserName'}
               {subscriptionData?.data.length && !isFetchingGetMySubscriptions ? (
                 <PaidAccount />
               ) : null}
@@ -107,13 +118,13 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
             )}
             {myProfileId && myProfileId !== dataProfile.id && (
               <div className={s.followUnfollowSendMessageButtonsBlock}>
-                {!data?.isFollowing && (
-                  <Button onClick={() => toFollowUser(data?.id)} variant={'primary'}>
+                {!privateProfile?.isFollowing && (
+                  <Button onClick={() => toFollowUser(privateProfile?.id)} variant={'primary'}>
                     <Typography variant={'h3'}>Follow</Typography>
                   </Button>
                 )}
-                {data?.isFollowing && (
-                  <Button onClick={() => unfollowUser(data?.id)} variant={'outline'}>
+                {privateProfile?.isFollowing && (
+                  <Button onClick={() => unfollowUser(privateProfile?.id)} variant={'outline'}>
                     <Typography variant={'h3'}>Unfollow</Typography>
                   </Button>
                 )}
@@ -125,23 +136,29 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
           </div>
           <div className={s.countsFolowwers}>
             <ModalFollowing
-              followingCount={data?.followingCount ?? 'X'}
+              followingCount={
+                privateProfile?.followingCount || publicProfile?.userMetadata.following || 0
+              }
               isMyProfile={isMyProfile}
               userName={dataProfile.userName}
             />
             <ModalFollowers
-              followersCount={data?.followersCount ?? 'X'}
+              followersCount={
+                privateProfile?.followersCount || publicProfile?.userMetadata.followers || 0
+              }
               isMyProfile={isMyProfile}
               userName={dataProfile.userName}
             />
             <div className={s.publications} onClick={openPublications}>
-              <Typography variant={'regularBold14'}>{data?.publicationsCount ?? 'X'}</Typography>
+              <Typography variant={'regularBold14'}>
+                {privateProfile?.publicationsCount || publicProfile?.userMetadata.publications || 0}
+              </Typography>
               <Typography variant={'regular14'}>Publications</Typography>
             </div>
           </div>
           <article className={s.aboutMe}>
             <Typography variant={'regular16'}>
-              {data?.aboutMe ??
+              {(privateProfile?.aboutMe || publicProfile?.aboutMe) ??
                 `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad 
               minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex 
@@ -150,7 +167,7 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
           </article>
         </section>
       </div>
-      <GetPostsUser />
+      <GetPostsUser isILogined={!!myProfileId} userName={dataProfile?.userName ?? ''} />
     </>
   )
 }
