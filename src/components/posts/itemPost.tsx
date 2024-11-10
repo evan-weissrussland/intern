@@ -48,15 +48,15 @@ export const ItemPost = ({ navigateToPublicUserProfile, post: p }: Props) => {
    */
   const imagesPostArray = p?.images.map(image => {
     return (
-      <div className={s.emblaSlide} key={image.uploadId}>
-        <div
-          className={s.postImage}
-          data-showmore={showMore}
-          onClick={() => navigateToPublicUserProfile(p.id, p.ownerId)}
-        >
-          <img alt={'image'} src={image?.url ?? defaultAva.src} />
-        </div>
-      </div>
+      <EmblaSlideItem
+        imageId={image.uploadId}
+        imageUrl={image?.url}
+        key={image.uploadId}
+        navigateToPublicUserProfile={navigateToPublicUserProfile}
+        postId={p.id}
+        postOwnerId={p.ownerId}
+        showMore={showMore}
+      />
     )
   })
 
@@ -64,7 +64,18 @@ export const ItemPost = ({ navigateToPublicUserProfile, post: p }: Props) => {
     <li className={s.post}>
       <div className={s.modalWr}>
         <div className={s.embla} ref={emblaRef}>
-          <div className={s.emblaContainer}>{imagesPostArray}</div>
+          <div className={s.emblaContainer}>
+            {p.images.length > 0 && imagesPostArray}
+            {!p.images.length && (
+              <EmblaSlideItem
+                imageId={'1'}
+                navigateToPublicUserProfile={navigateToPublicUserProfile}
+                postId={p.id}
+                postOwnerId={p.ownerId}
+                showMore={showMore}
+              />
+            )}
+          </div>
         </div>
         {!showMore && (
           <>
@@ -123,5 +134,35 @@ export const ItemPost = ({ navigateToPublicUserProfile, post: p }: Props) => {
         {showMore ? 'Hide' : 'Show more'}
       </Typography>
     </li>
+  )
+}
+
+type Propsss = {
+  imageId: string
+  imageUrl?: string | undefined
+  navigateToPublicUserProfile: (postId: number | undefined, id: number) => void
+  postId: number
+  postOwnerId: number
+  showMore: boolean
+}
+
+export const EmblaSlideItem = ({
+  imageId,
+  imageUrl = undefined,
+  navigateToPublicUserProfile,
+  postId,
+  postOwnerId,
+  showMore,
+}: Propsss) => {
+  return (
+    <div className={s.emblaSlide} key={imageId}>
+      <div
+        className={s.postImage}
+        data-showmore={showMore}
+        onClick={() => navigateToPublicUserProfile(postId, postOwnerId)}
+      >
+        <img alt={'image'} src={imageUrl ?? defaultAva.src} />
+      </div>
+    </div>
   )
 }
