@@ -13,7 +13,12 @@ export const inctagramUsersFollowingsService = inctagramService.injectEndpoints(
         async onQueryStarted(arg, { dispatch, queryFulfilled }) {
           await queryFulfilled
 
-          dispatch(inctagramUsersFollowingsService.util.invalidateTags(['getFollowing']))
+          dispatch(
+            inctagramUsersFollowingsService.util.invalidateTags([
+              'getFollowing',
+              'usersWhoLikedPost',
+            ])
+          )
         },
         query: body => {
           return { body, method: 'POST', url: `/v1/users/following` }
@@ -46,7 +51,12 @@ export const inctagramUsersFollowingsService = inctagramService.injectEndpoints(
         async onQueryStarted(arg, { dispatch, queryFulfilled }) {
           await queryFulfilled
 
-          dispatch(inctagramUsersFollowingsService.util.invalidateTags(['getFollowing']))
+          dispatch(
+            inctagramUsersFollowingsService.util.invalidateTags([
+              'getFollowing',
+              'usersWhoLikedPost',
+            ])
+          )
         },
         query: userId => {
           return { method: 'DELETE', url: `/v1/users/follower/${userId}` }

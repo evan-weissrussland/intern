@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { Bookmark, DirectMessage, Herz, LikedHerz } from '@/assets/icons'
 import { DropdownPostEdit } from '@/components/dropdown-edit-profile'
 import { DropdownFollowPost } from '@/components/dropdown-follow-post'
+import { ModalLikesPost } from '@/components/modalLikesPost'
 import { Comments } from '@/components/posts/comments/Comments'
 import {
   CommentValue,
@@ -88,7 +89,6 @@ export const CommentsWrapper = ({ callback, open, post, setEditModalPost }: Prop
    * обработчик отправки комментария
    */
   const addCommentHandler = (data: CommentValue) => {
-    // console.log(data)
     createComment({
       body: {
         content: data.comment,
@@ -176,19 +176,25 @@ export const CommentsWrapper = ({ callback, open, post, setEditModalPost }: Prop
           </div>
         )}
         <div className={s.likesCountDateBlock}>
-          <div className={s.likesCount}>
-            <div className={clsx(s.avatarsLiked)}>{avatarWhoLikedPost}</div>
-            <Typography as={'span'} className={clsx(s.span, likeCountStyle)} variant={'regular14'}>
-              {post.likesCount}&nbsp;
-            </Typography>
-            <Typography
-              as={'span'}
-              className={clsx(s.span, likeCountStyle)}
-              variant={'regularBold14'}
-            >
-              &quot;Like&quot;
-            </Typography>
-          </div>
+          <ModalLikesPost postId={post.id} title={'Likes'}>
+            <div className={s.likesCount}>
+              <div className={clsx(s.avatarsLiked)}>{avatarWhoLikedPost}</div>
+              <Typography
+                as={'span'}
+                className={clsx(s.span, likeCountStyle)}
+                variant={'regular14'}
+              >
+                {post.likesCount}&nbsp;
+              </Typography>
+              <Typography
+                as={'span'}
+                className={clsx(s.span, likeCountStyle)}
+                variant={'regularBold14'}
+              >
+                &quot;Like&quot;
+              </Typography>
+            </div>
+          </ModalLikesPost>
           <Typography className={s.date} variant={'small'}>
             {formattedDate}
           </Typography>

@@ -148,14 +148,19 @@ export type RequestToUsersWhoLikedPost = {
   }
   postId: number
 }
+export type LikesItemType = {
+  avatars: Omit<ImagesPostType, 'uploadId'>[]
+  createdAt: string
+  id: number
+  isFollowedBy: true
+  isFollowing: true
+  userId: number
+  userName: string
+}
 export type ResponseUsersWhoLikedPost = {
-  params: {
-    cursor?: number
-    pageNumber?: number
-    pageSize?: number
-    search?: string
-  }
-  postId: number
+  items: LikesItemType[]
+  pageSize: number
+  totalCount: number
 }
 export type RequestToPostsByUserName = {
   params: {
