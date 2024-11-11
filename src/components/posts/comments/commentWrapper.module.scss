@@ -62,7 +62,7 @@
 }
 .date {
   @include date;
-  margin-top: 5px;
+  //margin-top: 5px;
 }
 .button {
   all: unset;
@@ -97,6 +97,49 @@
   }
 }
 
-span.span {
-  display: inline-block;
+.likesCountDateBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.likesCount {
+  display: inline-flex;
+  align-items: center;
+
+  span.span {
+    display: inline-block;
+
+    &.l1 {
+      transform: translateX(12px);
+    }
+    &.l2 {
+      transform: translateX(3px);
+    }
+    &.l3 {
+      transform: translateX(-6px);
+    }
+  }
+}
+
+.avatarsLiked {
+  display: flex;
+  position: relative;
+}
+.avaSmall {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  overflow: hidden;
+  z-index: 3;
+
+  &:nth-child(2) {
+    transform: translateX(-9px);
+    z-index: 2;
+  }
+  &:nth-child(3) {
+    transform: translateX(-18px);
+    z-index: 1;
+  }
 }

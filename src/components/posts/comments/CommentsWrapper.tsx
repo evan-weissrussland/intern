@@ -113,6 +113,20 @@ export const CommentsWrapper = ({ callback, open, post, setEditModalPost }: Prop
       postId: post.id,
     })
   }
+  /**
+   * массив из первых трёх юзеров, поставивших лайк посту
+   */
+  const avatarWhoLikedPost = post.avatarWhoLikes.slice(0, 3).map((ava, i) => {
+    return (
+      <span className={s.avaSmall} key={i}>
+        <img alt={'ava'} src={ava ? ava : defaultAva.src} />
+      </span>
+    )
+  })
+  /**
+   * css для расстояния между аватарками юзеров поставивших лайк и счётчиком лайков
+   */
+  const likeCountStyle = post.likesCount < 4 ? s['l' + post.likesCount] : s['l3']
 
   return (
     <div className={s.commentsWr}>
@@ -161,14 +175,20 @@ export const CommentsWrapper = ({ callback, open, post, setEditModalPost }: Prop
             </button>
           </div>
         )}
-        <div>
-          <div className={s.avatarsLiked}></div>
-          <Typography as={'span'} className={s.span} variant={'regular14'}>
-            {post.likesCount}&nbsp;
-          </Typography>
-          <Typography as={'span'} className={s.span} variant={'regularBold14'}>
-            &quot;Like&quot;
-          </Typography>
+        <div className={s.likesCountDateBlock}>
+          <div className={s.likesCount}>
+            <div className={clsx(s.avatarsLiked)}>{avatarWhoLikedPost}</div>
+            <Typography as={'span'} className={clsx(s.span, likeCountStyle)} variant={'regular14'}>
+              {post.likesCount}&nbsp;
+            </Typography>
+            <Typography
+              as={'span'}
+              className={clsx(s.span, likeCountStyle)}
+              variant={'regularBold14'}
+            >
+              &quot;Like&quot;
+            </Typography>
+          </div>
           <Typography className={s.date} variant={'small'}>
             {formattedDate}
           </Typography>

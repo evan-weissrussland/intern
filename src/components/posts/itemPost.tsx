@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import ReactTimeAgo from 'react-time-ago'
 
 import { NextCarousel, PrevCarousel } from '@/assets/icons'
+import { EmblaSlideItem } from '@/components/posts/EmblaSlideItem'
 import { useDotButton } from '@/hooks/useDotCarouselButton'
 import { Post } from '@/services/inctagram.public-posts.service'
 import { Button, Typography } from '@chrizzo/ui-kit'
@@ -134,35 +135,5 @@ export const ItemPost = ({ navigateToPublicUserProfile, post: p }: Props) => {
         {showMore ? 'Hide' : 'Show more'}
       </Typography>
     </li>
-  )
-}
-
-type Propsss = {
-  imageId: string
-  imageUrl?: string | undefined
-  navigateToPublicUserProfile: (postId: number | undefined, id: number) => void
-  postId: number
-  postOwnerId: number
-  showMore: boolean
-}
-
-export const EmblaSlideItem = ({
-  imageId,
-  imageUrl = undefined,
-  navigateToPublicUserProfile,
-  postId,
-  postOwnerId,
-  showMore,
-}: Propsss) => {
-  return (
-    <div className={s.emblaSlide} key={imageId}>
-      <div
-        className={s.postImage}
-        data-showmore={showMore}
-        onClick={() => navigateToPublicUserProfile(postId, postOwnerId)}
-      >
-        <img alt={'image'} src={imageUrl ?? defaultAva.src} />
-      </div>
-    </div>
   )
 }
