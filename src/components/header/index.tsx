@@ -5,6 +5,7 @@ import { NotiefWithCount } from '@/assets/icons/notiefWithCount'
 import { NotiefWithOutCount } from '@/assets/icons/notiefWithOutCount'
 import { RuFlag } from '@/assets/icons/ruFlag'
 import { DropDownHeader } from '@/components/dropDownHeader'
+import { DropdownNotifications } from '@/components/dropdown-notifications'
 import { useTranslation } from '@/hooks/useTranslation'
 import { Button, Select, Typography } from '@chrizzo/ui-kit'
 import clsx from 'clsx'
@@ -118,21 +119,23 @@ export const Header = ({ isAuthMe }: { isAuthMe?: boolean }) => {
         </Typography>
         <div className={s.buttonsBlock}>
           {windowWidth > 450 && (
-            <button
-              aria-label={'Notification'}
-              className={clsx(s.noties, isNotiefShowStyle)}
-              onClick={toShowNotifiesHandler}
-              role={'button'}
-              tabIndex={!countNotifies ? -1 : undefined}
-              type={'button'}
-            >
-              {!asPath.includes('generalInfo') && !!countNotifies && (
-                <>
-                  <span className={s.countNotifies}>{countNotifies}</span> <NotiefWithCount />{' '}
-                </>
-              )}
-              {!asPath.includes('generalInfo') && !countNotifies && <NotiefWithOutCount />}
-            </button>
+            <DropdownNotifications>
+              <button
+                aria-label={'Notification'}
+                className={clsx(s.noties, isNotiefShowStyle)}
+                onClick={toShowNotifiesHandler}
+                role={'button'}
+                tabIndex={!countNotifies ? -1 : undefined}
+                type={'button'}
+              >
+                {!asPath.includes('generalInfo') && !!countNotifies && (
+                  <>
+                    <span className={s.countNotifies}>{countNotifies}</span> <NotiefWithCount />{' '}
+                  </>
+                )}
+                {!asPath.includes('generalInfo') && !countNotifies && <NotiefWithOutCount />}
+              </button>
+            </DropdownNotifications>
           )}
           <Select
             defaultValue={defaultLocale}
