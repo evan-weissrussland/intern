@@ -65,7 +65,7 @@ export const inctagramPostsService = inctagramService.injectEndpoints({
         },
       }),
       getUsersWhoLikedPost: builder.query<ResponseUsersWhoLikedPost, RequestToUsersWhoLikedPost>({
-        providesTags: ['usersWhoLikedPost'],
+        providesTags: ['usersWhoLikedPost', 'getPostsByUserId'],
         query: args => {
           return {
             params: args.params,
