@@ -6,6 +6,7 @@ import { Provider } from 'react-redux'
 import { LayoutNew } from '@/components/Layout/layoutNew'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
+import ru from 'javascript-time-ago/locale/ru'
 import { NextPage } from 'next'
 import { Toaster } from 'sonner'
 
@@ -15,6 +16,7 @@ import '@chrizzo/ui-kit/dist/style.css'
 
 import { wrapper } from '../../store'
 TimeAgo.addDefaultLocale(en)
+TimeAgo.addLocale(ru)
 
 export type NextPageWithLayout<P = {}> = {
   getLayout?: (page: ReactElement) => ReactNode
