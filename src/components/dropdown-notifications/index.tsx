@@ -1,8 +1,6 @@
 import React, { Dispatch, ReactNode, SetStateAction, memo, useCallback, useState } from 'react'
 import ReactTimeAgo from 'react-time-ago'
 
-import { DeletePost, EditIcon } from '@/assets/icons'
-import { DropDownTriggerIcon } from '@/assets/icons/dropDownTriggerIcon'
 import { Scroll } from '@/components/scroll'
 import {
   DropDown,
@@ -54,7 +52,7 @@ export const DropdownNotifications = memo(({ callback, children, setEditModalPos
     <>
       <DropDown onOpenChange={setOpen} open={open}>
         <DropDownTrigger>{children}</DropDownTrigger>
-        <DropDownContent align={'end'} alignOffset={0} className={clsx(s.content)} sideOffset={0}>
+        <DropDownContent align={'end'} alignOffset={-12} className={clsx(s.content)} sideOffset={8}>
           <h3>Notifications</h3>
           <div className={s.wrapperNotiefItems}>
             <Scroll>
