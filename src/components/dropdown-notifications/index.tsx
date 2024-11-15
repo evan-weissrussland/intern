@@ -1,15 +1,12 @@
-import React, { Dispatch, ReactNode, SetStateAction, memo, useCallback, useState } from 'react'
-import ReactTimeAgo from 'react-time-ago'
+import React, { Dispatch, ReactNode, SetStateAction, memo, useState } from 'react'
 
+import { NotificationsArray } from '@/components/dropdown-notifications/NotificationsArray'
 import { Scroll } from '@/components/scroll'
 import {
-  DropDown,
-  DropDownContent,
-  DropDownGroup,
-  DropDownItem,
-  DropDownTrigger,
-  Typography,
-} from '@chrizzo/ui-kit'
+  useGetNotificationsQuery,
+  useMarkNotificationAsReadMutation,
+} from '@/services/inctagram.notifications.service'
+import { DropDown, DropDownContent, DropDownGroup, DropDownTrigger } from '@chrizzo/ui-kit'
 import clsx from 'clsx'
 
 import s from './dropdownNotifications.module.scss'
@@ -25,28 +22,25 @@ export const DropdownNotifications = memo(({ callback, children, setEditModalPos
    * открыть/закрыть модальное окно DropDown
    */
   const [open, setOpen] = useState(false)
-  /**
-   * обработчик навигации + закрытие модального окна dropDown
-   */
-  const getToEditPostHandler = useCallback(() => {
-    if (setEditModalPost) {
-      setEditModalPost(true)
-    }
-  }, [])
 
   /**
-   * обработчик навигации + закрытие модального окна dropDown
+   * запрос за уведомлениями
    */
-  const showModalConfirmDeletePostHandler = useCallback(() => {
-    if (callback) {
-      setOpen(false)
-      callback()
-    }
-  }, [])
+  const { data: notifications } = useGetNotificationsQuery(
+    { cursor: 0, params: {} },
+    { skip: !open }
+  )
   /**
-   * дата создания комментария
+   * запрос с пометкой о прочтённом уведомлении
    */
-  const dateAgo = new Date(new Date().toISOString())
+  const [markNotificationAsRead] = useMarkNotificationAsReadMutation()
+
+  /**
+   * обработчик - пометить уведомление, как прочтённое
+   */
+  const marNotificationAsReadHandler = (id: number) => {
+    markNotificationAsRead({ ids: [id] })
+  }
 
   return (
     <>
@@ -57,20 +51,11 @@ export const DropdownNotifications = memo(({ callback, children, setEditModalPos
           <div className={s.wrapperNotiefItems}>
             <Scroll>
               <DropDownGroup className={s.group}>
-                <DropDownItem className={s.item} onclick={getToEditPostHandler}>
-                  <div>
-                    <Typography as={'span'} variant={'regularBold14'}>
-                      Новое уведомление!
-                    </Typography>{' '}
-                    <Typography as={'span'} className={s.titleNewNotief} variant={'small'}>
-                      Новое
-                    </Typography>
-                  </div>
-                  <p className={s.notiefMessage}>Следующий платеж у вас спишется через 1 день</p>
-                  <Typography className={s.date} variant={'small'}>
-                    <ReactTimeAgo date={dateAgo} locale={'ru-RU'} />
-                  </Typography>
-                </DropDownItem>
+                <NotificationsArray
+                  marNotificationAsRead={marNotificationAsReadHandler}
+                  notifications={notifications?.items ?? []}
+                  setEditModalPost={setEditModalPost}
+                />
               </DropDownGroup>
             </Scroll>
           </div>

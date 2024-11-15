@@ -14,5 +14,6 @@ export const inctagramService = createApi({
     'getSessions',
     'getComments',
     'usersWhoLikedPost',
+    'getNotifications',
   ],
 })
