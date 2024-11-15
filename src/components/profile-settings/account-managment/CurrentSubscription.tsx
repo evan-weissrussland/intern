@@ -1,17 +1,24 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import { changeTypeOfDate } from '@/components/profile-settings/account-managment/utils/utils'
 import { useTranslation } from '@/hooks/useTranslation'
-import { useGetCancelAutorenevalSubscriptionMutation } from '@/services/inctagram.subscriptions.service'
+import {
+  useGetCancelAutorenevalSubscriptionMutation,
+  useGetMyCurrentSubscriptionQuery,
+} from '@/services/inctagram.subscriptions.service'
 import { ResponseCurrentSubscriptionType } from '@/services/types'
 import { Checkbox, Typography } from '@chrizzo/ui-kit'
 
 import s from '@/components/profile-settings/account-managment/accountManagment.module.scss'
 
 type Props = {
-  subscription: ResponseCurrentSubscriptionType | undefined
+  subscription?: ResponseCurrentSubscriptionType | undefined
 }
-export const CurrentSubscription = ({ subscription }: Props) => {
+export const CurrentSubscription = ({}: Props) => {
+  /**
+   * Запрос за моей текущей платной подпиской
+   */
+  const { data: subscription } = useGetMyCurrentSubscriptionQuery()
   /**
    * запрос на снятие автопродления подписки
    */
