@@ -52,7 +52,7 @@ export const SingUp = (props: Props) => {
         <Typography className={s.title} textAlign={'center'} variant={'h1'}>
           {t.signUp.title}
         </Typography>
-        <SocialAuthButtons googleLoginAndRegister={() => {}} />
+        <SocialAuthButtons />
         <form onSubmit={onHandleSubmit}>
           <DevTool control={control} />
           <div className={s.wrap}>

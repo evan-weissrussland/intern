@@ -297,6 +297,7 @@ export function ModalCreatePost({ onOpenChange, ...props }: AvatarSelectionDialo
             </VisuallyHidden>
             {!toLoadForm && !toLoadImages && (
               <DialogClose asChild>
+                {/* eslint-disable-next-line max-lines */}
                 <Button className={s.closeButton} variant={'text'}>
                   <CloseIcon />
                 </Button>

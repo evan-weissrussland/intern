@@ -15,7 +15,6 @@ import { useRouter } from 'next/router'
 import s from './logIn.module.scss'
 
 export function LogIn() {
-  const googleLoginAndRegister = () => {}
   /**
    * Переменные для обработки форм из react-hook-form
    */
@@ -83,7 +82,7 @@ export function LogIn() {
           <Typography className={s.title} variant={'h1'}>
             {t.signIn.title}
           </Typography>
-          <SocialAuthButtons googleLoginAndRegister={googleLoginAndRegister} />
+          <SocialAuthButtons />
           <form className={s.form} onSubmit={handleSubmit(onSubmit)}>
             <FormInput
               control={control}

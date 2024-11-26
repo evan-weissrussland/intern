@@ -1,6 +1,9 @@
+import { useEffect } from 'react'
+
 import { HeadMeta, PageWrapper } from '@/components'
 import { ItemPost } from '@/components/posts/itemPost'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useLoginWithGoogleMutation } from '@/services/inctagram.auth.service'
 import { Post, ResponseAllPosts } from '@/services/inctagram.public-posts.service'
 import { Typography } from '@chrizzo/ui-kit'
 import { GetStaticProps, InferGetStaticPropsType } from 'next'
@@ -18,6 +21,7 @@ export const getStaticProps = (async context => {
 }>
 
 export function PublicPage(props: InferGetStaticPropsType<typeof getStaticProps>) {
+  const [loginWithGoogle] = useLoginWithGoogleMutation()
   /**
    * кастомный хук интернационализация
    */
@@ -26,6 +30,7 @@ export function PublicPage(props: InferGetStaticPropsType<typeof getStaticProps>
    * хук обработки URL
    */
   const router = useRouter()
+
   /**
    * редирект на страницу юзера по его id
    * @param postId - id поста, который нужно открыть
@@ -52,6 +57,16 @@ export function PublicPage(props: InferGetStaticPropsType<typeof getStaticProps>
       <ItemPost key={p.id} navigateToPublicUserProfile={navigateToPublicUserProfile} post={p} />
     )
   })
+
+  useEffect(() => {
+    if (router.query.code && typeof router.query.code === 'string') {
+      loginWithGoogle(router.query.code)
+        .unwrap()
+        .then(() => {
+          router.replace({ pathname: router.pathname })
+        })
+    }
+  }, [])
 
   return (
     <PageWrapper>

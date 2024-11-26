@@ -27,7 +27,13 @@ export const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   // wait until the mutex is available without locking it
   await mutex.waitForUnlock()
-  const isLoginRequest = typeof args !== 'string' && args.url === '/v1/auth/login'
+  /**
+   * если делаем запрос на логин или на логин через гугл, то делаем "credentials:include",
+   * тем самым у нас сохраняется рефреш-токен
+   */
+  const isLoginRequest =
+    typeof args !== 'string' &&
+    (args.url === '/v1/auth/login' || args.url === '/v1/auth/google/login')
   // let result = await baseQuery(args, api, extraOptions)
   let result = await baseQuery(
     typeof args === 'string'
