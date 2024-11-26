@@ -48,6 +48,11 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
           }
         },
       }),
+      loginWithGithub: builder.query<void, string>({
+        query: redirect_url => {
+          return { url: `/v1/auth/github/login?redirect_url=${redirect_url}` }
+        },
+      }),
       logout: builder.mutation<void, void>({
         async onQueryStarted(arg, { dispatch, queryFulfilled }) {
           await queryFulfilled
@@ -68,4 +73,5 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
   },
 })
 
-export const { useAuthMeQuery, useLoginMutation, useLogoutMutation } = inctagramAuthService
+export const { useAuthMeQuery, useLazyLoginWithGithubQuery, useLoginMutation, useLogoutMutation } =
+  inctagramAuthService
