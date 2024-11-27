@@ -1,34 +1,89 @@
-import { ReactNode, useEffect } from 'react'
+import { useEffect } from 'react'
 
-import { HeadMeta } from '@/components'
-import { BaseLayout } from '@/components/layouts/BaseLayout'
+import { HeadMeta, PageWrapper } from '@/components'
+import { ItemPost } from '@/components/posts/itemPost'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useLoginWithGoogleMutation } from '@/services/inctagram.auth.service'
+import { Post, ResponseAllPosts } from '@/services/inctagram.public-posts.service'
+import { Typography } from '@chrizzo/ui-kit'
+import { GetStaticProps, InferGetStaticPropsType } from 'next'
 import { useRouter } from 'next/router'
 
-export function PublicPage() {
+import s from './posts.module.scss'
+
+export const getStaticProps = (async context => {
+  const res = await fetch('https://inctagram.work/api/v1/public-posts/all?pageSize=4')
+  const dataPosts = await res.json()
+
+  return { props: dataPosts }
+}) satisfies GetStaticProps<{
+  dataPosts: ResponseAllPosts
+}>
+
+export function PublicPage(props: InferGetStaticPropsType<typeof getStaticProps>) {
+  const [loginWithGoogle] = useLoginWithGoogleMutation()
+  /**
+   * кастомный хук интернационализация
+   */
   const { t } = useTranslation()
-
-  //--------------  временный редирект на страницу пользователя--------------
-
+  /**
+   * хук обработки URL
+   */
   const router = useRouter()
 
+  /**
+   * редирект на страницу юзера по его id
+   * @param postId - id поста, который нужно открыть
+   * @param id - id профиля юзера
+   * 1) если postId есть, то добавляем его в url в качестве query-параметра и переходим на стрицу юзера. И там по
+   * этому postId открываем модалку поста
+   * 2) если postId нет, то просто переходим на страницу юзера
+   */
+  const navigateToPublicUserProfile = (postId: number | undefined, id: number) => {
+    if (postId) {
+      void router.push({
+        pathname: `/profile/${id}`,
+        query: { postId },
+      })
+    } else {
+      void router.push(`/profile/${id}`)
+    }
+  }
+  /**
+   * массив постов
+   */
+  const postsUsers = props?.pageProps?.items?.map((p: Post) => {
+    return (
+      <ItemPost key={p.id} navigateToPublicUserProfile={navigateToPublicUserProfile} post={p} />
+    )
+  })
+
   useEffect(() => {
-    void router.push('/profile')
-    //todo redirecting with useEffect in nextjs not a good option
-    //eslint-disable-next-line react-hooks/exhaustive-deps
+    if (router.query.code && typeof router.query.code === 'string') {
+      loginWithGoogle(router.query.code)
+        .unwrap()
+        .then(() => {
+          router.replace({ pathname: router.pathname })
+        })
+    }
   }, [])
 
-  //-------------------------------------------------------------------------
   return (
-    <div>
-      <HeadMeta title={'Inctagram'} />
-      {t.publicPage.title}
-    </div>
+    <PageWrapper>
+      <div className={s.overflowedContainer}>
+        <div className={s.mainCntainer}>
+          <HeadMeta title={'Inctagram'} />
+          <div className={s.countUsersBlock}>
+            <Typography variant={'h2'}>Registred users:</Typography>
+            <Typography className={s.countUsers} variant={'h2'}>
+              {props?.pageProps?.totalUsers}
+            </Typography>
+          </div>
+          <ul className={s.postsWrapper}>{postsUsers}</ul>
+        </div>
+      </div>
+    </PageWrapper>
   )
-}
-
-PublicPage.getLayout = function getLayout(page: ReactNode) {
-  return <BaseLayout>{page}</BaseLayout>
 }
 
 export default PublicPage

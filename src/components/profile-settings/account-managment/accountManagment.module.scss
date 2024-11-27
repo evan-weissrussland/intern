@@ -1,0 +1,63 @@
+.wrapper {
+  padding-top: 30px;
+}
+.accountTypeGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 6px 12px;
+}
+.account {
+  margin-bottom: 42px;
+}
+.description {
+  margin-bottom: 18px;
+}
+.currentSubWrapper {
+  margin-bottom: 17px;
+}
+.datePayment {
+  color: var(--color-light-900);
+}
+.table {
+  border-spacing: 48px 12px;
+  //border: 2px solid red;
+  transform: translateX(-24px);
+  margin-bottom: 13px;
+}
+.formSubscriptionCosts {
+  //position: relative;
+}
+.buttonGroup {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 54px;
+  margin-top: 24px;
+  padding-right: 14px;
+  button {
+    padding: 0;
+    background: none;
+    &:hover {
+      background: none;
+    }
+  }
+}
+.wrapperMyAllPay {
+  padding: 12px 24px;
+  margin-top: 24px;
+}
+.tablePayments {
+  border-spacing: 72px 24px;
+  transform: translateX(-72px);
+  width: 110%;
+  margin-bottom: 12px;
+}
+.dateAllPayment {
+  color: var(--color-light-100);
+}
+p.price {
+  display: flex;
+  justify-content: flex-end;
+  width: 35px;
+}

@@ -1,14 +1,11 @@
-import { ReactNode } from 'react'
+import { PageWrapper, SingUp } from '@/components'
 
-import { SingUpComponent } from '@/components'
-import { AuthLayout } from '@/components/layouts/AuthLayout'
-
-function SignUpPage() {
-  return <SingUpComponent />
+export function SignUp() {
+  return (
+    <PageWrapper>
+      <SingUp onSubmit={() => {}} />
+    </PageWrapper>
+  )
 }
 
-SignUpPage.getLayout = function getLayout(page: ReactNode) {
-  return <AuthLayout>{page}</AuthLayout>
-}
-
-export default SignUpPage
+export default SignUp

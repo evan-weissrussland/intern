@@ -1,14 +1,14 @@
 import React, { ReactNode, useState } from 'react'
 
 import { Close } from '@/assets/icons/close'
+import { FollowersUsersType } from '@/components/ModalFollowers/types'
 import {
-  Modal,
-  ModalButtonCancel,
-  ModalContent,
-  ModalTitle,
-  ModalTrigger,
+  Modalka,
+  ModalkaButtonCancel,
+  ModalkaContent,
+  ModalkaTitle,
+  ModalkaTrigger,
 } from '@/components/modal'
-import { FollowersUsersType } from '@/components/modal-followers/types'
 import { Button, Card, Typography } from '@chrizzo/ui-kit'
 import Image from 'next/image'
 
@@ -17,7 +17,7 @@ import s from './modalConfirm.module.scss'
 import defaultAva from '../../../public/defaultAva.jpg'
 
 type Props = {
-  callback: (userId: string, setFn: any) => void
+  callback: (userId: number, setFn: any) => void
   children: ReactNode
   title: string
   titleButtonTrigger: string
@@ -47,33 +47,28 @@ export const ModalConfirm = ({
   }
 
   return (
-    <Modal onOpenChange={setOpen} open={open}>
-      <ModalTrigger asChild>
+    <Modalka onOpenChange={setOpen} open={open}>
+      <ModalkaTrigger asChild>
         <Button className={s.unfollowButton} variant={variantTriggerButton}>
           <Typography variant={'h3'}>{titleButtonTrigger}</Typography>
         </Button>
-      </ModalTrigger>
-      <ModalContent
-        aria-describedby={undefined}
-        className={s.content}
-        onInteractOutside={e => e.preventDefault()}
-      >
-        <ModalTitle className={s.title}>
+      </ModalkaTrigger>
+      <ModalkaContent aria-describedby={'open viewport followers'} className={s.content}>
+        <ModalkaTitle className={s.title}>
           <Typography variant={'h1'}>{title}</Typography>
-          <ModalButtonCancel asChild>
+          <ModalkaButtonCancel asChild>
             <Button className={s.close} variant={'text'}>
               <Close />
             </Button>
-          </ModalButtonCancel>
-        </ModalTitle>
+          </ModalkaButtonCancel>
+        </ModalkaTitle>
         <Card className={s.card} maxWidth={'644px'} variant={'dark300'}>
           <div className={s.avaAndQuestionConfirmBlock}>
             <Image
               alt={'small-avatar'}
               className={s.image}
               height={36}
-              // src={user.avatars[0]?.url ?? defaultAva}
-              src={defaultAva}
+              src={user.avatars[0]?.url ?? defaultAva}
               width={36}
             />
             {children}
@@ -82,14 +77,14 @@ export const ModalConfirm = ({
             <Button className={s.yesButton} onClick={unfollowUser} variant={'outline'}>
               <Typography variant={'h3'}>Yes</Typography>
             </Button>
-            <ModalButtonCancel asChild>
+            <ModalkaButtonCancel asChild>
               <Button className={s.noButton} variant={'primary'}>
                 <Typography variant={'h3'}>No</Typography>
               </Button>
-            </ModalButtonCancel>
+            </ModalkaButtonCancel>
           </div>
         </Card>
-      </ModalContent>
-    </Modal>
+      </ModalkaContent>
+    </Modalka>
   )
 }
