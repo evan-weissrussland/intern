@@ -1,31 +1,38 @@
-import { ReactNode } from 'react'
-
-import { BaseLayout } from '@/components/layouts/BaseLayout'
-import { useGetUserProfileQuery } from '@/services/inctagram-work-api/inctagram.profile.service'
+import { GetLayout, PageWrapper } from '@/components'
+import { useAuthMeQuery } from '@/services/inctagram.auth.service'
 import { useRouter } from 'next/router'
 
 import s from './userProfilePage.module.scss'
 
 function UserProfileWrapper() {
+  /**
+   * Обработка URL
+   */
   const router = useRouter()
 
   /**
-   * запрос на сервер за своим профилем юзера
+   * authMe запрос для вытягивания моего id
    */
-  const { data, isFetching } = useGetUserProfileQuery()
+  const { data, isFetching } = useAuthMeQuery()
 
+  /**
+   * Скелетон
+   */
   if (isFetching) {
-    return <h1 className={s.loader}>!!!!!!!!!!loading!!!!!!!!!</h1>
+    return (
+      <PageWrapper>
+        <h1 className={s.loader}>!!!!!!!!!!loading!!!!!!!!!</h1>
+      </PageWrapper>
+    )
   }
+  /**
+   * Если залогинен, то редирект на свою страницу
+   */
   if (data) {
-    void router.push(`/profile/${data?.id}`)
+    void router.push(`/profile/${data?.userId}`)
   }
 
   return null
-}
-
-UserProfileWrapper.getLayout = function getLayout(page: ReactNode) {
-  return <BaseLayout>{page}</BaseLayout>
 }
 
 export default UserProfileWrapper
