@@ -1,13 +1,20 @@
-import { GetLayout, HeadMeta, PageWrapper } from '@/components'
+import { ReactNode } from 'react'
 
-export function Home() {
+import { HeadMeta } from '@/components'
+import { BaseLayout } from '@/components/layouts/BaseLayout'
+
+function Home() {
   return (
-    <PageWrapper>
+    <>
       <HeadMeta title={'Inctagram'} />
       Home
-    </PageWrapper>
+    </>
   )
 }
 
-Home.getLayout = GetLayout
+Home.getLayout = function getLayout(page: ReactNode) {
+  //the redirecting HOC could be here
+  return <BaseLayout>{page}</BaseLayout>
+}
+
 export default Home

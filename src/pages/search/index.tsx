@@ -1,8 +1,5 @@
-import { GetLayout, PageWrapper } from '@/components'
-
-export function Search() {
-  return <PageWrapper>Search</PageWrapper>
+function Search() {
+  return <>Search</>
 }
 
-Search.getLayout = GetLayout
 export default Search

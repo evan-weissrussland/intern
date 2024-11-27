@@ -1,16 +1,13 @@
-import { GetLayout, PageWrapper } from '@/components'
-import { PolicyDocuments } from '@/components/auth/policyDocuments'
-import { Scroll } from '@/components/scroll'
+import { ReactNode } from 'react'
 
-export function PrivacyPolicy() {
-  return (
-    <PageWrapper>
-      <Scroll height={'calc(100vh - 61px)'}>
-        <PolicyDocuments headline={'Privacy Policy'} />
-      </Scroll>
-    </PageWrapper>
-  )
+import { PolicyDocuments } from '@/components/auth/policyDocuments'
+import { BaseLayout } from '@/components/layouts/BaseLayout'
+
+function PrivacyPolicy() {
+  return <PolicyDocuments headline={'Privacy Policy'} />
 }
 
-// PrivacyPolicy.getLayout = GetLayout
+PrivacyPolicy.getLayout = function getLayout(page: ReactNode) {
+  return <BaseLayout>{page}</BaseLayout>
+}
 export default PrivacyPolicy

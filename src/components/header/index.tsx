@@ -5,15 +5,16 @@ import { NotiefWithCount } from '@/assets/icons/notiefWithCount'
 import { NotiefWithOutCount } from '@/assets/icons/notiefWithOutCount'
 import { RuFlag } from '@/assets/icons/ruFlag'
 import { DropDownHeader } from '@/components/dropDownHeader'
-import { DropdownNotifications } from '@/components/dropdown-notifications'
 import { useTranslation } from '@/hooks/useTranslation'
-import { useGetNotificationsQuery } from '@/services/inctagram.notifications.service'
 import { Button, Select, Typography } from '@chrizzo/ui-kit'
 import clsx from 'clsx'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import s from '@/components/header/header.module.scss'
+
+//заглушка. Эти данные должны приходить с сервера через RTKQ
+const countNotifies = 0
 
 //Данные для селекта
 const flags = [
@@ -42,18 +43,6 @@ export const Header = ({ isAuthMe }: { isAuthMe?: boolean }) => {
    * хук обработки URL
    */
   const { asPath, locale, pathname, push, query } = useRouter()
-
-  /**
-   * запрос за уведомлениями. По документации "skipPollingIfUnfocused: true" должен отклонить запросы,
-   * если окно не в фокусе. Но по факту если я переключаюсь с окна браузера на другую программу или другую вкладку,
-   * то запрос всё-равно идёт.
-   */
-  const { data: notifications } = useGetNotificationsQuery(
-    { cursor: 0, params: {} },
-    { pollingInterval: 10000, skip: !isAuthMe, skipPollingIfUnfocused: true }
-  )
-
-  const countNotReadNotifies = notifications?.items.filter(n => !n.isRead)
 
   /**
    *Навигация на страницу логина
@@ -130,27 +119,25 @@ export const Header = ({ isAuthMe }: { isAuthMe?: boolean }) => {
           Inctagram
         </Typography>
         <div className={s.buttonsBlock}>
-          {windowWidth > 450 && (
-            <DropdownNotifications>
-              <button
-                aria-label={'Notification'}
-                className={clsx(s.noties, isNotiefShowStyle)}
-                onClick={toShowNotifiesHandler}
-                role={'button'}
-                tabIndex={!countNotReadNotifies?.length ? -1 : undefined}
-                type={'button'}
-              >
-                {!asPath.includes('generalInfo') && countNotReadNotifies?.length && (
-                  <>
-                    <span className={s.countNotifies}>{countNotReadNotifies?.length}</span>
-                    <NotiefWithCount />
-                  </>
-                )}
-                {!asPath.includes('generalInfo') && !countNotReadNotifies?.length && (
-                  <NotiefWithOutCount />
-                )}
-              </button>
-            </DropdownNotifications>
+          {windowWidth > 450 ? (
+            <button
+              aria-label={'Notification'}
+              className={clsx(s.noties, isNotiefShowStyle)}
+              onClick={toShowNotifiesHandler}
+              role={'button'}
+              tabIndex={!countNotifies ? -1 : undefined}
+              type={'button'}
+            >
+              {countNotifies ? (
+                <>
+                  <span className={s.countNotifies}>{countNotifies}</span> <NotiefWithCount />{' '}
+                </>
+              ) : (
+                <NotiefWithOutCount />
+              )}
+            </button>
+          ) : (
+            <></>
           )}
           <Select
             className={s.select}
@@ -183,3 +170,22 @@ export const Header = ({ isAuthMe }: { isAuthMe?: boolean }) => {
     </header>
   )
 }
+
+// <header className={s.header}>
+//     header
+//     <button onClick={() => push('/logIn')} type={'button'}>
+//         {t.header.signInButton}
+//     </button>
+//     <button onClick={() => push('/signUp')} type={'button'}>
+//         {t.header.signUpButton}
+//     </button>
+//     <select defaultValue={locale} onChange={changeLangHandler}>
+//         {locales?.map(l => {
+//             return (
+//                 <option key={l} value={l}>
+//                     {l}
+//                 </option>
+//             )
+//         })}
+//     </select>
+// </header>
