@@ -1,8 +1,18 @@
-import { GetLayout, PageWrapper } from '@/components'
+import { ReactNode } from 'react'
 
-export function FriendProfile() {
-  return <PageWrapper>FriendProfile</PageWrapper>
+import { BaseLayout } from '@/components/layouts/BaseLayout'
+
+function FriendProfile() {
+  return (
+    <>
+      <div>FriendProfile</div>
+    </>
+  )
 }
 
-FriendProfile.getLayout = GetLayout
+FriendProfile.getLayout = function getLayout(page: ReactNode) {
+  //the redirecting HOC could be here
+  return <BaseLayout>{page}</BaseLayout>
+}
+
 export default FriendProfile

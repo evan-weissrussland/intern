@@ -1,67 +1,25 @@
-import {
-  RequestUpdateProfile,
-  ResponseDataUserProfile,
-  ResponseDataUserProfileByUserName,
-  ResponseUpdateAvatarProfile,
-} from '@/components/posts/types'
-import { inctagramService } from '@/services/inctagram.service'
+import { inctagramWorkApiService } from '@/services/inctagram-work-api/inctagram.service'
+import { ResponseDataUserProfile, ResponseDataUserProfileByUserName } from '@/types/user-data'
 
-export const inctagramUsersProfileService = inctagramService.injectEndpoints({
+export const inctagramUsersProfileService = inctagramWorkApiService.injectEndpoints({
   endpoints: builder => {
     return {
-      deleteAvatarProfile: builder.mutation<void, void>({
-        invalidatesTags: ['getMyProfile'],
-        query: _ => {
-          return {
-            method: 'DELETE',
-            url: '/v1/users/profile/avatar',
-          }
-        },
-      }),
-      getMyProfile: builder.query<ResponseDataUserProfile, void>({
-        providesTags: ['getMyProfile'],
+      getUserProfile: builder.query<ResponseDataUserProfile, void>({
+        // providesTags: ['login'],
         query: () => {
-          return { url: '/v1/users/profile' }
+          return { url: '/v1/users' }
         },
       }),
-      getUserProfileByUserName: builder.query<
-        ResponseDataUserProfileByUserName,
-        string | undefined
-      >({
+      getUserProfileByUserId: builder.query<ResponseDataUserProfileByUserName, string>({
         // providesTags: ['login'],
         providesTags: ['getFollowing'],
         query: arg => {
           return { url: `/v1/users/${arg}` }
         },
       }),
-      updateAvatarProfile: builder.mutation<ResponseUpdateAvatarProfile, { file: FormData }>({
-        invalidatesTags: ['getMyProfile'],
-        query: body => {
-          return {
-            body: body.file,
-            method: 'POST',
-            url: '/v1/users/profile/avatar',
-          }
-        },
-      }),
-      updateProfile: builder.mutation<void, RequestUpdateProfile>({
-        invalidatesTags: ['getMyProfile'],
-        query: body => {
-          return {
-            body,
-            method: 'PUT',
-            url: '/v1/users/profile',
-          }
-        },
-      }),
     }
   },
 })
 
-export const {
-  useDeleteAvatarProfileMutation,
-  useGetMyProfileQuery,
-  useGetUserProfileByUserNameQuery,
-  useUpdateAvatarProfileMutation,
-  useUpdateProfileMutation,
-} = inctagramUsersProfileService
+export const { useGetUserProfileByUserIdQuery, useGetUserProfileQuery } =
+  inctagramUsersProfileService

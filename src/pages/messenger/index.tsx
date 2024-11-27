@@ -1,8 +1,12 @@
-import { GetLayout, PageWrapper } from '@/components'
+import { ReactNode } from 'react'
 
-export function Messenger() {
-  return <PageWrapper>Messenger</PageWrapper>
+import { BaseLayout } from '@/components/layouts/BaseLayout'
+
+function Messenger() {
+  return <>Messenger</>
 }
 
-Messenger.getLayout = GetLayout
+Messenger.getLayout = function getLayout(page: ReactNode) {
+  return <BaseLayout>{page}</BaseLayout>
+}
 export default Messenger

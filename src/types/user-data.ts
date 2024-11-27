@@ -37,28 +37,3 @@ export type ResponseDataUserProfileByUserName = {
   region: string
   userName: string
 }
-
-export type DateTimeFormatOptions = {
-  day: 'numeric'
-  month: 'long'
-  year: 'numeric'
-}
-
-export type RequestUpdateProfile = {
-  aboutMe?: string
-  city?: string
-  country?: string
-  dateOfBirth?: string
-  firstName: string
-  lastName: string
-  region?: string
-  userName: string
-}
-
-export type ResponseUpdateAvatarProfile = {
-  createdAt?: string
-  fileSize: number
-  height: number
-  url: string
-  width: number
-}

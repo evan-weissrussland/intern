@@ -1,18 +1,17 @@
 import { LocaleType } from '@/locales/ru'
 
 export const en: LocaleType = {
+  buzzWords: {
+    ok: 'OK',
+  },
   common: {
-    cancel: 'Cancel',
-    email: 'Email',
-    firstName: 'Name',
-    lastName: 'Last name',
-    password: 'Password',
+    incorrectEmail: 'The email must match the format example@example.com',
+    recaptchaCheckFailed: '"I am not a robot" check failed. Try again',
+    requiredField: 'Fill in the field',
     save: 'Save',
     selectFromComputer: 'Select from computer',
-    signIn: 'Sign in',
-    signOut: 'Sign out',
-    username: 'Username',
   },
+  error: 'Error',
   forgotPassword: {
     common: {
       inProgress: 'Sending the request...',
@@ -61,41 +60,19 @@ export const en: LocaleType = {
     signInButton: 'Log In',
     signUpButton: 'Sign up',
   },
-  pagination: {
-    onPage: 'on page',
-    show: 'Show',
-  },
-  payments: {
-    account: { accountType: 'Account type', business: 'Business', personal: 'Personal' },
-    allPayments: {
-      dateOfPay: 'Date of Payment',
-      endPay: 'End date of subscription',
-      payType: 'Payment Type',
-      price: 'Price',
-      subType: 'Subscription Type',
-    },
-    cost: {
-      day: 'per 1 Day',
-      month: 'per month',
-      title: 'Your subscription costs',
-      week: 'per 7 Day',
-    },
-    currentSubscription: {
-      autoReneval: 'Auto-Reneval',
-      expired: 'Expired at',
-      nextPayment: 'Next payment',
-      title: 'Current Subscription',
+  modal: {
+    modalConfirmButtons: {
+      no: 'No',
+      yes: 'Yes',
     },
   },
   profile: {
-    common: {
-      saveChanges: 'Сохранить изменения',
+    avatar: {
+      deletePhotoModalDescription: 'Are you sure you want to delete the photo?',
+      deletePhotoModalTitle: 'Delete Photo',
     },
-    devices: {
-      activeSessions: 'Active sessions',
-      currentDevice: 'Current device',
-      lstVisit: 'Last visit',
-      terminateAllSessions: 'Terminate all other sessions',
+    common: {
+      saveChanges: 'Save changes',
     },
     settings: {
       aboutMe: 'About me',
@@ -127,26 +104,47 @@ export const en: LocaleType = {
     dontHaveAcc: `Don't have an account?`,
     emailTitle: 'Email',
     forgotPass: 'Forgot Password',
+    noSpacesAllowed: 'No spaces allowed',
     passTitle: 'Password',
     signInButton: 'Sign In',
     signUp: 'Sign Up',
     title: 'Sign In',
+    wrongCredentials: 'The email or password are incorrect. Try again please',
   },
   signUp: {
     confirmPass: 'Confirm Password',
     congratulations: 'Congratulations!',
     emailConfirmed: 'Your email has been confirmed',
     emailExpired: 'Email verification link expired',
+    emailSent: 'Email sent',
+    emailSentText: (email: string) => `We have sent a link to confirm your email to ${email}`,
     emailTitle: 'Email',
+    emailType: 'The email must match the format example@example.com',
+    errors: {
+      emailAlreadyConfirmed: 'User with email already confirmed',
+      userNameAlreadyConfirmed: 'User with userName already confirmed',
+    },
     expiredDescription:
       'Looks like the verification link has expired. Not to worry, we can send the link again',
     haveAcc: `Do you have an account?`,
+    linkExpired: 'Email verification link expired',
+    linkExpiredDescription:
+      'Looks like the verification link has expired. Not to worry, we can send the link again',
+    maxCharsNumber: (maxChars: number) => `Maximum number of characters ${maxChars}`,
+    minCharsNumber: (minChars: number) => `Minimum number of characters ${minChars}`,
     passTitle: 'Password',
+    passwordMatch: 'The passwords must match',
+    passwordMustContain:
+      'Password must contain a-z, A-Z, ! " # $ % & \' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _` { | } ~"',
+    passwordRecovery: 'Password recovery',
+    passwordRequirements: (minChars: number, maxChars: number) =>
+      `Your password must be between ${minChars} and ${maxChars} characters`,
     resendVerificationLink: 'Resend verification link',
     rules: ['I agree to the', 'Terms of Service', 'and', 'Privacy Policy'],
     signInButton: 'Sign In',
     signUp: 'Sign Up',
     title: 'Sign Up',
     userName: 'Username',
+    userNameContains: 'Username may contain 0-9; A-Z; a-z; _; -',
   },
 }

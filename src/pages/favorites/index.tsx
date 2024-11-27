@@ -1,7 +1,17 @@
-import { GetLayout, PageWrapper } from '@/components'
+import { ReactNode } from 'react'
 
-export function Favorites() {
-  return <PageWrapper>Favorites</PageWrapper>
+import { BaseLayout } from '@/components/layouts/BaseLayout'
+
+function Favorites() {
+  return (
+    <>
+      <div>Favorites</div>
+    </>
+  )
 }
-Favorites.getLayout = GetLayout
+Favorites.getLayout = function getLayout(page: ReactNode) {
+  //the redirecting HOC could be here
+  return <BaseLayout>{page}</BaseLayout>
+}
+
 export default Favorites

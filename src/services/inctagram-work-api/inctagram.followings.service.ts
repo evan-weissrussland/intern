@@ -3,22 +3,27 @@ import {
   RequestForFollowersUsers,
   RequestType,
   UsersType,
-} from '@/components/ModalFollowers/types'
-import { inctagramService } from '@/services/inctagram.service'
+} from '@/components/modal-followers/types'
+import { inctagramWorkApiService } from '@/services/inctagram-work-api/inctagram.service'
 
-export const inctagramUsersFollowingsService = inctagramService.injectEndpoints({
+export const inctagramUsersFollowingsService = inctagramWorkApiService.injectEndpoints({
   endpoints: builder => {
     return {
+      deleteFolowerFromFolowers: builder.mutation<void, number>({
+        async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+          await queryFulfilled
+
+          dispatch(inctagramUsersFollowingsService.util.invalidateTags(['getFollowing']))
+        },
+        query: userId => {
+          return { method: 'DELETE', url: `/v1/users/follower/${userId}` }
+        },
+      }),
       followToUser: builder.mutation<void, { selectedUserId: number }>({
         async onQueryStarted(arg, { dispatch, queryFulfilled }) {
           await queryFulfilled
 
-          dispatch(
-            inctagramUsersFollowingsService.util.invalidateTags([
-              'getFollowing',
-              'usersWhoLikedPost',
-            ])
-          )
+          dispatch(inctagramUsersFollowingsService.util.invalidateTags(['getFollowing']))
         },
         query: body => {
           return { body, method: 'POST', url: `/v1/users/following` }
@@ -47,29 +52,14 @@ export const inctagramUsersFollowingsService = inctagramService.injectEndpoints(
           return { url: `/v1/users` }
         },
       }),
-      unfollowFromUser: builder.mutation<void, number>({
-        async onQueryStarted(arg, { dispatch, queryFulfilled }) {
-          await queryFulfilled
-
-          dispatch(
-            inctagramUsersFollowingsService.util.invalidateTags([
-              'getFollowing',
-              'usersWhoLikedPost',
-            ])
-          )
-        },
-        query: userId => {
-          return { method: 'DELETE', url: `/v1/users/follower/${userId}` }
-        },
-      }),
     }
   },
 })
 
 export const {
+  useDeleteFolowerFromFolowersMutation,
   useFollowToUserMutation,
   useGetFollowersUsersQuery,
   useGetFollowingUsersQuery,
   useGetProfileUsersQuery,
-  useUnfollowFromUserMutation,
 } = inctagramUsersFollowingsService
