@@ -1,11 +1,11 @@
 import { useTranslation } from '@/hooks/useTranslation'
-import { TabType } from '@chrizzo/ui-kit'
+import { TabItem } from '@chrizzo/ui-kit'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
 
 import tabsStyles from '@/components/profile-settings/tabs-trigger-list/tabs.module.scss'
 
 type Propss = {
-  tabsList: TabType[]
+  tabsList: TabItem[]
 }
 export const TabsTriggerslist = ({ tabsList }: Propss) => {
   /**

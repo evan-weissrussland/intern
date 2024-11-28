@@ -10,14 +10,14 @@ import {
   useGetMyProfileQuery,
   useUpdateAvatarProfileMutation,
 } from '@/services/inctagram.profile.service'
-import { TabType } from '@chrizzo/ui-kit'
+import { TabItem } from '@chrizzo/ui-kit'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
 import { useRouter } from 'next/router'
 
 import s from '@/components/profile-settings/profileSettings.module.scss'
 
 //todo translation: move inside component and wrap with useMemo?
-const tabsList: TabType[] = [
+const tabsList: TabItem[] = [
   { title: 'General information', value: 'generalInformation' },
   { title: 'Devices', value: 'devices' },
   { title: 'Account management', value: 'accountManagement' },
