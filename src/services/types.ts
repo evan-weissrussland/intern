@@ -197,6 +197,8 @@ export type ResponsePostsByUserName = {
     updatedAt: string
     userName: string
   }[]
+  page: number
   pageSize: number
+  pagesCount: number
   totalCount: number
 }
