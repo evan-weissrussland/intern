@@ -7,13 +7,14 @@ import { Post } from '@/services/inctagram.public-posts.service'
 import s from '@/components/userProfile/userProfile.module.scss'
 
 type Props = {
+  index: null | number
   post: Post
 }
-export const ModalPostItem = ({ post }: Props) => {
+export const ModalPostItem = ({ index, post }: Props) => {
   const [showEditModalPost, setEditModalPost] = useState(false)
 
   return (
-    <li className={s.card} onClick={() => {}}>
+    <li className={s.card} id={index ? `post-${index}` : ''} onClick={() => {}}>
       <div>
         {!showEditModalPost && <ModalkaPost post={post} setEditModalPost={setEditModalPost} />}
         {showEditModalPost && <ModalEditPost post={post} setEditModalPost={setEditModalPost} />}
