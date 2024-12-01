@@ -63,7 +63,12 @@ export const CommentsWrapper = ({ callback, open, post, setEditModalPost }: Prop
     { skip: !open }
   )
 
-  if (data) {
+  /**
+   * typeof window !== 'undefined' - проверка на среду выполнения - сервер или клиент. Код выполняется
+   * только на клиенте. Иначе при билде приложения есть ошибка (если б не использовали "next-redux-wrapper", то
+   * эту проверку можно было бы не делать).
+   */
+  if (data && typeof window !== 'undefined') {
     localStorage.removeItem('postId')
   }
 

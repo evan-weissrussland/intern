@@ -3,9 +3,9 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 const initialState = {
   authData: {
     isBlocked: false,
-    myEmail: '' as string | undefined,
-    myId: undefined as number | undefined,
-    myUserName: '' as string | undefined,
+    myEmail: '' as null | string,
+    myId: null as null | number,
+    myUserName: '' as null | string,
   },
 }
 
@@ -19,10 +19,10 @@ const slice = createSlice({
       state,
       action: PayloadAction<{
         authData: {
-          email: string | undefined
+          email: null | string
           isBlocked: boolean
-          userId: number | undefined
-          userName: string | undefined
+          userId: null | number
+          userName: null | string
         }
       }>
     ) => {

@@ -15,7 +15,14 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
         async onQueryStarted(arg, { dispatch, queryFulfilled }) {
           const res = await queryFulfilled
 
-          localStorage.setItem('token', res.data.accessToken)
+          /**
+           * typeof window !== 'undefined' - проверка на среду выполнения - сервер или клиент. Код выполняется
+           * только на клиенте. Иначе при билде приложения есть ошибка (если б не использовали "next-redux-wrapper", то
+           * эту проверку можно было бы не делать).
+           */
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('token', res.data.accessToken)
+          }
           /**
            * Через "split" берём среднюю часть (payload) JWT токена и
            * через "atob" декодируем её из формата Base64.
@@ -58,7 +65,14 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
         async onQueryStarted(arg, { dispatch, queryFulfilled }) {
           const res = await queryFulfilled
 
-          localStorage.setItem('token', res.data.accessToken)
+          /**
+           * typeof window !== 'undefined' - проверка на среду выполнения - сервер или клиент. Код выполняется
+           * только на клиенте. Иначе при билде приложения есть ошибка (если б не использовали "next-redux-wrapper", то
+           * эту проверку можно было бы не делать).
+           */
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('token', res.data.accessToken)
+          }
           /**
            * Через "split" берём среднюю часть (payload) JWT токена и
            * через "atob" декодируем её из формата Base64.
@@ -96,7 +110,14 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
         async onQueryStarted(arg, { dispatch, queryFulfilled }) {
           await queryFulfilled
           await dispatch(inctagramSessionsService.endpoints.deleteAllSessions.initiate())
-          localStorage.removeItem('token')
+          /**
+           * typeof window !== 'undefined' - проверка на среду выполнения - сервер или клиент. Код выполняется
+           * только на клиенте. Иначе при билде приложения есть ошибка (если б не использовали "next-redux-wrapper", то
+           * эту проверку можно было бы не делать).
+           */
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('token')
+          }
           document.cookie = `access_token=; expires=${new Date('1970-09-04').toUTCString()}; SameSite=None; Secure`
           dispatch(inctagramAuthService.util.invalidateTags(['login']))
           dispatch(inctagramAuthService.util.resetApiState())

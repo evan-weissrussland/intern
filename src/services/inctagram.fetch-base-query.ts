@@ -10,7 +10,12 @@ const baseQuery = fetchBaseQuery({
   baseUrl: 'https://inctagram.work/api',
   credentials: 'include',
   prepareHeaders: headers => {
-    const token = localStorage.getItem('token')
+    /**
+     * typeof window !== 'undefined' - проверка на среду выполнения - сервер или клиент. Код выполняется
+     * только на клиенте. Иначе при билде приложения есть ошибка (если б не использовали "next-redux-wrapper", то
+     * эту проверку можно было бы не делать).
+     */
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
 
     if (token) {
       headers.set('Authorization', `Bearer ${token}`)
@@ -70,7 +75,14 @@ export const baseQueryWithReauth: BaseQueryFn<
           const dateExparedAccessToken = new Date(payloadFromJWT.exp * 1000).toUTCString()
 
           document.cookie = `access_token=${refreshResult.data.accessToken}; expires=${dateExparedAccessToken}; SameSite=None; Secure`
-          localStorage.setItem('token', refreshResult.data.accessToken)
+          /**
+           * typeof window !== 'undefined' - проверка на среду выполнения - сервер или клиент. Код выполняется
+           * только на клиенте. Иначе при билде приложения есть ошибка (если б не использовали "next-redux-wrapper", то
+           * эту проверку можно было бы не делать).
+           */
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('token', refreshResult.data.accessToken)
+          }
           result = await baseQuery(args, api, extraOptions)
         }
       } finally {

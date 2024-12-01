@@ -80,7 +80,14 @@ export function GeneralInfoForm(props: Props) {
     setIsDirtyBirthDate(false)
     try {
       await updateProfile(data).unwrap()
-      localStorage.removeItem('settingProfile')
+      /**
+       * typeof window !== 'undefined' - проверка на среду выполнения - сервер или клиент. Код выполняется
+       * только на клиенте. Иначе при билде приложения есть ошибка (если б не использовали "next-redux-wrapper", то
+       * эту проверку можно было бы не делать).
+       */
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('settingProfile')
+      }
       /**
        * всплывашка
        */
@@ -134,7 +141,14 @@ export function GeneralInfoForm(props: Props) {
        */
       const formattedDate = v.format('DD.MM.YYYY')
 
-      localStorage.setItem('dataOfBirth', formattedDate)
+      /**
+       * typeof window !== 'undefined' - проверка на среду выполнения - сервер или клиент. Код выполняется
+       * только на клиенте. Иначе при билде приложения есть ошибка (если б не использовали "next-redux-wrapper", то
+       * эту проверку можно было бы не делать).
+       */
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('dataOfBirth', formattedDate)
+      }
       /**
        * передаём дату в форму
        */
@@ -158,8 +172,14 @@ export function GeneralInfoForm(props: Props) {
   const toPrivacyPolity = () => {
     const getValuesForm = getValues()
 
-    localStorage.setItem('settingProfile', JSON.stringify(getValuesForm))
-
+    /**
+     * typeof window !== 'undefined' - проверка на среду выполнения - сервер или клиент. Код выполняется
+     * только на клиенте. Иначе при билде приложения есть ошибка (если б не использовали "next-redux-wrapper", то
+     * эту проверку можно было бы не делать).
+     */
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('settingProfile', JSON.stringify(getValuesForm))
+    }
     void router.push('/privacyPolicy')
   }
 
@@ -188,12 +208,19 @@ export function GeneralInfoForm(props: Props) {
    */
 
   useEffect(() => {
-    const savedDataFromForm = localStorage.getItem('settingProfile')
+    /**
+     * typeof window !== 'undefined' - проверка на среду выполнения - сервер или клиент. Код выполняется
+     * только на клиенте. Иначе при билде приложения есть ошибка (если б не использовали "next-redux-wrapper", то
+     * эту проверку можно было бы не делать).
+     */
+    if (typeof window !== 'undefined') {
+      const savedDataFromForm = localStorage.getItem('settingProfile')
 
-    if (savedDataFromForm) {
-      const parsedSavedDataFromForm = JSON.parse(savedDataFromForm)
+      if (savedDataFromForm) {
+        const parsedSavedDataFromForm = JSON.parse(savedDataFromForm)
 
-      reset(parsedSavedDataFromForm)
+        reset(parsedSavedDataFromForm)
+      }
     }
   }, [])
   /**
@@ -202,9 +229,11 @@ export function GeneralInfoForm(props: Props) {
    * мы долджны в каледарь передать ранее введённое значение. Берём его из локалсторэйджа. Если нет ни того,
    * ни другого, то передаём null
    */
-  const getDataBirthFromStorage = localStorage.getItem('dataOfBirth')
 
-  let defaultDateBirth
+  const getDataBirthFromStorage =
+    typeof window !== 'undefined' ? localStorage.getItem('dataOfBirth') : null
+
+  let defaultDateBirth = null
 
   if (getDataBirthFromStorage) {
     defaultDateBirth = dayjs(getDataBirthFromStorage.split('.').reverse().join('-'))
