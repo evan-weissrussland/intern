@@ -67,7 +67,7 @@ function UserProfileDinamicPage(props: {
    * и при "гидрации" КЭШ Redux сервера синхронизировался с КЕШем Redux на клиенте и запрсо ниже не пройдёт,
    * а данные возьмутся из КЭШа (првоерено во вкладке Network браузера)
    */
-  const { data } = useGetAllPostsQuery({})
+  // const { data } = useGetAllPostsQuery({})
 
   //********************************************
   return (
