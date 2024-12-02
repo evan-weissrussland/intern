@@ -5,6 +5,10 @@
   display: flex;
   gap: 12px;
 
+  &.answerItem {
+    padding-left: 48px;
+  }
+
   & img {
     margin-top: 8px;
     border-radius: 50%;
@@ -16,10 +20,12 @@
     margin-bottom: 15px;
     gap: 24px;
     justify-content: space-between;
-
-    .date {
-      @include date;
-    }
+ &.smallMarginBottom {
+   margin-bottom: 8px;
+ }
+    //.date {
+    //  @include date;
+    //}
 
     .descrComment {
       display: flex;
@@ -39,4 +45,11 @@
   & button {
     all: unset;
   }
+}
+.date {
+  @include date;
+}
+.hideAnswer {
+  padding-left: 48px;
+  margin-bottom: 15px;
 }

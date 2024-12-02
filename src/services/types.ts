@@ -202,3 +202,33 @@ export type ResponsePostsByUserName = {
   pagesCount: number
   totalCount: number
 }
+
+export type RequestAnswersForComment = {
+  commentId: number
+  params: {
+    pageNumber?: number
+    pageSize?: number
+    sortBy?: number
+    sortDirection?: string
+  }
+  postId: number
+}
+export type AnswerType = {
+  commentId: number
+  content: string
+  createdAt: string
+  from: {
+    avatars: AvatarsType[]
+    id: number
+    username: string
+  }
+  id: number
+  isLiked: boolean
+  likeCount: number
+}
+export type ResponseAnswersForComment = {
+  items: AnswerType[]
+  notReadCount: number
+  pageSize: number
+  totalCount: number
+}

@@ -1,5 +1,6 @@
 import { inctagramService } from '@/services/inctagram.service'
 import {
+  RequestAnswersForComment,
   RequestCreateCommentType,
   RequestCreatePost,
   RequestToPostsByUserName,
@@ -7,12 +8,48 @@ import {
   RequestUpdateLikeStatusCommentType,
   RequestUpdateLikeStatusPostType,
   RequestUpdatePostType,
+  ResponseAnswersForComment,
   ResponseCreateCommentType,
   ResponseCreateImagesPost,
   ResponseCreatePost,
   ResponsePostsByUserName,
   ResponseUsersWhoLikedPost,
 } from '@/services/types'
+
+const mockDataGetAnswersComment = {
+  items: [
+    {
+      commentId: 111,
+      content:
+        'dvjjd wjefjwefj wej fowjefj  wefjwejf k wefk kew k -wefwe-fk k -wef kok wefk kK EWF J0JEQWFI JEFJ J',
+      createdAt: '2024-10-25T17:28:49.827Z',
+      from: {
+        avatars: [{ createdAt: '', fileSize: 120, height: 150, uploadId: '', url: '', width: 150 }],
+        id: 1819,
+        username: 'Derftyu',
+      },
+      id: 1234,
+      isLiked: false,
+      likeCount: 12345,
+    },
+    {
+      commentId: 100,
+      content: 'djf k wefk kew k -wefwe-fk k -wef kok wefk kK EWF J0JEQWFI JEFJ J',
+      createdAt: '2024-10-25T17:28:49.827Z',
+      from: {
+        avatars: [{ createdAt: '', fileSize: 120, height: 150, uploadId: '', url: '', width: 150 }],
+        id: 1820,
+        username: 'Reta',
+      },
+      id: 1000,
+      isLiked: true,
+      likeCount: 0,
+    },
+  ],
+  notReadCount: 100,
+  pageSize: 12,
+  totalCount: 90,
+}
 
 export const inctagramPostsService = inctagramService.injectEndpoints({
   endpoints: builder => {
@@ -55,6 +92,22 @@ export const inctagramPostsService = inctagramService.injectEndpoints({
           }
         },
       }),
+      getAnswersForComment: builder.query<ResponseAnswersForComment, RequestAnswersForComment>({
+        providesTags: ['getAnswersComment'],
+        query: args => {
+          return {
+            params: args.params,
+            url: `/v1/posts/${args.postId}/comments/${args.commentId}/answers`,
+          }
+        },
+      }),
+      // getAnswersForComment: builder.query<ResponseAnswersForComment, RequestAnswersForComment>({
+      //   async queryFn() {
+      //     console.log(1)
+      //
+      //     return { data: mockDataGetAnswersComment }
+      //   },
+      // }),
       getPostsByUserName: builder.query<ResponsePostsByUserName, RequestToPostsByUserName>({
         providesTags: ['getPostsByUserId'],
         query: args => {
@@ -114,6 +167,7 @@ export const {
   useDeletePostMutation,
   useGetPostsByUserNameQuery,
   useGetUsersWhoLikedPostQuery,
+  useLazyGetAnswersForCommentQuery,
   useUpdateLikeStatusForCommentMutation,
   useUpdateLikeStatusForPostMutation,
   useUpdatePostMutation,
