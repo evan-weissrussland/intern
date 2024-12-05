@@ -29,5 +29,7 @@ export const inctagramService = createApi({
     'usersWhoLikedPost',
     'getNotifications',
     'getAnswersComment',
+    'usersWhoLikedCommentPost',
+    'usersWhoLikedAnswerCommentPost',
   ],
 })

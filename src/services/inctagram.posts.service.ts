@@ -4,6 +4,8 @@ import {
   RequestCreateCommentType,
   RequestCreatePost,
   RequestToPostsByUserName,
+  RequestToUsersWhoLikedAnswerCommentPost,
+  RequestToUsersWhoLikedCommentPost,
   RequestToUsersWhoLikedPost,
   RequestUpdateLikeStatusAnswerCommentType,
   RequestUpdateLikeStatusCommentType,
@@ -14,7 +16,7 @@ import {
   ResponseCreateImagesPost,
   ResponseCreatePost,
   ResponsePostsByUserName,
-  ResponseUsersWhoLikedPost,
+  ResponseUsersWhoLikedPostOrCommentOrAnswerComment,
 } from '@/services/types'
 
 const mockDataGetAnswersComment = {
@@ -118,7 +120,36 @@ export const inctagramPostsService = inctagramService.injectEndpoints({
           }
         },
       }),
-      getUsersWhoLikedPost: builder.query<ResponseUsersWhoLikedPost, RequestToUsersWhoLikedPost>({
+      getUsersWhoLikedAnswerCommentPost: builder.query<
+        ResponseUsersWhoLikedPostOrCommentOrAnswerComment,
+        RequestToUsersWhoLikedAnswerCommentPost
+      >({
+        providesTags: ['usersWhoLikedAnswerCommentPost', 'getAnswersComment'],
+        query: args => {
+          return {
+            params: args.params,
+            url: `/v1/posts/${args.postId}/comments/${args?.commentId}/answers/${args.answerId}/likes`,
+          }
+        },
+      }),
+
+      getUsersWhoLikedCommentPost: builder.query<
+        ResponseUsersWhoLikedPostOrCommentOrAnswerComment,
+        RequestToUsersWhoLikedCommentPost
+      >({
+        providesTags: ['usersWhoLikedCommentPost', 'getComments'],
+        query: args => {
+          return {
+            params: args.params,
+            url: `/v1/posts/${args.postId}/comments/${args?.commentId}/likes`,
+          }
+        },
+      }),
+
+      getUsersWhoLikedPost: builder.query<
+        ResponseUsersWhoLikedPostOrCommentOrAnswerComment,
+        RequestToUsersWhoLikedPost
+      >({
         providesTags: ['usersWhoLikedPost', 'getPostsByUserId'],
         query: args => {
           return {
@@ -127,6 +158,7 @@ export const inctagramPostsService = inctagramService.injectEndpoints({
           }
         },
       }),
+
       updateLikeStatusForAnswerComment: builder.mutation<
         void,
         RequestUpdateLikeStatusAnswerCommentType
@@ -180,6 +212,8 @@ export const {
   useCreatePostMutation,
   useDeletePostMutation,
   useGetPostsByUserNameQuery,
+  useGetUsersWhoLikedAnswerCommentPostQuery,
+  useGetUsersWhoLikedCommentPostQuery,
   useGetUsersWhoLikedPostQuery,
   useLazyGetAnswersForCommentQuery,
   useUpdateLikeStatusForAnswerCommentMutation,

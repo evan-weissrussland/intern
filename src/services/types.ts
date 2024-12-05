@@ -139,13 +139,14 @@ export type RequestUpdateLikeStatusPostType = {
   body: { likeStatus: LikeSTatusType }
   postId: number
 }
+type ParamsRequestLikes = {
+  cursor?: number
+  pageNumber?: number
+  pageSize?: number
+  search?: string
+}
 export type RequestToUsersWhoLikedPost = {
-  params: {
-    cursor?: number
-    pageNumber?: number
-    pageSize?: number
-    search?: string
-  }
+  params: ParamsRequestLikes
   postId: number
 }
 export type LikesItemType = {
@@ -157,7 +158,7 @@ export type LikesItemType = {
   userId: number
   userName: string
 }
-export type ResponseUsersWhoLikedPost = {
+export type ResponseUsersWhoLikedPostOrCommentOrAnswerComment = {
   items: LikesItemType[]
   pageSize: number
   totalCount: number
@@ -238,3 +239,11 @@ export type RequestUpdateLikeStatusAnswerCommentType = {
   commentId: number
   postId: number
 }
+export type RequestToUsersWhoLikedCommentPost = {
+  commentId: number | undefined
+  params: ParamsRequestLikes
+  postId: number
+}
+export type RequestToUsersWhoLikedAnswerCommentPost = {
+  answerId: number | undefined
+} & RequestToUsersWhoLikedCommentPost

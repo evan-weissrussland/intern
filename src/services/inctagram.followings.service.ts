@@ -17,6 +17,8 @@ export const inctagramUsersFollowingsService = inctagramService.injectEndpoints(
             inctagramUsersFollowingsService.util.invalidateTags([
               'getFollowing',
               'usersWhoLikedPost',
+              'usersWhoLikedCommentPost',
+              'usersWhoLikedAnswerCommentPost',
             ])
           )
         },
@@ -55,6 +57,8 @@ export const inctagramUsersFollowingsService = inctagramService.injectEndpoints(
             inctagramUsersFollowingsService.util.invalidateTags([
               'getFollowing',
               'usersWhoLikedPost',
+              'usersWhoLikedCommentPost',
+              'usersWhoLikedAnswerCommentPost',
             ])
           )
         },
