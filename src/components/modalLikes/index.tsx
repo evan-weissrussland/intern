@@ -10,20 +10,23 @@ import {
   ModalkaTitle,
   ModalkaTrigger,
 } from '@/components/modal'
-import { LikesList } from '@/components/modalLikesPost/LikesList'
-import { useGetUsersWhoLikedPostQuery } from '@/services/inctagram.posts.service'
+import { LikesList } from '@/components/modalLikes/LikesList'
+import { useModalSearch } from '@/hooks/useModalSearch'
 import { Button, Card, TextField, Typography } from '@chrizzo/ui-kit'
 
-import s from './modalLikesPost.module.scss'
+import s from './modalLikes.module.scss'
 
 type Props = {
+  answerId?: number
   children: ReactNode
   className?: string
+  commentId?: number
   postId: number
   title?: string | undefined
+  xType: 'answer' | 'comment' | 'post'
 }
 
-export const ModalLikesPost = memo(({ children, postId, title }: Props) => {
+export const ModalLikes = memo(({ children, postId, title, xType }: Props) => {
   /**
    * хук useState для управления open/close Dialog.Root. Нужен для того,
    * чтобы модалка закрывалась после передачи на сервер данных из формы,
@@ -38,19 +41,15 @@ export const ModalLikesPost = memo(({ children, postId, title }: Props) => {
     search: '',
     textFromDebounceInput: '',
   })
-
   /**
-   * хук RTKQ. запрос за лайками поста. params - это query-параметры, username используется, как uri.
-   * skip - пока модальное окно подписчиков не открыто или это не мой аккаунт, не делаем запрос
+   * кастомный хук запросов за списком юзеров, лайкнувших пост или комментарий, или ответ к коментарию
    */
-  const { data, isFetching: isFetchingGetLikedUsers } = useGetUsersWhoLikedPostQuery(
-    {
-      params: { search: inputValue.textFromDebounceInput },
-      postId: postId,
-    },
-    { skip: !open }
-  )
-
+  const { isFetching, list } = useModalSearch({
+    inputValue: inputValue.textFromDebounceInput,
+    open,
+    postId,
+    xType,
+  })
   /**
    * функция задержки посыла текста из инпута на сервер (debounce)
    * @param inputData - текст из инпута
@@ -77,7 +76,8 @@ export const ModalLikesPost = memo(({ children, postId, title }: Props) => {
             value={inputValue.search}
           />
           <ul className={s.likesWrapper}>
-            {!isFetchingGetLikedUsers && <LikesList items={data?.items} />}
+            {/*{!isFetchingGetLikedUsers && <LikesList items={data?.items} />}*/}
+            {!isFetching && <LikesList items={list?.items} />}
           </ul>
         </Card>
       </ModalkaContent>

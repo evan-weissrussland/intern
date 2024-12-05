@@ -8,7 +8,7 @@ import { LikesItemType } from '@/services/types'
 import { Button, Typography } from '@chrizzo/ui-kit'
 import Image from 'next/image'
 
-import s from './modalLikesPost.module.scss'
+import s from './modalLikes.module.scss'
 
 import defaultAva from '../../../public/defaultAva.jpg'
 
