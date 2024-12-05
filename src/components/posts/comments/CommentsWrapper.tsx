@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form'
 import { Bookmark, DirectMessage, Herz, LikedHerz } from '@/assets/icons'
 import { DropdownPostEdit } from '@/components/dropdown-edit-profile'
 import { DropdownFollowPost } from '@/components/dropdown-follow-post'
-import { ModalLikesPost } from '@/components/modalLikesPost'
 import { Comments } from '@/components/posts/comments/Comments'
 import {
   CommentValue,
@@ -26,6 +25,7 @@ import { useRouter } from 'next/router'
 import s from './commentWrapper.module.scss'
 
 import defaultAva from '../../../../public/defaultAva.jpg'
+import { ModalLikes } from '../../modalLikes'
 
 type Props = {
   callback: () => void
@@ -181,7 +181,7 @@ export const CommentsWrapper = ({ callback, open, post, setEditModalPost }: Prop
           </div>
         )}
         <div className={s.likesCountDateBlock}>
-          <ModalLikesPost postId={post.id} title={'Likes'}>
+          <ModalLikes postId={post.id} title={'Likes'} xType={'post'}>
             <div className={s.likesCount}>
               <div className={clsx(s.avatarsLiked)}>{avatarWhoLikedPost}</div>
               <Typography
@@ -199,7 +199,7 @@ export const CommentsWrapper = ({ callback, open, post, setEditModalPost }: Prop
                 &quot;Like&quot;
               </Typography>
             </div>
-          </ModalLikesPost>
+          </ModalLikes>
           <Typography className={s.date} variant={'small'}>
             {formattedDate}
           </Typography>

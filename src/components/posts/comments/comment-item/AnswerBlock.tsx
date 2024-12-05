@@ -9,6 +9,7 @@ import clsx from 'clsx'
 import s from '@/components/posts/comments/comment-item/commentItem.module.scss'
 
 import defaultAva from '../../../../../public/defaultAva.jpg'
+import { ModalLikes } from '../../../modalLikes'
 
 type Props = {
   answersForComment: ResponseAnswersForComment | undefined
@@ -60,11 +61,12 @@ export const AnswerBlock = ({
                 <Typography className={s.date} variant={'small'}>
                   <ReactTimeAgo date={dateAgo} />
                 </Typography>
-
                 {!!a.likeCount && (
-                  <Typography className={s.date} variant={'smallSemiBold'}>
-                    Like: {a.likeCount}
-                  </Typography>
+                  <ModalLikes commentId={a.id} postId={postId} title={'Likes'} xType={'answer'}>
+                    <Typography className={s.date} variant={'smallSemiBold'}>
+                      Like: {a.likeCount}
+                    </Typography>
+                  </ModalLikes>
                 )}
               </div>
             </div>

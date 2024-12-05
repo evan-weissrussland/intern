@@ -12,6 +12,7 @@ import clsx from 'clsx'
 import s from './commentItem.module.scss'
 
 import defaultAva from '../../../../../public/defaultAva.jpg'
+import { ModalLikes } from '../../../modalLikes'
 
 type Props = {
   changeLikeAnswerCommentCallback: (
@@ -85,9 +86,16 @@ export const CommentItem = ({
                 <ReactTimeAgo date={dateAgo} />
               </Typography>
               {!!comment.likeCount && (
-                <Typography className={s.date} variant={'smallSemiBold'}>
-                  Like: {comment.likeCount}
-                </Typography>
+                <ModalLikes
+                  commentId={comment.id}
+                  postId={comment.postId}
+                  title={'Likes'}
+                  xType={'comment'}
+                >
+                  <Typography className={s.date} variant={'smallSemiBold'}>
+                    Like: {comment.likeCount}
+                  </Typography>
+                </ModalLikes>
               )}
               {!!comment.answerCount && (
                 <Typography
