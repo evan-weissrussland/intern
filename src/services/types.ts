@@ -232,3 +232,9 @@ export type ResponseAnswersForComment = {
   pageSize: number
   totalCount: number
 }
+export type RequestUpdateLikeStatusAnswerCommentType = {
+  answerId: number
+  body: { likeStatus: LikeSTatusType }
+  commentId: number
+  postId: number
+}

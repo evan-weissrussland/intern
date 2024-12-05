@@ -5,6 +5,7 @@ import {
   RequestCreatePost,
   RequestToPostsByUserName,
   RequestToUsersWhoLikedPost,
+  RequestUpdateLikeStatusAnswerCommentType,
   RequestUpdateLikeStatusCommentType,
   RequestUpdateLikeStatusPostType,
   RequestUpdatePostType,
@@ -126,6 +127,19 @@ export const inctagramPostsService = inctagramService.injectEndpoints({
           }
         },
       }),
+      updateLikeStatusForAnswerComment: builder.mutation<
+        void,
+        RequestUpdateLikeStatusAnswerCommentType
+      >({
+        invalidatesTags: ['getAnswersComment'],
+        query: arg => {
+          return {
+            body: arg.body,
+            method: 'PUT',
+            url: `/v1/posts/${arg.postId}/comments/${arg.commentId}/answers/${arg.answerId}/like-status`,
+          }
+        },
+      }),
       updateLikeStatusForComment: builder.mutation<void, RequestUpdateLikeStatusCommentType>({
         invalidatesTags: ['getComments'],
         query: arg => {
@@ -168,6 +182,7 @@ export const {
   useGetPostsByUserNameQuery,
   useGetUsersWhoLikedPostQuery,
   useLazyGetAnswersForCommentQuery,
+  useUpdateLikeStatusForAnswerCommentMutation,
   useUpdateLikeStatusForCommentMutation,
   useUpdateLikeStatusForPostMutation,
   useUpdatePostMutation,

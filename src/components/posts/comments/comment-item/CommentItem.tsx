@@ -14,11 +14,22 @@ import s from './commentItem.module.scss'
 import defaultAva from '../../../../../public/defaultAva.jpg'
 
 type Props = {
+  changeLikeAnswerCommentCallback: (
+    answerId: number,
+    postId: number,
+    commentId: number,
+    likeStatus: LikeSTatusType
+  ) => void
   changeLikeCommentCallback: (postId: number, commentId: number, likeStatus: LikeSTatusType) => void
   comment: CommentType
   myUserId: number | undefined
 }
-export const CommentItem = ({ changeLikeCommentCallback, comment, myUserId }: Props) => {
+export const CommentItem = ({
+  changeLikeAnswerCommentCallback,
+  changeLikeCommentCallback,
+  comment,
+  myUserId,
+}: Props) => {
   /**
    * дата создания комментария
    */
@@ -110,8 +121,10 @@ export const CommentItem = ({ changeLikeCommentCallback, comment, myUserId }: Pr
       {showCommentAnswer && (
         <AnswerBlock
           answersForComment={answersForComment}
+          changeLikeAnswerCommentCallback={changeLikeAnswerCommentCallback}
           isFetching={isFetching}
           myUserId={myUserId}
+          postId={comment.postId}
         />
       )}
     </>

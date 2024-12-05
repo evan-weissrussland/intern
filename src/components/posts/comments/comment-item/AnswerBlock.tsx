@@ -2,7 +2,7 @@ import React from 'react'
 import ReactTimeAgo from 'react-time-ago'
 
 import { Herz, LikedHerz } from '@/assets/icons'
-import { ResponseAnswersForComment } from '@/services/types'
+import { LikeSTatusType, ResponseAnswersForComment } from '@/services/types'
 import { Typography } from '@chrizzo/ui-kit'
 import clsx from 'clsx'
 
@@ -12,10 +12,26 @@ import defaultAva from '../../../../../public/defaultAva.jpg'
 
 type Props = {
   answersForComment: ResponseAnswersForComment | undefined
+  changeLikeAnswerCommentCallback: (
+    answerId: number,
+    postId: number,
+    commentId: number,
+    likeStatus: LikeSTatusType
+  ) => void
   isFetching: boolean
   myUserId: number | undefined
+  postId: number
 }
-export const AnswerBlock = ({ answersForComment, isFetching, myUserId }: Props) => {
+export const AnswerBlock = ({
+  answersForComment,
+  changeLikeAnswerCommentCallback,
+  isFetching,
+  myUserId,
+  postId,
+}: Props) => {
+  /**
+   * формируем массив ответов на комментарий
+   */
   const answersList = answersForComment?.items?.map((a, _, array) => {
     /**
      * дата создания ответа на комментарий
@@ -24,7 +40,9 @@ export const AnswerBlock = ({ answersForComment, isFetching, myUserId }: Props) 
     /**
      * обработчик: поставить лайк ответу на комментарий поста
      */
-    const changeLikeAnswerCommentHandler = () => {}
+    const changeLikeAnswerCommentHandler = () => {
+      changeLikeAnswerCommentCallback(a.id, postId, a.commentId, a.isLiked ? 'NONE' : 'LIKE')
+    }
 
     return (
       <>
