@@ -183,7 +183,7 @@ export const inctagramPostsService = inctagramService.injectEndpoints({
         },
       }),
       updateLikeStatusForPost: builder.mutation<void, RequestUpdateLikeStatusPostType>({
-        invalidatesTags: ['getPostsByUserId'],
+        invalidatesTags: ['getPostsByUserId', 'getHomePosts'],
         query: arg => {
           return {
             body: arg.body,
