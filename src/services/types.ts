@@ -172,32 +172,26 @@ export type RequestToPostsByUserName = {
   }
   userName: string
 }
+type Post = {
+  avatarOwner: string
+  avatarWhoLikes: string[]
+  createdAt: string
+  description: string
+  id: number
+  images: AvatarsType[]
+  isLiked: boolean
+  likesCount: number
+  location: string
+  owner: {
+    firstName: string
+    lastName: string
+  }
+  ownerId: number
+  updatedAt: string
+  userName: string
+}
 export type ResponsePostsByUserName = {
-  items: {
-    avatarOwner: string
-    avatarWhoLikes: string[]
-    createdAt: string
-    description: string
-    id: number
-    images: {
-      createdAt: string
-      fileSize: number
-      height: number
-      uploadId: string
-      url: string
-      width: number
-    }[]
-    isLiked: boolean
-    likesCount: number
-    location: string
-    owner: {
-      firstName: string
-      lastName: string
-    }
-    ownerId: number
-    updatedAt: string
-    userName: string
-  }[]
+  items: Post[]
   page: number
   pageSize: number
   pagesCount: number
@@ -247,3 +241,14 @@ export type RequestToUsersWhoLikedCommentPost = {
 export type RequestToUsersWhoLikedAnswerCommentPost = {
   answerId: number | undefined
 } & RequestToUsersWhoLikedCommentPost
+export type RequestHomePosts = {
+  params?: {
+    endCursorPostId?: number
+    pageNumber?: number
+    pageSize?: number
+  }
+}
+export type ResponseHomePosts = {
+  nextCursor: number
+  prevCursor: number
+} & ResponsePostsByUserName
