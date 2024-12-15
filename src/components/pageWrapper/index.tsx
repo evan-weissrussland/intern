@@ -1,11 +1,13 @@
 import { PropsWithChildren } from 'react'
-
-export const PageWrapper = (props: PropsWithChildren) => {
-  const { children } = props
+type CustomProps = {
+  className?: string
+}
+export const PageWrapper = (props: PropsWithChildren<CustomProps>) => {
+  // const { children } = props
 
   return (
     <>
-      <div style={{ height: '100%' }}>{children}</div>
+      <div {...props} style={{ height: '100%' }} />
     </>
   )
 }
