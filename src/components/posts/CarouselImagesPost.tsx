@@ -13,10 +13,10 @@ import s from '@/pages/posts.module.scss'
 import defaultAva from '../../../public/defaultAva.jpg'
 
 type Props = {
-  className: string
+  className?: string
   images: ImagesPost[] | undefined
 }
-export const CarouselImagesPost = ({ className, images }: Props) => {
+export const CarouselImagesPost = ({ className = '', images }: Props) => {
   /**
    * хук из библиотеки карусели для контента модалки (там, где большое изображение нужно прокручивать)
    */
