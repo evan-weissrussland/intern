@@ -1,16 +1,16 @@
 export const ru = {
-  buzzWords: {
-    ok: 'ДА',
-  },
   common: {
-    incorrectEmail: 'Введите корректный адрес',
-    recaptchaCheckFailed:
-      'Не удалось выполнить проверку, что запрос не является автоматизированным. Попробуйте повторить',
-    requiredField: 'Поле не должно быть пустым',
+    cancel: 'Отменить',
+    email: 'Почта',
+    firstName: 'Имя',
+    lastName: 'Фамилия',
+    password: 'Пароль',
     save: 'Сохранить',
     selectFromComputer: 'Выбрать с диска',
+    signIn: 'Войти',
+    signOut: 'Выйти',
+    username: 'Логин', //?
   },
-  error: 'Ошибка',
   forgotPassword: {
     common: {
       inProgress: 'Отправка запроса...',
@@ -60,19 +60,41 @@ export const ru = {
     signInButton: 'Войти',
     signUpButton: 'Регистрация',
   },
-  modal: {
-    modalConfirmButtons: {
-      no: 'Нет',
-      yes: 'Да',
+  pagination: {
+    onPage: 'на странице',
+    show: 'Показать',
+  },
+  payments: {
+    account: { accountType: 'Тип аккаунта', business: 'Бизнес', personal: 'Личный' },
+    allPayments: {
+      dateOfPay: 'Дата подписки',
+      endPay: 'Конец подписки',
+      payType: 'Платёжный сервис',
+      price: 'Стоимость',
+      subType: 'Срок подписки',
+    },
+    cost: {
+      day: 'за 1 день',
+      month: 'за месяц',
+      title: 'Стоимость подписки',
+      week: 'за 7 дней',
+    },
+    currentSubscription: {
+      autoReneval: 'Авто-подписка',
+      expired: 'Дата подписки',
+      nextPayment: 'Дата окончания подписки',
+      title: 'Текущая подписка',
     },
   },
   profile: {
-    avatar: {
-      deletePhotoModalDescription: 'Ты действительно хочешь удалить фото?',
-      deletePhotoModalTitle: 'Удалить фото',
-    },
     common: {
       saveChanges: 'Сохранить изменения',
+    },
+    devices: {
+      activeSessions: 'Активные сессии',
+      currentDevice: 'Текущее устройство',
+      lstVisit: 'Последний вход',
+      terminateAllSessions: 'Отключить все остальные сессии',
     },
     settings: {
       aboutMe: 'Обо мне',
@@ -104,49 +126,27 @@ export const ru = {
     dontHaveAcc: 'Ещё нет аккаунта?',
     emailTitle: 'Почта',
     forgotPass: 'Забыли пароль',
-    noSpacesAllowed: 'Поле не должно содержать пробелов',
     passTitle: 'Пароль',
     signInButton: 'Войти',
     signUp: 'Создать аккаунт',
     title: 'Страница входа',
-    wrongCredentials: 'Неверные email или пароль. Попробуйте снова.',
   },
   signUp: {
     confirmPass: 'Подтвердите пароль',
     congratulations: 'Поздравляем!',
     emailConfirmed: 'Ваша почта была подтверждена',
     emailExpired: 'Время жизни ссылки подтверждения истекло',
-    emailSent: 'Письмо отправлено',
-    emailSentText: (email: string) =>
-      `Мы отправили ссылку для подтверждения вашего адреса электронной почты на ${email}`,
     emailTitle: 'Почта',
-    emailType: 'Адрес почты должен соответствовать формату example@example.com',
-    errors: {
-      emailAlreadyConfirmed: 'Пользователь с таким email уже подтверждён',
-      userNameAlreadyConfirmed: 'Пользователь с таким именем уже подтверждён',
-    },
     expiredDescription:
       'Похоже что время жизни ссылки истекло. Не переживайте, мы можем выслать ссылку повторно',
     haveAcc: `Уже есть аккаунт?`,
-    linkExpired: 'Срок действия ссылки для проверки электронной почты истек',
-    linkExpiredDescription:
-      'Похоже, срок действия проверочной ссылки истек. Не волнуйтесь, мы можем отправить ссылку снова',
-    maxCharsNumber: (maxChars: number) => `Максимальное количество символов  ${maxChars}`,
-    minCharsNumber: (minChars: number) => `Минимальное количество символов ${minChars}`,
     passTitle: 'Пароль',
-    passwordMatch: 'Пароли должны совпадать',
-    passwordMustContain:
-      'Пароль должен содержать a-z, A-Z, ! " # $ % & \' ( ) * + , - . / : ; < = > ? @ [ \\ ] ^ _` { | } ~"',
-    passwordRecovery: 'Восстановление пароля',
-    passwordRequirements: (minChars: number, maxChars: number) =>
-      `Ваш пароль должен содержать от ${minChars} до ${maxChars} символов`,
     resendVerificationLink: 'Повторно отправить ссылку для проверки почты',
     rules: ['Я согласен с', 'Условиями обслуживания', 'и', 'Политикой конфиденциальности'],
     signInButton: 'Войти',
     signUp: 'Создать аккаунт',
     title: 'Страница регистрации',
     userName: 'Имя пользователя',
-    userNameContains: 'Имя пользователя должно содержать 0-9; A-Z; a-z; _; -',
   },
 }
 

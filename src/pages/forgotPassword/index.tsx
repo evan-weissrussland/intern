@@ -1,14 +1,7 @@
-import { ReactNode } from 'react'
+import { GetLayout, PageWrapper } from '@/components'
 
-import { ForgotPasswordForm } from '@/components/auth'
-import { AuthLayout } from '@/components/layouts/AuthLayout'
-
-function ForgotPasswordPage() {
-  return <ForgotPasswordForm />
+export function ForgotPassword() {
+  return <PageWrapper>ForgotPassword</PageWrapper>
 }
-
-ForgotPasswordPage.getLayout = function getLayout(page: ReactNode) {
-  return <AuthLayout>{page}</AuthLayout>
-}
-
-export default ForgotPasswordPage
+ForgotPassword.getLayout = GetLayout
+export default ForgotPassword

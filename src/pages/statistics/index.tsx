@@ -1,12 +1,8 @@
-import { ReactNode } from 'react'
+import { GetLayout, PageWrapper } from '@/components'
 
-import { BaseLayout } from '@/components/layouts/BaseLayout'
-
-function Statistics() {
-  return <div>Statistics</div>
+export function Statistics() {
+  return <PageWrapper>Statistics</PageWrapper>
 }
 
-Statistics.getLayout = function getLayout(page: ReactNode) {
-  return <BaseLayout>{page}</BaseLayout>
-}
+Statistics.getLayout = GetLayout
 export default Statistics

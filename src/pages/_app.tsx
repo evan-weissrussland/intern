@@ -3,19 +3,20 @@ import type { AppProps } from 'next/app'
 import React, { ReactElement, ReactNode } from 'react'
 import { Provider } from 'react-redux'
 
-import { wrapper } from '@/services/store'
+import { LayoutNew } from '@/components/Layout/layoutNew'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
+import ru from 'javascript-time-ago/locale/ru'
 import { NextPage } from 'next'
-
-TimeAgo.addDefaultLocale(en)
-import { Inter } from 'next/font/google'
-import Head from 'next/head'
+import { Toaster } from 'sonner'
 
 import '../styles/index.scss'
 // eslint-disable-next-line import/extensions
 import '@chrizzo/ui-kit/dist/style.css'
-const inter = Inter({ subsets: ['latin', 'cyrillic'] })
+
+import { wrapper } from '../../store'
+TimeAgo.addDefaultLocale(en)
+TimeAgo.addLocale(ru)
 
 export type NextPageWithLayout<P = {}> = {
   getLayout?: (page: ReactElement) => ReactNode
@@ -31,14 +32,8 @@ export default function App({ Component, ...rest }: AppPropsWithLayout) {
 
   return (
     <Provider store={store}>
-      <Head>
-        <style>{`
-          body {
-            font-family: ${inter.style.fontFamily};
-          }
-        `}</style>
-      </Head>
-      {getLayout(<Component {...props} />)}
+      <Toaster position={'bottom-left'} />
+      <LayoutNew>{getLayout(<Component {...props} />)}</LayoutNew>
     </Provider>
   )
 }

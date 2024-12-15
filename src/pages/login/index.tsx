@@ -1,10 +1,7 @@
-import { ReactNode } from 'react'
-
-import { MailVerificationError, MailVerificationSuccess, SignInForm } from '@/components'
-import { AuthLayout } from '@/components/layouts/AuthLayout'
+import { LogIn, MailVerificationError, MailVerificationSuccess } from '@/components'
 import { useRouter } from 'next/router'
 
-function SignInPage() {
+export function SignIn() {
   const router = useRouter()
   const { 'email-verification-failed': emailError, 'email-verification-success': emailSuccess } =
     router.query
@@ -12,14 +9,10 @@ function SignInPage() {
   return (
     <>
       {emailSuccess && <MailVerificationSuccess />}
-      {emailError && <MailVerificationError />}
-      {!emailSuccess && !emailError && <SignInForm />}
+      {emailError && <MailVerificationError email={''} />}
+      {!emailSuccess && !emailError && <LogIn />}
     </>
   )
 }
 
-SignInPage.getLayout = function getLayout(page: ReactNode) {
-  return <AuthLayout>{page}</AuthLayout>
-}
-
-export default SignInPage
+export default SignIn

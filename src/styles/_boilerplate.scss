@@ -44,12 +44,9 @@ body {
   margin: 0;
   padding: 0;
 
-  line-height: var(--line-height-m);
+  font-family: Inter, sans-serif;
+  font-size: var(--font-size-m);
   color: var(--color-light-100);
 
   background-color: var(--color-dark-700);
-}
-
-.grecaptcha-badge {
-  visibility: hidden;
 }

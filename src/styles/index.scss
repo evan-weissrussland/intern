@@ -1,4 +1,8 @@
 @forward 'colors';
 @forward 'typography';
 @forward 'boilerplate';
-@forward 'layout';
+li[data-sonner-toast] {
+  height: 48px;
+  border: none;
+  position: relative;
+}

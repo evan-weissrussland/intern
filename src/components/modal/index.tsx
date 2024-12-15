@@ -1,21 +1,31 @@
-import { ComponentPropsWithoutRef, ElementRef, forwardRef, memo } from 'react'
+import { ComponentPropsWithoutRef, ElementRef, FC, ReactNode, forwardRef, memo } from 'react'
 
 import * as Dialog from '@radix-ui/react-dialog'
 import clsx from 'clsx'
-import { Inter } from 'next/font/google'
 
 import s from './modal.module.scss'
-const inter = Inter({ subsets: ['latin', 'cyrillic'] })
 
-export const Modal = memo((props: ComponentPropsWithoutRef<typeof Dialog.Root>) => {
-  return <Dialog.Root {...props} />
+type OwnerModalProps = {
+  children: ReactNode
+  onOpenChange?: (open: boolean) => void
+  open?: boolean
+}
+
+export const Modalka: FC<OwnerModalProps> = memo(props => {
+  const { children, onOpenChange, open } = props
+
+  return (
+    <Dialog.Root onOpenChange={onOpenChange} open={open}>
+      {children}
+    </Dialog.Root>
+  )
 })
 
 export type OwnerModalTriggerProps = {
   className?: string
 }
 
-export const ModalTrigger = memo(
+export const ModalkaTrigger = memo(
   forwardRef<
     ElementRef<typeof Dialog.Trigger>,
     ComponentPropsWithoutRef<typeof Dialog.Trigger> & OwnerModalTriggerProps
@@ -23,7 +33,7 @@ export const ModalTrigger = memo(
     const { asChild, children } = props
 
     return (
-      <Dialog.Trigger asChild={asChild} className={inter.className} ref={ref}>
+      <Dialog.Trigger asChild={asChild} ref={ref}>
         {children}
       </Dialog.Trigger>
     )
@@ -34,7 +44,7 @@ export type OwnerModalContentProps = {
   className?: string
 }
 
-export const ModalContent = memo(
+export const ModalkaContent = memo(
   forwardRef<
     ElementRef<typeof Dialog.Content>,
     ComponentPropsWithoutRef<typeof Dialog.Content> & OwnerModalContentProps
@@ -46,9 +56,10 @@ export const ModalContent = memo(
         <Dialog.Overlay className={s.overlay} />
         <Dialog.Content
           asChild={asChild}
-          className={clsx(s.content, className, inter.className)}
+          className={clsx(s.content, className)}
           ref={ref}
           {...rest}
+          // aria-describedby={undefined}
         >
           {children}
         </Dialog.Content>
@@ -62,7 +73,7 @@ export type OwnerModalButtonCancelProps = {
   className?: string
 }
 
-export const ModalButtonCancel = memo(
+export const ModalkaButtonCancel = memo(
   forwardRef<
     ElementRef<typeof Dialog.Close>,
     ComponentPropsWithoutRef<typeof Dialog.Close> & OwnerModalButtonCancelProps
@@ -81,7 +92,7 @@ export type OwnerModalTitleProps = {
   className?: string
 }
 
-export const ModalTitle = memo(
+export const ModalkaTitle = memo(
   forwardRef<
     ElementRef<typeof Dialog.Title>,
     ComponentPropsWithoutRef<typeof Dialog.Title> & OwnerModalTitleProps

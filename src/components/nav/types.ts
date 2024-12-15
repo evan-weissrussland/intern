@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
-export type MainNavigationItem = {
-  action?: () => void
+export type PropsLink = {
   icon: ReactNode
+  isButton?: boolean
   name: string
-  path?: string
+  path: string
 }
