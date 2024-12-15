@@ -13,9 +13,10 @@ import s from '@/pages/posts.module.scss'
 import defaultAva from '../../../public/defaultAva.jpg'
 
 type Props = {
+  className: string
   images: ImagesPost[] | undefined
 }
-export const CarouselImagesPost = ({ images }: Props) => {
+export const CarouselImagesPost = ({ className, images }: Props) => {
   /**
    * хук из библиотеки карусели для контента модалки (там, где большое изображение нужно прокручивать)
    */
@@ -50,7 +51,7 @@ export const CarouselImagesPost = ({ images }: Props) => {
   })
 
   return (
-    <div className={s.postImageContent}>
+    <div className={clsx(s.postImageContent, className)}>
       <div className={s.embla} ref={emblaRefBig}>
         <div className={s.emblaContainer}> {imagesPostArray}</div>
       </div>
