@@ -1,0 +1,156 @@
+@mixin ava-user-name-block {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 12px 0;
+
+  img {
+    border-radius: 50%;
+  }
+}
+@mixin date {
+  color: var(--color-light-900);
+}
+
+.ul {
+  display: flex;
+  flex-direction: column;
+}
+.padding {
+  padding: 24px 0 24px 175px;
+}
+div.card {
+  border: none;
+  border-bottom: 1px solid var(--color-dark-100);
+  max-width: 491px;
+  width: 100%;
+  padding: 0;
+}
+.editLineBlock {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.avaUserNameBlock {
+  @include ava-user-name-block;
+}
+.dot {
+  flex-shrink: 0;
+  border-radius: 50%;
+  width: 4px;
+  height: 4px;
+  background: var(--color-light-700);
+  margin-left: -4px;
+}
+.date {
+  @include date;
+  margin-left: -4px;
+  flex-shrink: 0;
+}
+.carouselCss {
+  max-width: 491px;
+  height: 504px;
+}
+.iconsBlock {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  margin-bottom: 17px;
+}
+.iconsHerzAndDirect {
+  display: flex;
+  gap: 20px;
+}
+.button {
+  all: unset;
+  height: 24px;
+  svg {
+    fill: currentColor;
+  }
+}
+.commentWr {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+
+  & img {
+    margin-top: 8px;
+    border-radius: 50%;
+  }
+
+  .commentBlock {
+    display: flex;
+    width: 100%;
+    gap: 24px;
+    justify-content: space-between;
+
+    .descrComment {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+  }
+}
+.likesCount {
+  display: inline-flex;
+  align-items: center;
+
+  span.span {
+    display: inline-block;
+
+    &.l1 {
+      transform: translateX(12px);
+    }
+    &.l2 {
+      transform: translateX(3px);
+    }
+    &.l3 {
+      transform: translateX(-6px);
+    }
+  }
+}
+.avatarsLiked {
+  display: flex;
+  position: relative;
+}
+.avaSmall {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  overflow: hidden;
+  z-index: 3;
+
+  &:nth-child(2) {
+    transform: translateX(-9px);
+    z-index: 2;
+  }
+  &:nth-child(3) {
+    transform: translateX(-18px);
+    z-index: 1;
+  }
+}
+.viewAllComments {
+  color: var(--color-light-900);
+  margin-top: 24px;
+}
+.form {
+  display: flex;
+  align-items: center;
+  padding: 6px 0 10px;
+
+  .input {
+    flex-grow: 1;
+    & input {
+      padding: 0;
+      outline-color: transparent;
+      &:hover {
+        outline-color: transparent;
+      }
+    }
+  }
+  .publishButton {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}

@@ -221,3 +221,6 @@ export const {
   useUpdateLikeStatusForPostMutation,
   useUpdatePostMutation,
 } = inctagramPostsService
+
+export type CreateCommentMutation = ReturnType<typeof useCreateCommentMutation>[0]
+export type UpdateLikeStatusForPost = ReturnType<typeof useUpdateLikeStatusForPostMutation>[0]
