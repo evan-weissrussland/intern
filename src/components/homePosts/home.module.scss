@@ -11,8 +11,13 @@
 @mixin date {
   color: var(--color-light-900);
 }
+
+.ul {
+  display: flex;
+  flex-direction: column;
+}
 .padding {
-  padding: 24px 175px;
+  padding: 24px 0 24px 175px;
 }
 div.card {
   border: none;

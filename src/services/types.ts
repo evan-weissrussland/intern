@@ -172,7 +172,7 @@ export type RequestToPostsByUserName = {
   }
   userName: string
 }
-type Post = {
+export type Post = {
   avatarOwner: string
   avatarWhoLikes: string[]
   createdAt: string
