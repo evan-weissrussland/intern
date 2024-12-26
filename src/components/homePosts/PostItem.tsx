@@ -22,10 +22,11 @@ import defaultAva from '../../../public/defaultAva.jpg'
 
 type Props = {
   createComment: CreateCommentMutation
+  index: null | number
   post: Post
   updateLikeStatusForPost: UpdateLikeStatusForPost
 }
-export const PostItem = ({ createComment, post, updateLikeStatusForPost }: Props) => {
+export const PostItem = ({ createComment, index, post, updateLikeStatusForPost }: Props) => {
   /**
    * дата создания поста
    */
@@ -79,7 +80,7 @@ export const PostItem = ({ createComment, post, updateLikeStatusForPost }: Props
   const likeCountStyle = post.likesCount < 4 ? s['l' + post.likesCount] : s['l3']
 
   return (
-    <Card className={s.card} variant={'card'}>
+    <Card className={s.card} id={index ? `postHome-${index}` : ''} variant={'card'}>
       <div className={s.editLineBlock}>
         <div className={s.avaUserNameBlock}>
           <img alt={'ava'} height={36} src={post.avatarOwner ?? defaultAva.src} width={36} />
