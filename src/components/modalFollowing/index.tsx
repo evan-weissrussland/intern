@@ -10,6 +10,7 @@ import {
   ModalkaTrigger,
 } from '@/components/modal'
 import { ModalConfirm } from '@/components/modalConfirm'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 import {
   useGetFollowingUsersQuery,
   useUnfollowFromUserMutation,
@@ -30,6 +31,10 @@ type Props = {
 }
 
 export const ModalFollowing = memo(({ followingCount, isMyProfile, userName }: Props) => {
+  /**
+   * кастомный хук контроля ширины окна
+   */
+  const windowWidth = useWindowWidth()
   /**
    * хук useState для управления open/close AlertDialog.Root. Нужен для того,
    * чтобы модалка закрывалась после передачи на сервер данных из формы,
@@ -136,8 +141,10 @@ export const ModalFollowing = memo(({ followingCount, isMyProfile, userName }: P
     <Modalka onOpenChange={setOpen} open={isMyProfile ? open : false}>
       <ModalkaTrigger asChild>
         <div className={s.following}>
-          <Typography variant={'regularBold14'}>{followingCount}</Typography>
-          <Typography variant={'regular14'}>Following</Typography>
+          <Typography variant={windowWidth > 360 ? 'regularBold14' : 'smallSemiBold'}>
+            {followingCount}
+          </Typography>
+          <Typography variant={windowWidth > 360 ? 'regular14' : 'small'}>Following</Typography>
         </div>
       </ModalkaTrigger>
       <ModalkaContent aria-describedby={'open viewport followers'} className={s.content}>

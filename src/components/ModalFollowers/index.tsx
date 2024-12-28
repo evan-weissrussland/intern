@@ -11,6 +11,7 @@ import {
   ModalkaTitle,
   ModalkaTrigger,
 } from '@/components/modal'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { useGetFollowersUsersQuery } from '@/services/inctagram.followings.service'
 import { Button, Card, TextField, Typography } from '@chrizzo/ui-kit'
 import { useRouter } from 'next/router'
@@ -25,6 +26,10 @@ type Props = {
 }
 
 export const ModalFollowers = memo(({ followersCount, isMyProfile, userName }: Props) => {
+  /**
+   * кастомный хук контроля ширины окна
+   */
+  const windowWidth = useWindowWidth()
   /**
    * хук useState для управления open/close AlertDialog.Root. Нужен для того,
    * чтобы модалка закрывалась после передачи на сервер данных из формы,
@@ -62,8 +67,10 @@ export const ModalFollowers = memo(({ followersCount, isMyProfile, userName }: P
     <Modalka onOpenChange={setOpen} open={isMyProfile ? open : false}>
       <ModalkaTrigger asChild>
         <div className={s.followers}>
-          <Typography variant={'regularBold14'}>{followersCount}</Typography>
-          <Typography variant={'regular14'}>Followers</Typography>
+          <Typography variant={windowWidth > 360 ? 'regularBold14' : 'smallSemiBold'}>
+            {followersCount}
+          </Typography>
+          <Typography variant={windowWidth > 360 ? 'regular14' : 'small'}>Followers</Typography>
         </div>
       </ModalkaTrigger>
       <ModalkaContent className={s.content}>
