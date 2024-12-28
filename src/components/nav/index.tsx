@@ -3,6 +3,7 @@ import { ModalConfirmLogout } from '@/components/modalConfirmLogout'
 import { ModalCreatePost } from '@/components/modalCreatePost'
 import { PropsLink } from '@/components/nav/types'
 import { useLogout } from '@/hooks/useLogout'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { useGetMyCurrentSubscriptionQuery } from '@/services/inctagram.subscriptions.service'
 import { Button, Typography } from '@chrizzo/ui-kit'
 import clsx from 'clsx'
@@ -38,22 +39,9 @@ const links: PropsLink[] = [
     name: 'Search',
     path: '/search',
   },
-  {
-    icon: <TrendingUp />,
-    name: 'Statistics',
-    path: '/statistics',
-  },
-  {
-    icon: <Bookmark />,
-    name: 'Favorites',
-    path: '/favorites',
-  },
-  {
-    icon: <LogOut />,
-    isButton: true,
-    name: 'Log Out',
-    path: '/logout',
-  },
+  { hiddenInMobile: true, icon: <TrendingUp />, name: 'Statistics', path: '/statistics' },
+  { hiddenInMobile: true, icon: <Bookmark />, name: 'Favorites', path: '/favorites' },
+  { hiddenInMobile: true, icon: <LogOut />, isButton: true, name: 'Log Out', path: '/logout' },
 ]
 
 type Props = {
@@ -64,6 +52,10 @@ type Props = {
 
 export const Nav = ({ isSpecialAccount, myEmail, myProfileId }: Props) => {
   const router = useRouter()
+  /**
+   * кастомный хук контроля ширины окна
+   */
+  const windowWidth = useWindowWidth()
   /**
    * запрос за проверкой подписки (для отображения вкладки статистики)
    */
@@ -88,91 +80,107 @@ export const Nav = ({ isSpecialAccount, myEmail, myProfileId }: Props) => {
   return (
     <nav className={s.navWrapper}>
       <ul className={s.navList}>
-        {links.map((link, index) => {
-          const isStatisticsLink = link.name === 'Statistics'
-          const shouldHide = isStatisticsLink && !isSpecialAccount
-          const activeLink =
-            router.pathname.includes(link.path.slice(1)) && link.path.slice(1).length > 0
+        {links
+          .filter(link => {
+            /**
+             * фильтруем меню навигации: если для мобилок (ширина окна равна 360px),
+             * то исключаем те меню, где есть hiddenInMobile
+             */
+            if (windowWidth > 360) {
+              return link
+            }
+            if (!link.hiddenInMobile) {
+              return link
+            }
+          })
+          .map((link, index) => {
+            const isStatisticsLink = link.name === 'Statistics'
+            const shouldHide = isStatisticsLink && !isSpecialAccount
+            const activeLink =
+              router.pathname.includes(link.path.slice(1)) && link.path.slice(1).length > 0
 
-          const hiddenStaticticsStyle = link.name === 'Statistics' && !data?.data.length
+            const hiddenStaticticsStyle = link.name === 'Statistics' && !data?.data.length
 
-          return (
-            <li
-              className={clsx(
-                s.navItem,
-                s[`navItem${index + 1}`],
-                shouldHide && s.hidden,
-                hiddenStaticticsStyle && s.hidden
-              )}
-              key={index}
-            >
-              {link.name === 'Create' && (
-                <ModalCreatePost
-                  trigger={
-                    <Button
-                      as={link.isButton ? 'button' : Link}
-                      className={clsx(s.wrapper, activeLink && s.activeLink)}
-                      disabled={isLoading}
-                      href={link.path}
-                      variant={'text'}
-                    >
-                      {link.icon}
-                      <Typography as={'span'} variant={'regularMedium14'}>
-                        {link.name}
+            return (
+              <li
+                className={clsx(
+                  s.navItem,
+                  s[`navItem${index + 1}`],
+                  shouldHide && s.hidden,
+                  hiddenStaticticsStyle && s.hidden
+                )}
+                key={index}
+              >
+                {link.name === 'Create' && (
+                  <ModalCreatePost
+                    trigger={
+                      <Button
+                        as={link.isButton ? 'button' : Link}
+                        className={clsx(s.wrapper, activeLink && s.activeLink)}
+                        disabled={isLoading}
+                        href={link.path}
+                        variant={'text'}
+                      >
+                        {link.icon}
+                        {windowWidth > 360 && (
+                          <Typography as={'span'} variant={'regularMedium14'}>
+                            {link.name}
+                          </Typography>
+                        )}
+                      </Button>
+                    }
+                  />
+                )}
+                {windowWidth > 360 && link.name === 'Log Out' && (
+                  <ModalConfirmLogout
+                    callback={handleClick}
+                    link={link}
+                    title={'Log Out'}
+                    variantTriggerButton={
+                      <Button
+                        as={link.isButton ? 'button' : Link}
+                        className={clsx(s.wrapper, activeLink && s.activeLink)}
+                        disabled={isLoading}
+                        href={link.path}
+                        // onClick={() => handleClick(link.isButton, link.name)}
+                        variant={'text'}
+                      >
+                        {link.icon}
+                        <Typography as={'span'} variant={'regularMedium14'}>
+                          {link.name}
+                        </Typography>
+                      </Button>
+                    }
+                  >
+                    <Typography as={'span'} className={s.questionConfirm} variant={'regular16'}>
+                      Are you really want to log out of your account &quot;
+                      <Typography as={'span'} className={s.userName} variant={'h3'}>
+                        {myEmail}
                       </Typography>
-                    </Button>
-                  }
-                />
-              )}
-
-              {link.name === 'Log Out' && (
-                <ModalConfirmLogout
-                  callback={handleClick}
-                  link={link}
-                  title={'Log Out'}
-                  variantTriggerButton={
-                    <Button
-                      as={link.isButton ? 'button' : Link}
-                      className={clsx(s.wrapper, activeLink && s.activeLink)}
-                      disabled={isLoading}
-                      href={link.path}
-                      // onClick={() => handleClick(link.isButton, link.name)}
-                      variant={'text'}
-                    >
-                      {link.icon}
-                      <Typography as={'span'} variant={'regularMedium14'}>
-                        {link.name}
-                      </Typography>
-                    </Button>
-                  }
-                >
-                  <Typography as={'span'} className={s.questionConfirm} variant={'regular16'}>
-                    Are you really want to log out of your account &quot;
-                    <Typography as={'span'} className={s.userName} variant={'h3'}>
-                      {myEmail}
+                      &quot;?
                     </Typography>
-                    &quot;?
-                  </Typography>
-                </ModalConfirmLogout>
-              )}
-              {link.name !== 'Log Out' && link.name !== 'Create' && (
-                <Button
-                  as={link.isButton ? 'button' : Link}
-                  className={clsx(s.wrapper, activeLink && s.activeLink)}
-                  disabled={isLoading}
-                  href={link.path}
-                  onClick={() => handleClick(link.isButton, link.name)}
-                  variant={'text'}
-                >
-                  {link.icon}
-                  <Typography as={'span'} variant={'regularMedium14'}>
-                    {link.name}
-                  </Typography>
-                </Button>
-              )}
-            </li>
-          )
-        })}
+                  </ModalConfirmLogout>
+                )}
+                {link.name !== 'Log Out' && link.name !== 'Create' && (
+                  <Button
+                    as={link.isButton ? 'button' : Link}
+                    className={clsx(s.wrapper, activeLink && s.activeLink)}
+                    disabled={isLoading}
+                    href={link.path}
+                    onClick={() => handleClick(link.isButton, link.name)}
+                    variant={'text'}
+                  >
+                    {link.icon}
+                    {windowWidth > 360 && (
+                      <Typography as={'span'} variant={'regularMedium14'}>
+                        {link.name}
+                      </Typography>
+                    )}
+                  </Button>
+                )}
+              </li>
+            )
+          })}
       </ul>
     </nav>
   )
