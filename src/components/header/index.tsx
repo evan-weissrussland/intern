@@ -7,6 +7,7 @@ import { RuFlag } from '@/assets/icons/ruFlag'
 import { DropDownHeader } from '@/components/dropDownHeader'
 import { DropdownNotifications } from '@/components/dropdown-notifications'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { useGetNotificationsQuery } from '@/services/inctagram.notifications.service'
 import { Button, Select, Typography } from '@chrizzo/ui-kit'
 import clsx from 'clsx'
@@ -31,9 +32,10 @@ const flags = [
 
 export const Header = ({ isAuthMe }: { isAuthMe?: boolean }) => {
   /**
-   * стейт контроля ширины окна
+   * кастомный хук контроля ширины окна
    */
-  const [windowWidth, setWindowWidth] = useState(0)
+  const windowWidth = useWindowWidth()
+
   /**
    * кастомный хук интернационализации
    */
@@ -75,25 +77,6 @@ export const Header = ({ isAuthMe }: { isAuthMe?: boolean }) => {
    * Функция клика по иконке нотификации. Возможно должна делать запрос на сервер за нотификациями
    */
   const toShowNotifiesHandler = () => {}
-
-  /**
-   * контроль за шириной окна. Массив зависимостей должен быть пустым, иначе
-   * после каждого set'а будем вешать слушателей.
-   */
-  useEffect(() => {
-    if (!windowWidth) {
-      setWindowWidth(window.innerWidth)
-    }
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth)
-    }
-
-    window.addEventListener('resize', handleResize)
-
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
 
   /**
    * мемоизированный массив с именами языка для селекта
