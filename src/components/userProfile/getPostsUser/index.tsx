@@ -48,7 +48,7 @@ export const GetPostsUser = ({ isILogined, userName }: Props) => {
     const endPostCursorId = postsConcat.length ? postsConcat[postsConcat.length - 1].id : undefined
 
     const li = document.getElementById(`post-${endPostCursorId}`)
-    const ddd = document.getElementsByClassName('userProfilePage_mainCntainer__wP2P3')[0]
+    const ddd = document.getElementsByClassName('scroll_viewport__CiEuz')[0]
     const handleScroll = () => {
       if (li?.offsetTop) {
         // console.log('li=', li?.offsetTop - 61, ddd?.clientHeight + ddd?.scrollTop)

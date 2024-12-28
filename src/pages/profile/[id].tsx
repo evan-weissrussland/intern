@@ -1,5 +1,9 @@
+import React from 'react'
+
 import { PageWrapper } from '@/components'
+import { Scroll } from '@/components/scroll'
 import { UserProfile } from '@/components/userProfile'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { inctagramAuthService } from '@/services/inctagram.auth.service'
 import {
   inctagramPublicPostsService,
@@ -70,16 +74,22 @@ function UserProfileDinamicPage(props: {
   // const { data } = useGetAllPostsQuery({})
 
   //********************************************
+
+  /**
+   * кастомный хук контроля ширины окна
+   */
+  const windowWidth = useWindowWidth()
+
+  const style = windowWidth > 360 ? 'calc(100vh - 61px)' : 'calc(100vh - 121px)'
+
   return (
     <PageWrapper>
-      <div className={s.overflowedContainer}>
-        <div className={s.mainCntainer}>
-          <UserProfile
-            dataProfile={props.pageProps.profile}
-            myProfileId={props.pageProps.myProfileId}
-          />
-        </div>
-      </div>
+      <Scroll height={style}>
+        <UserProfile
+          dataProfile={props.pageProps.profile}
+          myProfileId={props.pageProps.myProfileId}
+        />
+      </Scroll>
     </PageWrapper>
   )
 }
