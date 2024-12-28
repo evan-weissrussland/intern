@@ -4,5 +4,5 @@ export function Messenger() {
   return <PageWrapper>Messenger</PageWrapper>
 }
 
-Messenger.getLayout = GetLayout
+// Messenger.getLayout = GetLayout
 export default Messenger

@@ -4,5 +4,5 @@ export function Search() {
   return <PageWrapper>Search</PageWrapper>
 }
 
-Search.getLayout = GetLayout
+// Search.getLayout = GetLayout
 export default Search

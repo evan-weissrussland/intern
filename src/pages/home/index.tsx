@@ -121,5 +121,5 @@ export function Home() {
   )
 }
 
-Home.getLayout = GetLayout
+// Home.getLayout = GetLayout
 export default Home

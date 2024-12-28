@@ -4,5 +4,5 @@ export function FriendProfile() {
   return <PageWrapper>FriendProfile</PageWrapper>
 }
 
-FriendProfile.getLayout = GetLayout
+// FriendProfile.getLayout = GetLayout
 export default FriendProfile

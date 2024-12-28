@@ -4,5 +4,5 @@ export function Statistics() {
   return <PageWrapper>Statistics</PageWrapper>
 }
 
-Statistics.getLayout = GetLayout
+// Statistics.getLayout = GetLayout
 export default Statistics
