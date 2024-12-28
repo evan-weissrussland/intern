@@ -6,8 +6,22 @@
   padding-right: 64px;
   padding-left: 24px;
 
+  @media (max-width: 360px) {
+    padding-right: 15px;
+    padding-left: 15px;
+    gap: 27px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
   .image {
     border-radius: 50%;
+
+    @media (max-width: 360px) {
+      width: 72px;
+      height: 72px;
+      margin-bottom: 8px;
+    }
   }
 
   .aboutUserBlock {
@@ -19,11 +33,7 @@
     .userNameSettingsButtonBlock {
       display: flex;
       justify-content: space-between;
-      .userName {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
+
       .followUnfollowSendMessageButtonsBlock {
         display: flex;
         gap: 12px;
@@ -34,15 +44,33 @@
       display: flex;
       gap: 100px;
 
+      @media (max-width: 360px) {
+        gap: 0;
+        justify-content: space-between;
+      }
+
       .following:hover,
       .followers:hover,
       .publications:hover {
         background: var(--color-accent-500);
       }
     }
+  }
+}
+.userName {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 
-    .aboutMe {
-    }
+  @media (max-width: 360px) {
+    margin-bottom: 13px;
+    padding: 0 15px;
+  }
+}
+.aboutMe {
+  @media (max-width: 360px) {
+    padding: 0 15px;
+    margin-bottom: 29px;
   }
 }
 .cardsBlock {
@@ -52,6 +80,13 @@
   padding-right: 64px;
   padding-left: 24px;
   list-style: none;
+
+  @media (max-width: 360px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+    padding-right: 1px;
+    padding-left: 15px;
+  }
 
   .card {
     //border: 1px solid red;

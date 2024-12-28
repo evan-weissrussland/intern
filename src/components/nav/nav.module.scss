@@ -14,10 +14,21 @@
 
     list-style: none;
 
+    @media (max-width: 360px) {
+      flex-direction: row;
+      height: 100%;
+      align-items: center;
+      justify-content: space-between;
+    }
+
     .navItem {
       display: flex;
       margin-bottom: 24px;
       white-space: nowrap;
+
+      @media (max-width: 360px) {
+        margin-bottom: 0;
+      }
 
       &.hidden {
         display: none;
@@ -61,8 +72,24 @@
   }
 }
 
-@media (width <= 768px) {
+@media (max-width: 768px) and (min-width: 361px) {
   .navWrapper {
     display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .navWrapper {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    padding: 0 48px;
+    //position: sticky;
+    //bottom: 0;
+    border: none;
+    height: 60px;
+    width: 100%;
+    background: var(--color-light-700);
   }
 }
