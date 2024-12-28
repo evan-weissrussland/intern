@@ -2,6 +2,7 @@ import { PaidAccount } from '@/assets/icons/paidAccount'
 import { ModalFollowers } from '@/components/ModalFollowers'
 import { ModalFollowing } from '@/components/modalFollowing'
 import { GetPostsUser } from '@/components/userProfile/getPostsUser'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 import {
   useFollowToUserMutation,
   useUnfollowFromUserMutation,
@@ -24,6 +25,10 @@ type Props = {
 
 export function UserProfile({ dataProfile, myProfileId }: Props) {
   const router = useRouter()
+  /**
+   * кастомный хук контроля ширины окна
+   */
+  const windowWidth = useWindowWidth()
   /**
    * Првоерка на мой аккаунт
    */
@@ -65,7 +70,6 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
     alert('openPublications')
     //открыть модалку публикаций
   }
-
   /**
    * хук RTKQ. Подписка на юзера
    */
@@ -104,36 +108,41 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
           width={(privateProfile?.avatars[0]?.width || publicProfile?.avatars[0]?.width) ?? 204}
         />
         <section className={s.aboutUserBlock}>
-          <div className={s.userNameSettingsButtonBlock}>
-            <Typography className={s.userName} variant={'h1'}>
-              {(privateProfile?.userName || publicProfile?.userName) ?? 'UserName'}
-              {subscriptionData?.data.length && !isFetchingGetMySubscriptions ? (
-                <PaidAccount />
-              ) : null}
-            </Typography>
-            {myProfileId === dataProfile.id && (
-              <Button onClick={openSettings} variant={'secondary'}>
-                <Typography variant={'h3'}>Profile Settings</Typography>
-              </Button>
-            )}
-            {myProfileId && myProfileId !== dataProfile.id && (
-              <div className={s.followUnfollowSendMessageButtonsBlock}>
-                {!privateProfile?.isFollowing && (
-                  <Button onClick={() => toFollowUser(privateProfile?.id)} variant={'primary'}>
-                    <Typography variant={'h3'}>Follow</Typography>
-                  </Button>
-                )}
-                {privateProfile?.isFollowing && (
-                  <Button onClick={() => unfollowUser(privateProfile?.id)} variant={'outline'}>
-                    <Typography variant={'h3'}>Unfollow</Typography>
-                  </Button>
-                )}
-                <Button onClick={() => {}} variant={'secondary'}>
-                  <Typography variant={'h3'}>Send Message</Typography>
+          {windowWidth > 361 && (
+            <div className={s.userNameSettingsButtonBlock}>
+              <Typography
+                className={s.userName}
+                variant={windowWidth > 360 ? 'h1' : 'regularBold16'}
+              >
+                {(privateProfile?.userName || publicProfile?.userName) ?? 'UserName'}
+                {subscriptionData?.data.length && !isFetchingGetMySubscriptions ? (
+                  <PaidAccount />
+                ) : null}
+              </Typography>
+              {myProfileId === dataProfile.id && (
+                <Button onClick={openSettings} variant={'secondary'}>
+                  <Typography variant={'h3'}>Profile Settings</Typography>
                 </Button>
-              </div>
-            )}
-          </div>
+              )}
+              {myProfileId && myProfileId !== dataProfile.id && (
+                <div className={s.followUnfollowSendMessageButtonsBlock}>
+                  {!privateProfile?.isFollowing && (
+                    <Button onClick={() => toFollowUser(privateProfile?.id)} variant={'primary'}>
+                      <Typography variant={'h3'}>Follow</Typography>
+                    </Button>
+                  )}
+                  {privateProfile?.isFollowing && (
+                    <Button onClick={() => unfollowUser(privateProfile?.id)} variant={'outline'}>
+                      <Typography variant={'h3'}>Unfollow</Typography>
+                    </Button>
+                  )}
+                  <Button onClick={() => {}} variant={'secondary'}>
+                    <Typography variant={'h3'}>Send Message</Typography>
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
           <div className={s.countsFolowwers}>
             <ModalFollowing
               followingCount={
@@ -150,14 +159,38 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
               userName={dataProfile.userName}
             />
             <div className={s.publications} onClick={openPublications}>
-              <Typography variant={'regularBold14'}>
+              <Typography variant={windowWidth > 360 ? 'regularBold14' : 'smallSemiBold'}>
                 {privateProfile?.publicationsCount || publicProfile?.userMetadata.publications || 0}
               </Typography>
-              <Typography variant={'regular14'}>Publications</Typography>
+              <Typography variant={windowWidth > 360 ? 'regular14' : 'small'}>
+                Publications
+              </Typography>
             </div>
           </div>
+          {windowWidth > 361 && (
+            <article className={s.aboutMe}>
+              <Typography variant={windowWidth > 360 ? 'regular16' : 'regular14'}>
+                {(privateProfile?.aboutMe || publicProfile?.aboutMe) ??
+                  `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad 
+              minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex 
+              ea commodo consequat.`}
+              </Typography>
+            </article>
+          )}
+        </section>
+      </div>
+      {windowWidth <= 360 && (
+        <>
+          <Typography className={s.userName} variant={windowWidth > 360 ? 'h1' : 'regularBold16'}>
+            {(privateProfile?.userName || publicProfile?.userName) ?? 'UserName'}
+            {subscriptionData?.data.length && !isFetchingGetMySubscriptions ? (
+              <PaidAccount />
+            ) : null}
+          </Typography>
+
           <article className={s.aboutMe}>
-            <Typography variant={'regular16'}>
+            <Typography variant={windowWidth > 360 ? 'regular16' : 'regular14'}>
               {(privateProfile?.aboutMe || publicProfile?.aboutMe) ??
                 `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad 
@@ -165,8 +198,8 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
               ea commodo consequat.`}
             </Typography>
           </article>
-        </section>
-      </div>
+        </>
+      )}
       <GetPostsUser isILogined={!!myProfileId} userName={dataProfile?.userName ?? ''} />
     </>
   )
