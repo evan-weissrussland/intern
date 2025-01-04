@@ -1,5 +1,9 @@
+import React, { useState } from 'react'
+
+import { ArrowBack } from '@/assets/icons'
 import { PaidAccount } from '@/assets/icons/paidAccount'
 import { ModalFollowers } from '@/components/ModalFollowers'
+import { CardFollowingsSubscribers } from '@/components/cardFollowingSubscription/CardFollowingsSubscribers'
 import { ModalFollowing } from '@/components/modalFollowing'
 import { GetPostsUser } from '@/components/userProfile/getPostsUser'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
@@ -11,10 +15,12 @@ import { useGetUserProfileByUserNameQuery } from '@/services/inctagram.profile.s
 import { useGetPublicProfileForUserByIdQuery } from '@/services/inctagram.public-user.service'
 import { useGetMyCurrentSubscriptionQuery } from '@/services/inctagram.subscriptions.service'
 import { Button, Typography } from '@chrizzo/ui-kit'
+import * as TabsPrimitive from '@radix-ui/react-tabs'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 
 import s from './userProfile.module.scss'
+import tabsStyles from '@/components/profile-settings/tabs-trigger-list/tabs.module.scss'
 
 import defaultAva from '../../../public/defaultAva.jpg'
 
@@ -22,9 +28,14 @@ type Props = {
   dataProfile: any
   myProfileId: null | number
 }
+type FlagCheckedToMobileForFollowingSub = 'Followers' | 'Following' | 'profile'
 
 export function UserProfile({ dataProfile, myProfileId }: Props) {
   const router = useRouter()
+
+  const [checkedToFollowers, setcheckedToFollowers] =
+    useState<FlagCheckedToMobileForFollowingSub>('profile')
+
   /**
    * кастомный хук контроля ширины окна
    */
@@ -68,7 +79,6 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
       return null
     }
     alert('openPublications')
-    //открыть модалку публикаций
   }
   /**
    * хук RTKQ. Подписка на юзера
@@ -96,91 +106,108 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
   const unfollowUser = (selectedUserId: number) => {
     unfollow(selectedUserId).unwrap()
   }
+  /**
+   * Переключатель табов followers или following или возврат на профиль. Для мобильной версии только
+   * @param flag - флаг "Followers" | "Following" | "profile"
+   */
+  const onclickTriggerFollowingHandler = (flag: FlagCheckedToMobileForFollowingSub) => {
+    if (windowWidth <= 360) {
+      setcheckedToFollowers(flag)
+    }
+  }
 
   return (
     <>
-      <div className={s.avaAndDescrBlock}>
-        <Image
-          alt={'avatar'}
-          className={s.image}
-          height={(privateProfile?.avatars[0]?.height || publicProfile?.avatars[0]?.height) ?? 204}
-          src={(privateProfile?.avatars[0]?.url || publicProfile?.avatars[0]?.url) ?? defaultAva}
-          width={(privateProfile?.avatars[0]?.width || publicProfile?.avatars[0]?.width) ?? 204}
-        />
-        <section className={s.aboutUserBlock}>
-          {windowWidth > 361 && (
-            <div className={s.userNameSettingsButtonBlock}>
-              <Typography
-                className={s.userName}
-                variant={windowWidth > 360 ? 'h1' : 'regularBold16'}
-              >
-                {(privateProfile?.userName || publicProfile?.userName) ?? 'UserName'}
-                {subscriptionData?.data.length && !isFetchingGetMySubscriptions ? (
-                  <PaidAccount />
-                ) : null}
-              </Typography>
-              {myProfileId === dataProfile.id && (
-                <Button onClick={openSettings} variant={'secondary'}>
-                  <Typography variant={'h3'}>Profile Settings</Typography>
-                </Button>
-              )}
-              {myProfileId && myProfileId !== dataProfile.id && (
-                <div className={s.followUnfollowSendMessageButtonsBlock}>
-                  {!privateProfile?.isFollowing && (
-                    <Button onClick={() => toFollowUser(privateProfile?.id)} variant={'primary'}>
-                      <Typography variant={'h3'}>Follow</Typography>
-                    </Button>
-                  )}
-                  {privateProfile?.isFollowing && (
-                    <Button onClick={() => unfollowUser(privateProfile?.id)} variant={'outline'}>
-                      <Typography variant={'h3'}>Unfollow</Typography>
-                    </Button>
-                  )}
-                  <Button onClick={() => {}} variant={'secondary'}>
-                    <Typography variant={'h3'}>Send Message</Typography>
+      {checkedToFollowers === 'profile' && (
+        <div className={s.avaAndDescrBlock}>
+          <Image
+            alt={'avatar'}
+            className={s.image}
+            height={
+              (privateProfile?.avatars[0]?.height || publicProfile?.avatars[0]?.height) ?? 204
+            }
+            src={(privateProfile?.avatars[0]?.url || publicProfile?.avatars[0]?.url) ?? defaultAva}
+            width={(privateProfile?.avatars[0]?.width || publicProfile?.avatars[0]?.width) ?? 204}
+          />
+          <section className={s.aboutUserBlock}>
+            {windowWidth > 361 && (
+              <div className={s.userNameSettingsButtonBlock}>
+                <Typography
+                  className={s.userName}
+                  variant={windowWidth > 360 ? 'h1' : 'regularBold16'}
+                >
+                  {(privateProfile?.userName || publicProfile?.userName) ?? 'UserName'}
+                  {subscriptionData?.data.length && !isFetchingGetMySubscriptions ? (
+                    <PaidAccount />
+                  ) : null}
+                </Typography>
+                {myProfileId === dataProfile.id && (
+                  <Button onClick={openSettings} variant={'secondary'}>
+                    <Typography variant={'h3'}>Profile Settings</Typography>
                   </Button>
-                </div>
-              )}
+                )}
+                {myProfileId && myProfileId !== dataProfile.id && (
+                  <div className={s.followUnfollowSendMessageButtonsBlock}>
+                    {!privateProfile?.isFollowing && (
+                      <Button onClick={() => toFollowUser(privateProfile?.id)} variant={'primary'}>
+                        <Typography variant={'h3'}>Follow</Typography>
+                      </Button>
+                    )}
+                    {privateProfile?.isFollowing && (
+                      <Button onClick={() => unfollowUser(privateProfile?.id)} variant={'outline'}>
+                        <Typography variant={'h3'}>Unfollow</Typography>
+                      </Button>
+                    )}
+                    <Button onClick={() => {}} variant={'secondary'}>
+                      <Typography variant={'h3'}>Send Message</Typography>
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
+            <div className={s.countsFolowwers}>
+              <ModalFollowing
+                callbackTrigger={() => onclickTriggerFollowingHandler('Following')}
+                followingCount={
+                  privateProfile?.followingCount || publicProfile?.userMetadata.following || 0
+                }
+                isMyProfile={isMyProfile}
+                userName={dataProfile.userName}
+              />
+              <ModalFollowers
+                callbackTrigger={() => onclickTriggerFollowingHandler('Followers')}
+                followersCount={
+                  privateProfile?.followersCount || publicProfile?.userMetadata.followers || 0
+                }
+                isMyProfile={isMyProfile}
+                userName={dataProfile.userName}
+              />
+              <div className={s.publications} onClick={openPublications}>
+                <Typography variant={windowWidth > 360 ? 'regularBold14' : 'smallSemiBold'}>
+                  {privateProfile?.publicationsCount ||
+                    publicProfile?.userMetadata.publications ||
+                    0}
+                </Typography>
+                <Typography variant={windowWidth > 360 ? 'regular14' : 'small'}>
+                  Publications
+                </Typography>
+              </div>
             </div>
-          )}
-          <div className={s.countsFolowwers}>
-            <ModalFollowing
-              followingCount={
-                privateProfile?.followingCount || publicProfile?.userMetadata.following || 0
-              }
-              isMyProfile={isMyProfile}
-              userName={dataProfile.userName}
-            />
-            <ModalFollowers
-              followersCount={
-                privateProfile?.followersCount || publicProfile?.userMetadata.followers || 0
-              }
-              isMyProfile={isMyProfile}
-              userName={dataProfile.userName}
-            />
-            <div className={s.publications} onClick={openPublications}>
-              <Typography variant={windowWidth > 360 ? 'regularBold14' : 'smallSemiBold'}>
-                {privateProfile?.publicationsCount || publicProfile?.userMetadata.publications || 0}
-              </Typography>
-              <Typography variant={windowWidth > 360 ? 'regular14' : 'small'}>
-                Publications
-              </Typography>
-            </div>
-          </div>
-          {windowWidth > 361 && (
-            <article className={s.aboutMe}>
-              <Typography variant={windowWidth > 360 ? 'regular16' : 'regular14'}>
-                {(privateProfile?.aboutMe || publicProfile?.aboutMe) ??
-                  `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
+            {windowWidth > 361 && (
+              <article className={s.aboutMe}>
+                <Typography variant={windowWidth > 360 ? 'regular16' : 'regular14'}>
+                  {(privateProfile?.aboutMe || publicProfile?.aboutMe) ??
+                    `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
               eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad 
               minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex 
               ea commodo consequat.`}
-              </Typography>
-            </article>
-          )}
-        </section>
-      </div>
-      {windowWidth <= 360 && (
+                </Typography>
+              </article>
+            )}
+          </section>
+        </div>
+      )}
+      {windowWidth <= 360 && checkedToFollowers === 'profile' && (
         <>
           <Typography className={s.userName} variant={windowWidth > 360 ? 'h1' : 'regularBold16'}>
             {(privateProfile?.userName || publicProfile?.userName) ?? 'UserName'}
@@ -200,7 +227,55 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
           </article>
         </>
       )}
-      <GetPostsUser isILogined={!!myProfileId} userName={dataProfile?.userName ?? ''} />
+      {checkedToFollowers === 'profile' && (
+        <GetPostsUser isILogined={!!myProfileId} userName={dataProfile?.userName ?? ''} />
+      )}
+      {checkedToFollowers !== 'profile' && (
+        <>
+          <div className={s.mobileArrowBackBlock}>
+            <ArrowBack
+              onClick={() => {
+                onclickTriggerFollowingHandler('profile')
+              }}
+            />
+            <Typography variant={'h2'}>
+              {privateProfile?.userName || publicProfile?.userName}
+            </Typography>
+          </div>
+          <TabsPrimitive.Root
+            activationMode={'manual'}
+            className={s.tabsPoot}
+            defaultValue={checkedToFollowers}
+          >
+            <TabsPrimitive.TabsList className={tabsStyles.tabsList}>
+              <TabsPrimitive.TabsTrigger
+                className={tabsStyles.tabsTrigger}
+                key={1}
+                value={'Following'}
+              >
+                {privateProfile?.followingCount || publicProfile?.userMetadata.following || 0}{' '}
+                Following
+              </TabsPrimitive.TabsTrigger>
+              <TabsPrimitive.TabsTrigger
+                className={tabsStyles.tabsTrigger}
+                key={2}
+                value={'Followers'}
+              >
+                {privateProfile?.followersCount || publicProfile?.userMetadata.followers || 0}{' '}
+                Followers
+              </TabsPrimitive.TabsTrigger>
+            </TabsPrimitive.TabsList>
+            <TabsPrimitive.Content value={'Following'}>
+              <CardFollowingsSubscribers
+                isMyProfile={isMyProfile}
+                open
+                userName={dataProfile.userName}
+              />
+            </TabsPrimitive.Content>
+            <TabsPrimitive.Content value={'Followers'}>Followers</TabsPrimitive.Content>
+          </TabsPrimitive.Root>
+        </>
+      )}
     </>
   )
 }
