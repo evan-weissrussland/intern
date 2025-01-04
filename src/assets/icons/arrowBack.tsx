@@ -7,6 +7,7 @@ export const ArrowBack = (props: SVGProps<SVGSVGElement>) => (
     viewBox={'0 0 24 24'}
     width={'24.000000'}
     xmlns={'http://www.w3.org/2000/svg'}
+    {...props}
   >
     <desc>Created with Pixso.</desc>
     <defs>
