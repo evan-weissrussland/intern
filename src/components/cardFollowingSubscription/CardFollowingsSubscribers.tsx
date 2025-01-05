@@ -1,7 +1,8 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 
 import { SearchInputValueType } from '@/components/ModalFollowers/types'
 import { Followings } from '@/components/cardFollowingSubscription/Followings'
+import { useDebounceText } from '@/hooks/useDebounceText'
 import { useGetFollowingUsersQuery } from '@/services/inctagram.followings.service'
 import { Card, TextField } from '@chrizzo/ui-kit'
 
@@ -36,25 +37,10 @@ export const CardFollowingsSubscribers = ({ isMyProfile, open, userName }: Props
   )
 
   /**
-   * номер таймера из функции задержки посыла текста из инпута на сервер
-   */
-  const [timerId, setTimerId] = useState<number | undefined>(undefined)
-  /**
    * функция задержки посыла текста из инпута на сервер (debounce)
    * @param inputData - текст из инпута
    */
-  const onChangeInputValue = useCallback(
-    (inputData: string) => {
-      setInputValue(prev => ({ ...prev, search: inputData }))
-      clearTimeout(timerId)
-      const idTimer = setTimeout(() => {
-        setInputValue(prev => ({ ...prev, textFromDebounceInput: inputData }))
-      }, 1500)
-
-      setTimerId(+idTimer)
-    },
-    [timerId]
-  )
+  const onChangeInputValue = useDebounceText(setInputValue)
 
   return (
     <Card className={s.card} maxWidth={'644px'} variant={'dark300'}>

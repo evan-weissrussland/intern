@@ -2,7 +2,6 @@ import { ReactNode, memo, useState } from 'react'
 
 import { Close } from '@/assets/icons/close'
 import { SearchInputValueType } from '@/components/ModalFollowers/types'
-import { useDebounceFollowers } from '@/components/ModalFollowers/useDebounceFollowers'
 import {
   Modalka,
   ModalkaButtonCancel,
@@ -11,6 +10,7 @@ import {
   ModalkaTrigger,
 } from '@/components/modal'
 import { LikesList } from '@/components/modalLikes/LikesList'
+import { useDebounceText } from '@/hooks/useDebounceText'
 import { useModalSearch } from '@/hooks/useModalSearch'
 import { Button, Card, TextField, Typography } from '@chrizzo/ui-kit'
 
@@ -54,7 +54,7 @@ export const ModalLikes = memo(({ children, postId, title, xType }: Props) => {
    * функция задержки посыла текста из инпута на сервер (debounce)
    * @param inputData - текст из инпута
    */
-  const onChangeInputValue = useDebounceFollowers(setInputValue)
+  const onChangeInputValue = useDebounceText(setInputValue)
 
   return (
     <Modalka onOpenChange={setOpen} open={open}>

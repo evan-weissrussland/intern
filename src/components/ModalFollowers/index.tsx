@@ -3,7 +3,6 @@ import React, { ReactNode, memo, useState } from 'react'
 import { Close } from '@/assets/icons/close'
 import { Followers } from '@/components/ModalFollowers/Followers'
 import { SearchInputValueType } from '@/components/ModalFollowers/types'
-import { useDebounceFollowers } from '@/components/ModalFollowers/useDebounceFollowers'
 import {
   Modalka,
   ModalkaButtonCancel,
@@ -11,6 +10,7 @@ import {
   ModalkaTitle,
   ModalkaTrigger,
 } from '@/components/modal'
+import { useDebounceText } from '@/hooks/useDebounceText'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { useGetFollowersUsersQuery } from '@/services/inctagram.followings.service'
 import { Button, Card, TextField, Typography } from '@chrizzo/ui-kit'
@@ -64,7 +64,7 @@ export const ModalFollowers = memo(
      * функция задержки посыла текста из инпута на сервер (debounce)
      * @param inputData - текст из инпута
      */
-    const onChangeInputValue = useDebounceFollowers(setInputValue)
+    const onChangeInputValue = useDebounceText(setInputValue)
 
     return (
       <Modalka onOpenChange={setOpen} open={isMyProfile ? open : false}>

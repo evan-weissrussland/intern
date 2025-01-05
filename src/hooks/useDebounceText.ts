@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 
 import { SearchInputValueType } from '@/components/ModalFollowers/types'
 
-export const useDebounceFollowers = (setFn: Dispatch<SetStateAction<SearchInputValueType>>) => {
+export const useDebounceText = (setFn: Dispatch<SetStateAction<SearchInputValueType>>) => {
   /**
    * номер таймера из функции задержки посыла текста из инпута на сервер
    */
