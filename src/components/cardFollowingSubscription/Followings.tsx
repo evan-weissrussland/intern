@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { FollowersUsersType } from '@/components/ModalFollowers/types'
 import { ModalConfirm } from '@/components/modalConfirm'
+import { FollowersUsersType } from '@/components/modalFollowers/types'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { useUnfollowFromUserMutation } from '@/services/inctagram.followings.service'
 import { Typography } from '@chrizzo/ui-kit'

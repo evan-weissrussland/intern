@@ -1,7 +1,6 @@
 import { ReactNode, memo, useState } from 'react'
 
 import { Close } from '@/assets/icons/close'
-import { SearchInputValueType } from '@/components/ModalFollowers/types'
 import {
   Modalka,
   ModalkaButtonCancel,
@@ -9,6 +8,7 @@ import {
   ModalkaTitle,
   ModalkaTrigger,
 } from '@/components/modal'
+import { SearchInputValueType } from '@/components/modalFollowers/types'
 import { LikesList } from '@/components/modalLikes/LikesList'
 import { useDebounceText } from '@/hooks/useDebounceText'
 import { useModalSearch } from '@/hooks/useModalSearch'

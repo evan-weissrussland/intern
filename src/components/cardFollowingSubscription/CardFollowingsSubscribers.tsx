@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { SearchInputValueType } from '@/components/ModalFollowers/types'
 import { Followings } from '@/components/cardFollowingSubscription/Followings'
+import { SearchInputValueType } from '@/components/modalFollowers/types'
 import { useDebounceText } from '@/hooks/useDebounceText'
 import { useGetFollowingUsersQuery } from '@/services/inctagram.followings.service'
 import { Card, TextField } from '@chrizzo/ui-kit'

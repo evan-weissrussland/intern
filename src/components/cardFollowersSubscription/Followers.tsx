@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
-import { FollowersUsersType } from '@/components/ModalFollowers/types'
 import { ModalConfirm } from '@/components/modalConfirm'
+import { FollowersUsersType } from '@/components/modalFollowers/types'
 import {
   useFollowToUserMutation,
   useUnfollowFromUserMutation,
@@ -9,7 +9,7 @@ import {
 import { Button, Typography } from '@chrizzo/ui-kit'
 import Image from 'next/image'
 
-import s from '@/components/ModalFollowers/modalFollowers.module.scss'
+import s from './cardFollowersSub.module.scss'
 
 import defaultAva from '../../../public/defaultAva.jpg'
 

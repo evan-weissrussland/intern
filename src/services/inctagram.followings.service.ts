@@ -3,7 +3,7 @@ import {
   RequestForFollowersUsers,
   RequestType,
   UsersType,
-} from '@/components/ModalFollowers/types'
+} from '@/components/modalFollowers/types'
 import { inctagramService } from '@/services/inctagram.service'
 
 export const inctagramUsersFollowingsService = inctagramService.injectEndpoints({

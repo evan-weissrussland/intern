@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import { ArrowBack } from '@/assets/icons'
 import { PaidAccount } from '@/assets/icons/paidAccount'
-import { ModalFollowers } from '@/components/ModalFollowers'
+import { CardFollowersSubscribers } from '@/components/cardFollowersSubscription/CardFollowersSubscribers'
 import { CardFollowingsSubscribers } from '@/components/cardFollowingSubscription/CardFollowingsSubscribers'
 import { ModalFollowing } from '@/components/modalFollowing'
 import { GetPostsUser } from '@/components/userProfile/getPostsUser'
@@ -23,6 +23,7 @@ import s from './userProfile.module.scss'
 import tabsStyles from '@/components/profile-settings/tabs-trigger-list/tabs.module.scss'
 
 import defaultAva from '../../../public/defaultAva.jpg'
+import { ModalFollowers } from '../modalFollowers'
 
 type Props = {
   dataProfile: any
@@ -115,6 +116,10 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
       setcheckedToFollowers(flag)
     }
   }
+  const followingsCount =
+    privateProfile?.followingCount || publicProfile?.userMetadata.following || 0
+  const followersCount =
+    privateProfile?.followersCount || publicProfile?.userMetadata.followers || 0
 
   return (
     <>
@@ -168,17 +173,13 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
             <div className={s.countsFolowwers}>
               <ModalFollowing
                 callbackTrigger={() => onclickTriggerFollowingHandler('Following')}
-                followingCount={
-                  privateProfile?.followingCount || publicProfile?.userMetadata.following || 0
-                }
+                followingCount={followingsCount}
                 isMyProfile={isMyProfile}
                 userName={dataProfile.userName}
               />
               <ModalFollowers
                 callbackTrigger={() => onclickTriggerFollowingHandler('Followers')}
-                followersCount={
-                  privateProfile?.followersCount || publicProfile?.userMetadata.followers || 0
-                }
+                followersCount={followersCount}
                 isMyProfile={isMyProfile}
                 userName={dataProfile.userName}
               />
@@ -253,16 +254,14 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
                 key={1}
                 value={'Following'}
               >
-                {privateProfile?.followingCount || publicProfile?.userMetadata.following || 0}{' '}
-                Following
+                {followingsCount} Following
               </TabsPrimitive.TabsTrigger>
               <TabsPrimitive.TabsTrigger
                 className={tabsStyles.tabsTrigger}
                 key={2}
                 value={'Followers'}
               >
-                {privateProfile?.followersCount || publicProfile?.userMetadata.followers || 0}{' '}
-                Followers
+                {followersCount} Followers
               </TabsPrimitive.TabsTrigger>
             </TabsPrimitive.TabsList>
             <TabsPrimitive.Content value={'Following'}>
@@ -272,7 +271,13 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
                 userName={dataProfile.userName}
               />
             </TabsPrimitive.Content>
-            <TabsPrimitive.Content value={'Followers'}>Followers</TabsPrimitive.Content>
+            <TabsPrimitive.Content value={'Followers'}>
+              <CardFollowersSubscribers
+                isMyProfile={isMyProfile}
+                open
+                userName={dataProfile.userName}
+              />
+            </TabsPrimitive.Content>
           </TabsPrimitive.Root>
         </>
       )}

@@ -1,0 +1,46 @@
+.userName {
+  white-space: nowrap;
+}
+
+.card {
+  border: 1px solid var(--color-dark-100);
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+
+  .image {
+    border-radius: 50%;
+  }
+
+  @media (width <= 360px) {
+    & {
+      padding-right: 0;
+      padding-left: 0;
+      background: var(--color-dark-700);
+      border-color: transparent;
+    }
+  }
+}
+
+.followersWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  padding-top: 24px;
+
+  list-style: none;
+
+  .li {
+    display: flex;
+    justify-content: space-between;
+
+    .avaAndUserNameBlock {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+  }
+}
+
+

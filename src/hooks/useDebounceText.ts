@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 
-import { SearchInputValueType } from '@/components/ModalFollowers/types'
+import { SearchInputValueType } from '@/components/modalFollowers/types'
 
 export const useDebounceText = (setFn: Dispatch<SetStateAction<SearchInputValueType>>) => {
   /**

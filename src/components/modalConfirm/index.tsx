@@ -1,7 +1,6 @@
 import React, { ReactNode, useState } from 'react'
 
 import { Close } from '@/assets/icons/close'
-import { FollowersUsersType } from '@/components/ModalFollowers/types'
 import {
   Modalka,
   ModalkaButtonCancel,
@@ -9,6 +8,7 @@ import {
   ModalkaTitle,
   ModalkaTrigger,
 } from '@/components/modal'
+import { FollowersUsersType } from '@/components/modalFollowers/types'
 import { Button, Card, Typography } from '@chrizzo/ui-kit'
 import Image from 'next/image'
 

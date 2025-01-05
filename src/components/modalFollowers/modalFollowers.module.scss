@@ -1,0 +1,20 @@
+.content {
+  width: 100%;
+  max-width: 644px;
+
+  .title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 12px 24px;
+
+    background-color: var(--color-dark-300);
+    border: 1px solid var(--color-dark-100);
+  }
+
+  .close {
+    padding: 0;
+  }
+}
