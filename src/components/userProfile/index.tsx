@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
 
-import { ArrowBack } from '@/assets/icons'
 import { PaidAccount } from '@/assets/icons/paidAccount'
-import { CardFollowersSubscribers } from '@/components/cardFollowersSubscription/CardFollowersSubscribers'
-import { CardFollowingsSubscribers } from '@/components/cardFollowingSubscription/CardFollowingsSubscribers'
 import { ModalFollowing } from '@/components/modalFollowing'
+import { TabsFollowSubscribtion } from '@/components/userProfile/TabsFollowSubscribtion'
 import { GetPostsUser } from '@/components/userProfile/getPostsUser'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import {
@@ -15,12 +13,10 @@ import { useGetUserProfileByUserNameQuery } from '@/services/inctagram.profile.s
 import { useGetPublicProfileForUserByIdQuery } from '@/services/inctagram.public-user.service'
 import { useGetMyCurrentSubscriptionQuery } from '@/services/inctagram.subscriptions.service'
 import { Button, Typography } from '@chrizzo/ui-kit'
-import * as TabsPrimitive from '@radix-ui/react-tabs'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 
 import s from './userProfile.module.scss'
-import tabsStyles from '@/components/profile-settings/tabs-trigger-list/tabs.module.scss'
 
 import defaultAva from '../../../public/defaultAva.jpg'
 import { ModalFollowers } from '../modalFollowers'
@@ -29,7 +25,7 @@ type Props = {
   dataProfile: any
   myProfileId: null | number
 }
-type FlagCheckedToMobileForFollowingSub = 'Followers' | 'Following' | 'profile'
+export type FlagCheckedToMobileForFollowingSub = 'Followers' | 'Following' | 'profile'
 
 export function UserProfile({ dataProfile, myProfileId }: Props) {
   const router = useRouter()
@@ -141,7 +137,7 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
                   className={s.userName}
                   variant={windowWidth > 360 ? 'h1' : 'regularBold16'}
                 >
-                  {(privateProfile?.userName || publicProfile?.userName) ?? 'UserName'}
+                  {dataProfile.userName ?? 'UserName'}
                   {subscriptionData?.data.length && !isFetchingGetMySubscriptions ? (
                     <PaidAccount />
                   ) : null}
@@ -211,7 +207,7 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
       {windowWidth <= 360 && checkedToFollowers === 'profile' && (
         <>
           <Typography className={s.userName} variant={windowWidth > 360 ? 'h1' : 'regularBold16'}>
-            {(privateProfile?.userName || publicProfile?.userName) ?? 'UserName'}
+            {dataProfile.userName ?? 'UserName'}
             {subscriptionData?.data.length && !isFetchingGetMySubscriptions ? (
               <PaidAccount />
             ) : null}
@@ -248,54 +244,14 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
         <GetPostsUser isILogined={!!myProfileId} userName={dataProfile?.userName ?? ''} />
       )}
       {checkedToFollowers !== 'profile' && (
-        <>
-          <div className={s.mobileArrowBackBlock}>
-            <ArrowBack
-              onClick={() => {
-                onclickTriggerFollowingHandler('profile')
-              }}
-            />
-            <Typography variant={'h2'}>
-              {privateProfile?.userName || publicProfile?.userName}
-            </Typography>
-          </div>
-          <TabsPrimitive.Root
-            activationMode={'manual'}
-            className={s.tabsPoot}
-            defaultValue={checkedToFollowers}
-          >
-            <TabsPrimitive.TabsList className={tabsStyles.tabsList}>
-              <TabsPrimitive.TabsTrigger
-                className={tabsStyles.tabsTrigger}
-                key={1}
-                value={'Following'}
-              >
-                {followingsCount} Following
-              </TabsPrimitive.TabsTrigger>
-              <TabsPrimitive.TabsTrigger
-                className={tabsStyles.tabsTrigger}
-                key={2}
-                value={'Followers'}
-              >
-                {followersCount} Followers
-              </TabsPrimitive.TabsTrigger>
-            </TabsPrimitive.TabsList>
-            <TabsPrimitive.Content value={'Following'}>
-              <CardFollowingsSubscribers
-                isMyProfile={isMyProfile}
-                open
-                userName={dataProfile.userName}
-              />
-            </TabsPrimitive.Content>
-            <TabsPrimitive.Content value={'Followers'}>
-              <CardFollowersSubscribers
-                isMyProfile={isMyProfile}
-                open
-                userName={dataProfile.userName}
-              />
-            </TabsPrimitive.Content>
-          </TabsPrimitive.Root>
-        </>
+        <TabsFollowSubscribtion
+          checkedToFollowers={checkedToFollowers}
+          followersCount={followersCount}
+          followingsCount={followingsCount}
+          isMyProfile={isMyProfile}
+          onclickTriggerFollowing={() => onclickTriggerFollowingHandler('profile')}
+          userName={dataProfile.userName}
+        />
       )}
     </>
   )
