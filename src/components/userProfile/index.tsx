@@ -216,7 +216,23 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
               <PaidAccount />
             ) : null}
           </Typography>
-
+          {myProfileId && myProfileId !== dataProfile.id && (
+            <div className={s.followUnfollowSendMessageButtonsBlock}>
+              {!privateProfile?.isFollowing && (
+                <Button onClick={() => toFollowUser(privateProfile?.id)} variant={'primary'}>
+                  <Typography variant={'h3'}>Follow</Typography>
+                </Button>
+              )}
+              {privateProfile?.isFollowing && (
+                <Button onClick={() => unfollowUser(privateProfile?.id)} variant={'outline'}>
+                  <Typography variant={'h3'}>Unfollow</Typography>
+                </Button>
+              )}
+              <Button onClick={() => {}} variant={'secondary'}>
+                <Typography variant={'h3'}>Send Message</Typography>
+              </Button>
+            </div>
+          )}
           <article className={s.aboutMe}>
             <Typography variant={windowWidth > 360 ? 'regular16' : 'regular14'}>
               {(privateProfile?.aboutMe || publicProfile?.aboutMe) ??
