@@ -121,7 +121,7 @@ export const Header = ({ isAuthMe }: { isAuthMe?: boolean }) => {
                 tabIndex={!countNotReadNotifies?.length ? -1 : undefined}
                 type={'button'}
               >
-                {!asPath.includes('generalInfo') && countNotReadNotifies?.length && (
+                {!asPath.includes('generalInfo') && !!countNotReadNotifies?.length && (
                   <>
                     <span className={s.countNotifies}>{countNotReadNotifies?.length}</span>
                     <NotiefWithCount />
