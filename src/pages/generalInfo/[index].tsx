@@ -9,5 +9,5 @@ export function GeneralInfo() {
   )
 }
 
-GeneralInfo.getLayout = GetLayout
+// GeneralInfo.getLayout = GetLayout
 export default GeneralInfo

@@ -9,5 +9,5 @@ export function TermsOfService() {
   )
 }
 
-TermsOfService.getLayout = GetLayout
+// TermsOfService.getLayout = GetLayout
 export default TermsOfService
