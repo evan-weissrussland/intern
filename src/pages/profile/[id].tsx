@@ -5,13 +5,8 @@ import { Scroll } from '@/components/scroll'
 import { UserProfile } from '@/components/userProfile'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { inctagramAuthService } from '@/services/inctagram.auth.service'
-import {
-  inctagramPublicPostsService,
-  useGetAllPostsQuery,
-} from '@/services/inctagram.public-posts.service'
+import { inctagramPublicPostsService } from '@/services/inctagram.public-posts.service'
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
-
-import s from './userProfilePage.module.scss'
 
 import { wrapper } from '../../../store'
 
@@ -31,33 +26,14 @@ export const getServerSideProps = wrapper.getServerSideProps(store => async ({ p
   store.dispatch(inctagramPublicPostsService.endpoints.getAllPosts.initiate({}))
   await Promise.all(store.dispatch(inctagramPublicPostsService.util.getRunningQueriesThunk()))
   //**********************************************************************************************
-  /**
-   * вытягиваю из куки access-токен. Это та кука, которую я создал при логине
-   */
-  const token = req.cookies.access_token
-  /**
-   * если access-токен есть, то из него парсим вторую часть. Там сидит id моего аккаунта
-   */
-  const tokenPayload = token ? JSON.parse(atob(token?.split('.')[1])) : undefined
 
-  if (token && tokenPayload.userId === Number(params?.id)) {
-    const resProfile = await fetch(`https://inctagram.work/api/v1/users/profile`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    const profile: any = await resProfile.json()
+  const resProfile = await fetch(`https://inctagram.work/api/v1/public-user/profile/${params?.id}`)
+  const profile: any = await resProfile.json()
 
-    return { props: { myProfileId: tokenPayload.userId, profile } }
-  } else {
-    const resProfile = await fetch(
-      `https://inctagram.work/api/v1/public-user/profile/${params?.id}`
-    )
-    const profile: any = await resProfile.json()
-
-    return { props: { myProfileId: token ? tokenPayload.userId : null, profile } }
+  return {
+    props: { profile },
   }
-}) satisfies GetServerSideProps<{ myProfileId: null | number; profile: any }>
+}) satisfies GetServerSideProps<{ profile: any }>
 
 /**
  * Компонент
@@ -85,10 +61,7 @@ function UserProfileDinamicPage(props: {
   return (
     <PageWrapper>
       <Scroll height={style}>
-        <UserProfile
-          dataProfile={props.pageProps.profile}
-          myProfileId={props.pageProps.myProfileId}
-        />
+        <UserProfile dataProfile={props.pageProps.profile} />
       </Scroll>
     </PageWrapper>
   )

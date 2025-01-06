@@ -19,20 +19,19 @@ import { useRouter } from 'next/router'
 import s from './userProfile.module.scss'
 
 import defaultAva from '../../../public/defaultAva.jpg'
+import { useAppSelector } from '../../../store'
 import { ModalFollowers } from '../modalFollowers'
 
 type Props = {
   dataProfile: any
-  myProfileId: null | number
 }
 export type FlagCheckedToMobileForFollowingSub = 'Followers' | 'Following' | 'profile'
 
-export function UserProfile({ dataProfile, myProfileId }: Props) {
+export function UserProfile({ dataProfile }: Props) {
   const router = useRouter()
-
+  const myId = useAppSelector(state => state.auth.authData.myId)
   const [checkedToFollowers, setcheckedToFollowers] =
     useState<FlagCheckedToMobileForFollowingSub>('profile')
-
   /**
    * кастомный хук контроля ширины окна
    */
@@ -40,13 +39,13 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
   /**
    * Првоерка на мой аккаунт
    */
-  const isMyProfile = myProfileId === Number(router.query.id)
+  const isMyProfile = myId === Number(router.query.id)
   /**
    * запрос на закрытый эндпоинт за профилем юзера по имени. Если я залогинен,
    * то этот запрос выполняется
    */
   const { data: privateProfile } = useGetUserProfileByUserNameQuery(dataProfile?.userName, {
-    skip: !myProfileId,
+    skip: !myId,
   })
   /**
    * запрос на публичный эндпоинт за профилем юзера по id. Этот запрос нужен,
@@ -54,13 +53,13 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
    * должен даже при отсутствии залогиненности
    */
   const { data: publicProfile } = useGetPublicProfileForUserByIdQuery(Number(router.query.id), {
-    skip: !!myProfileId,
+    skip: !!myId,
   })
   /**
    * запрос за проверкой подписки (для отображения вкладки статистики)
    */
   const { data: subscriptionData, isFetching: isFetchingGetMySubscriptions } =
-    useGetMyCurrentSubscriptionQuery(undefined, { skip: !myProfileId })
+    useGetMyCurrentSubscriptionQuery(undefined, { skip: !myId })
 
   /**
    * открыть настройки
@@ -72,7 +71,7 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
    * открыть публикации
    */
   const openPublications = () => {
-    if (!myProfileId) {
+    if (!myId) {
       return null
     }
     alert('openPublications')
@@ -142,12 +141,12 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
                     <PaidAccount />
                   ) : null}
                 </Typography>
-                {myProfileId === dataProfile.id && (
+                {isMyProfile && (
                   <Button onClick={openSettings} variant={'secondary'}>
                     <Typography variant={'h3'}>Profile Settings</Typography>
                   </Button>
                 )}
-                {myProfileId && myProfileId !== dataProfile.id && (
+                {myId && !isMyProfile && (
                   <div className={s.followUnfollowSendMessageButtonsBlock}>
                     {!privateProfile?.isFollowing && (
                       <Button onClick={() => toFollowUser(privateProfile?.id)} variant={'primary'}>
@@ -212,7 +211,7 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
               <PaidAccount />
             ) : null}
           </Typography>
-          {myProfileId && myProfileId !== dataProfile.id && (
+          {myId && !isMyProfile && (
             <div className={s.followUnfollowSendMessageButtonsBlock}>
               {!privateProfile?.isFollowing && (
                 <Button onClick={() => toFollowUser(privateProfile?.id)} variant={'primary'}>
@@ -241,7 +240,7 @@ export function UserProfile({ dataProfile, myProfileId }: Props) {
         </>
       )}
       {checkedToFollowers === 'profile' && (
-        <GetPostsUser isILogined={!!myProfileId} userName={dataProfile?.userName ?? ''} />
+        <GetPostsUser isILogined={!!myId} userName={dataProfile?.userName ?? ''} />
       )}
       {checkedToFollowers !== 'profile' && (
         <TabsFollowSubscribtion

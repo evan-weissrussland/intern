@@ -72,10 +72,6 @@ export const baseQueryWithReauth: BaseQueryFn<
           refreshResult.data?.accessToken &&
           typeof refreshResult.data?.accessToken === 'string'
         ) {
-          const payloadFromJWT = JSON.parse(atob(refreshResult.data?.accessToken.split('.')[1]))
-          const dateExparedAccessToken = new Date(payloadFromJWT.exp * 1000).toUTCString()
-
-          document.cookie = `access_token=${refreshResult.data.accessToken}; expires=${dateExparedAccessToken}; SameSite=None; Secure`
           /**
            * typeof window !== 'undefined' - проверка на среду выполнения - сервер или клиент. Код выполняется
            * только на клиенте. Иначе при билде приложения есть ошибка (если б не использовали "next-redux-wrapper", то
