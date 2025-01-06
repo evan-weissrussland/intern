@@ -39,11 +39,12 @@ export const baseQueryWithReauth: BaseQueryFn<
   const isLoginRequest =
     typeof args !== 'string' &&
     (args.url === '/v1/auth/login' || args.url === '/v1/auth/google/login')
+  const isLogoutRequest = typeof args !== 'string' && args.url === '/v1/auth/logout'
   // let result = await baseQuery(args, api, extraOptions)
   let result = await baseQuery(
     typeof args === 'string'
       ? args
-      : { ...args, credentials: isLoginRequest ? 'include' : undefined },
+      : { ...args, credentials: isLoginRequest || isLogoutRequest ? 'include' : undefined },
     api,
     extraOptions
   )
