@@ -16,6 +16,7 @@ import { useUpdateProfileMutation } from '@/services/inctagram.profile.service'
 import { Button } from '@chrizzo/ui-kit'
 import { DevTool } from '@hookform/devtools'
 import { zodResolver } from '@hookform/resolvers/zod'
+import clsx from 'clsx'
 import dayjs, { Dayjs } from 'dayjs'
 import { toast } from 'sonner'
 
@@ -23,6 +24,7 @@ import pageStyles from './form.module.scss'
 import s from '@/components/toast/toast.module.scss'
 
 type Props = {
+  mobile: boolean
   profile: ResponseDataUserProfile | undefined
 }
 
@@ -246,7 +248,10 @@ export function GeneralInfoForm(props: Props) {
   return (
     <>
       <DevTool control={control} />
-      <form className={pageStyles.form} onSubmit={handleSubmit(makeRequest)}>
+      <form
+        className={clsx(pageStyles.form, props.mobile && pageStyles.mobile)}
+        onSubmit={handleSubmit(makeRequest)}
+      >
         <FormInputGroup control={control} errors={errors} />
         <DatePIckerForProfileSettings
           defaultValue={defaultDateBirth}
@@ -255,7 +260,7 @@ export function GeneralInfoForm(props: Props) {
           onChange={handleChanges}
           onClick={toPrivacyPolity}
         />
-        <SelectBlock control={control} />
+        <SelectBlock control={control} mobile={props.mobile} />
         <FormTextArea
           className={pageStyles.aboutMe}
           control={control}

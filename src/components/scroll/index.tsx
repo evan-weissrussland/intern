@@ -8,6 +8,7 @@ type VariantRootType = 'always' | 'auto' | 'hover' | 'scroll'
 export type ScrollProps = {
   children?: ReactNode
   height?: string
+  noScrollTumbs?: boolean
   padding?: string
   variant?: VariantRootType
   width?: string
@@ -17,10 +18,16 @@ export const Scroll = ({
   children,
   className,
   height,
+  noScrollTumbs,
   padding = '0px',
   variant = 'hover',
   width,
 }: ScrollProps) => {
+  /**
+   * Стиль для скрытия полос прокруток при мобильной версии
+   */
+  const style = noScrollTumbs && s.mobile
+
   return (
     <>
       <ScrollArea.Root
@@ -29,14 +36,18 @@ export const Scroll = ({
         style={{ height, padding, width }}
         type={variant}
       >
-        <ScrollArea.Viewport className={s.viewport}>{children}</ScrollArea.Viewport>
-        <ScrollArea.Scrollbar className={s.horizontal} orientation={'horizontal'}>
-          <ScrollArea.Thumb className={s.thumb2} />
+        <ScrollArea.Viewport className={clsx(s.viewport, style)}>{children}</ScrollArea.Viewport>
+
+        <ScrollArea.Scrollbar className={clsx(s.horizontal, style)} orientation={'horizontal'}>
+          {!noScrollTumbs && <ScrollArea.Thumb className={s.thumb2} />}
         </ScrollArea.Scrollbar>
-        <ScrollArea.Scrollbar className={s.vertical} orientation={'vertical'}>
-          <ScrollArea.Thumb className={s.thumb1} />
-        </ScrollArea.Scrollbar>
-        <ScrollArea.Corner />
+        <>
+          <ScrollArea.Scrollbar className={clsx(s.vertical, style)} orientation={'vertical'}>
+            {!noScrollTumbs && <ScrollArea.Thumb className={s.thumb1} />}
+          </ScrollArea.Scrollbar>
+
+          {!noScrollTumbs && <ScrollArea.Corner />}
+        </>
       </ScrollArea.Root>
     </>
   )

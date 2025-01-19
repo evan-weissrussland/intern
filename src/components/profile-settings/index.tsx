@@ -1,17 +1,20 @@
-import React, { useState } from 'react'
+import React, { PropsWithChildren, ReactNode, useState } from 'react'
 
 import { MyPaymentsContent } from '@/components/profile-settings/MyPaymentsTable/MyPaymentsContent'
 import { AccountManagmentContent } from '@/components/profile-settings/account-managment'
 import { DevicesSessionsContent } from '@/components/profile-settings/devices'
 import { GeneralInfoContent } from '@/components/profile-settings/general-info-settings'
 import { TabsTriggerslist } from '@/components/profile-settings/tabs-trigger-list'
+import { Scroll } from '@/components/scroll'
 import LinearProgress from '@/components/uikit-temp-replacements/linear-progress/LinearProgress'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 import {
   useGetMyProfileQuery,
   useUpdateAvatarProfileMutation,
 } from '@/services/inctagram.profile.service'
 import { TabType } from '@chrizzo/ui-kit/dist/components/tabs/tabs'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
+import clsx from 'clsx'
 import { useRouter } from 'next/router'
 
 import s from '@/components/profile-settings/profileSettings.module.scss'
@@ -26,6 +29,10 @@ const tabsList: TabType[] = [
 
 export const ProfileSettings = () => {
   const router = useRouter()
+  /**
+   * кастомный хук контроля ширины окна
+   */
+  const windowWidth = useWindowWidth()
   /**
    * запрос за данными моего профайла для отображения их в форме generalInfo
    */
@@ -63,25 +70,54 @@ export const ProfileSettings = () => {
   const changeUrl = (value: string) => {
     void router.push(`${value}`)
   }
+  /**
+   * Првоерка ширины окна
+   */
+  const isMobile = windowWidth <= 360
+  /**
+   * Стиль для скролла при мобильной версии
+   */
+  const scrollMobileStyle = 'calc(100vh - 159px)'
 
   return (
-    <div className={s.wrapper}>
+    <div className={clsx(isMobile ? s.root : s.wrapper)}>
       <LinearProgress active={isFetching} thickness={3} />
       <TabsPrimitive.Root
         activationMode={'manual'}
         onValueChange={changeUrl}
         value={router.query.index as string}
       >
-        <TabsTriggerslist tabsList={tabsList} />
-        <GeneralInfoContent
-          isFetching={isFetching}
-          onValueChange={handleImageSelection}
-          profileData={data}
-        />
-        <DevicesSessionsContent />
-        <AccountManagmentContent />
-        <MyPaymentsContent />
+        <ScrollWrapper className={s.scroll} mobile={isMobile}>
+          <TabsTriggerslist tabsList={tabsList} />
+        </ScrollWrapper>
+        <ScrollWrapper className={s.scroll} height={scrollMobileStyle} mobile={isMobile}>
+          <GeneralInfoContent
+            isFetching={isFetching}
+            mobile={isMobile}
+            onValueChange={handleImageSelection}
+            profileData={data}
+          />
+          <DevicesSessionsContent />
+          <AccountManagmentContent />
+          <MyPaymentsContent />
+        </ScrollWrapper>
       </TabsPrimitive.Root>
     </div>
   )
+}
+type Propss = {
+  className: string
+  height?: string
+  mobile: boolean
+} & PropsWithChildren
+export const ScrollWrapper = ({ children, className, height, mobile }: Propss) => {
+  if (mobile) {
+    return (
+      <Scroll className={className} height={height} noScrollTumbs={mobile}>
+        {children}
+      </Scroll>
+    )
+  }
+
+  return <>{children}</>
 }

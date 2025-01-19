@@ -2,6 +2,7 @@ import { ChangeEvent, SyntheticEvent, useRef, useState } from 'react'
 
 import { ImageIcon } from '@/assets/icons/image-icon'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { Button, Typography } from '@chrizzo/ui-kit'
 import { DialogProps } from '@radix-ui/react-dialog'
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden'
@@ -105,10 +106,14 @@ export function AvatarDialog({ onOpenChange, onSave, ...props }: AvatarSelection
 
     onOpenChange && onOpenChange(open)
   }
+  /**
+   * кастомный хук контроля ширины окна
+   */
+  const windowWidth = useWindowWidth()
 
   return (
     <Dialog {...props} onOpenChange={handleOpenChange}>
-      <DialogContent className={s.content}>
+      <DialogContent className={clsx(s.content, windowWidth <= 360 && s.mobile)}>
         <DialogHeader>
           <DialogTitle asChild>
             <Typography as={'h1'} variant={'h1'}>

@@ -15,6 +15,10 @@
   display: inline-flex;
   flex-direction: column;
   flex-grow: 1;
+
+  &.mobile {
+    width: calc(100% - 2px);
+  }
 }
 
 .aboutMe {
@@ -26,6 +30,7 @@
 
 .formItem {
   margin-bottom: 24px;
+
   &.birthInput input {
     width: auto;
     outline: none;
@@ -33,9 +38,11 @@
     transition: none;
     color: var(--color-light-100);
   }
+
   &.birthInput input:active {
     outline: none;
   }
+
   &.birthInput input:hover {
     outline: none;
   }
@@ -50,6 +57,11 @@
   gap: 2rem;
   justify-content: space-between;
   width: 100%;
+
+  &.mobile {
+    flex-direction: column;
+  }
+
 }
 
 .dateInput {
@@ -67,9 +79,11 @@
 .submitButton {
   align-self: flex-end;
 }
+
 .close {
   padding: 0;
 }
+
 .wrapperDatePicker {
   margin-bottom: 24px;
 }
@@ -77,13 +91,16 @@
 .titleDateOfBirth {
   color: var(--color-light-900);
 }
+
 .titleErrorDateOfBirth {
   color: var(--color-danger-500);
+
   a {
     text-decoration: underline;
     color: var(--color-accent-700);
   }
 }
+
 //DatePicker
 .datePicker[class*='MuiFormControl-root'] {
   width: 100%;
@@ -91,13 +108,16 @@
 
 .datePicker fieldset[class*='MuiOutlinedInput-notchedOutline'] {
   border-color: var(--color-dark-100);
+
   legend {
     display: none;
   }
 }
+
 .datePicker button {
   padding: 0;
 }
+
 .datePicker [class*='Mui-focused'] fieldset[class*='MuiOutlinedInput-notchedOutline'] {
   border-color: var(--color-accent-500);
 }
@@ -107,9 +127,11 @@
     border-color: var(--color-light-900);
   }
 }
+
 .datePicker [class*='MuiInputBase-root'] {
   padding: 0 12px;
 }
+
 .datePicker [class*='MuiInputAdornment-root'] {
   margin: 0;
   width: 24px;
