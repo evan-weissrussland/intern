@@ -28,7 +28,7 @@ export const DropDownHeader = memo(() => {
    * обработчик навигации + закрытие модального окна dropDown
    */
   const getToProfileSettingsHandler = useCallback(() => {
-    router.push('/profile')
+    router.push('/generalInfo/generalInformation')
     setOpen(false)
   }, [])
 
