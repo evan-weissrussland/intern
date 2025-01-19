@@ -1,14 +1,15 @@
 .content {
   max-width: 492px;
   width: 100%;
-  //max-height: 564px;
-  //height: 100%;
+  &.mobile {
+    max-width: 330px;
+    min-width: 0;
+  }
 }
 
 .imageContainer {
   align-items: center;
   background-color: var(--color-dark-500);
-  //background-color: red;
   border-radius: 2px;
   display: flex;
 
@@ -18,8 +19,6 @@
   width: 222px;
   overflow: hidden;
   margin-top: 48px;
-  // different for save and select ??
-  //margin-bottom: 60px;
   &.marginTopHidden {
     margin-top: 0;
   }
@@ -49,17 +48,6 @@
   width: 100%;
   gap: 0.35rem;
 }
-
-//<div style="flex: 1 1 0; text-align: center">
-// <span style="color: white; font-size: 14px; font-family: Inter; font-weight: 700; line-height: 24px; word-wrap: break-word">
-// Error!
-// </span>
-// <span style="color: white; font-size: 16px; font-family: Inter; font-weight: 400; line-height: 24px; word-wrap: break-word">
-// </span>
-// <span style="color: white; font-size: 14px; font-family: Inter; font-weight: 400; line-height: 24px; word-wrap: break-word">
-// Photo size must be less than 10 MB!
-// </span>
-// </div>
 
 .dialogFooter {
   padding-left: 24px;

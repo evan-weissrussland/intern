@@ -22,15 +22,18 @@ export const cities = [
 ]
 type SelectBlockProps = {
   control: Control<UserGeneralInfoData>
+  mobile: boolean
 }
-export const SelectBlock = ({ control }: SelectBlockProps) => {
+export const SelectBlock = ({ control, mobile }: SelectBlockProps) => {
   /**
    * хук интернационализации
    */
   const { t } = useTranslation()
 
   return (
-    <section className={clsx(pageStyles.locationSection, pageStyles.formItem)}>
+    <section
+      className={clsx(pageStyles.locationSection, pageStyles.formItem, mobile && pageStyles.mobile)}
+    >
       <FormSelect
         control={control}
         fullWidth
