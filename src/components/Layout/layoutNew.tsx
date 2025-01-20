@@ -1,16 +1,18 @@
 import { PropsWithChildren, useEffect } from 'react'
 
+import { MainComponent } from '@/components/Layout/MainComponent'
 import { Header } from '@/components/header'
-import { Main } from '@/components/main'
-import { Nav } from '@/components/nav'
 import { authActions } from '@/services/auth.api'
 import { useAuthMeQuery } from '@/services/inctagram.auth.service'
+import clsx from 'clsx'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 
 import s from '@/components/Layout/layout.module.scss'
 
 import { useAppDispatch } from '../../../store'
+
+const publicRouts = ['/', '/login', '/signUp', '/privacyPolicy', '/termsOfService', '/profile/[id]']
 
 export const LayoutNew: NextPage<PropsWithChildren> = ({ children }) => {
   const { data, isFetching, isLoading } = useAuthMeQuery()
@@ -29,8 +31,14 @@ export const LayoutNew: NextPage<PropsWithChildren> = ({ children }) => {
     }
   }, [data, dispatch])
 
+  /**
+   * Флаг редиректа на страницу логина: если нет data (юзер не залогинен) и юзер вводит в URL адрес, отличающийся
+   * от публичного.
+   */
+  const isRedirectToLoginflag = !data && !isFetching && !isLoading && !publicRouts.includes(path)
+
   return (
-    <div className={s.container + ' ' + style}>
+    <div className={clsx(s.container, style)}>
       {isLoading ? (
         <>
           <header className={s.headerSkelet}></header>
@@ -40,8 +48,9 @@ export const LayoutNew: NextPage<PropsWithChildren> = ({ children }) => {
       ) : (
         <>
           <Header isAuthMe={!!data} />
-          {data && <Nav isSpecialAccount myEmail={data.email} myProfileId={data.userId} />}
-          <Main>{!(path === '/login' && data) && children}</Main>
+          <MainComponent authMeData={data} redirectToLogin={isRedirectToLoginflag}>
+            {children}
+          </MainComponent>
         </>
       )}
     </div>
