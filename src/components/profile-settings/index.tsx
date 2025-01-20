@@ -98,8 +98,8 @@ export const ProfileSettings = () => {
             profileData={data}
           />
           <DevicesSessionsContent />
-          <AccountManagmentContent />
-          <MyPaymentsContent />
+          <AccountManagmentContent mobile={isMobile} />
+          <MyPaymentsContent mobile={isMobile} />
         </ScrollWrapper>
       </TabsPrimitive.Root>
     </div>

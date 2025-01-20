@@ -1,11 +1,17 @@
 .wrapper {
   padding-top: 30px;
+  &.mobile{
+    padding-bottom: 24px;
+  }
 }
 .accountTypeGroup {
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding: 6px 12px;
+  background: var(--color-dark-500);
+  border-radius: 2px;
+  border: 1px solid var(--color-dark-300);
 }
 .account {
   margin-bottom: 42px;

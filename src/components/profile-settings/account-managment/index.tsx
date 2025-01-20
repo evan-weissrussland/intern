@@ -5,12 +5,13 @@ import { CurrentSubscription } from '@/components/profile-settings/account-manag
 import { SubscriptionCost } from '@/components/profile-settings/account-managment/SubscriptionCost'
 import { ReactPayPalScriptOptions } from '@paypal/react-paypal-js'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
+import clsx from 'clsx'
 
 import s from '@/components/profile-settings/account-managment/accountManagment.module.scss'
 
-type Props = {}
+type Props = { mobile: boolean }
 
-export const AccountManagmentContent = ({}: Props) => {
+export const AccountManagmentContent = ({ mobile }: Props) => {
   /**
    * для кнопки paypal. Объект настроек
    */
@@ -21,7 +22,10 @@ export const AccountManagmentContent = ({}: Props) => {
   }
 
   return (
-    <TabsPrimitive.Content className={s.wrapper} value={'accountManagement'}>
+    <TabsPrimitive.Content
+      className={clsx(s.wrapper, mobile && s.mobile)}
+      value={'accountManagement'}
+    >
       <CurrentSubscription />
       <AccountType />
       <SubscriptionCost />

@@ -24,7 +24,8 @@ const titlesTableHeadCells = [
   { id: 5, title: 'payType' },
 ]
 
-export const MyPaymentsContent = () => {
+type Props = { mobile: boolean }
+export const MyPaymentsContent = ({ mobile }: Props) => {
   /**
    * текущая страница пагинации
    */
@@ -85,15 +86,17 @@ export const MyPaymentsContent = () => {
         </thead>
         <tbody className={s.tbody}>{payments}</tbody>
       </table>
-      <Paginator
-        currentPage={currentPage}
-        onPageChanged={setCurrentPage}
-        onPageSizeChanged={(pageSizeNumber: PageSizeType) =>
-          setPageSizeNumber(pageSizeNumber.toString() as PagSizePaginationType)
-        }
-        pageSize={+pageSizeNumber as PageSizeType}
-        totalItemsCount={data?.length}
-      />
+      {!mobile && (
+        <Paginator
+          currentPage={currentPage}
+          onPageChanged={setCurrentPage}
+          onPageSizeChanged={(pageSizeNumber: PageSizeType) =>
+            setPageSizeNumber(pageSizeNumber.toString() as PagSizePaginationType)
+          }
+          pageSize={+pageSizeNumber as PageSizeType}
+          totalItemsCount={data?.length}
+        />
+      )}
     </TabsPrimitive.Content>
   )
 }

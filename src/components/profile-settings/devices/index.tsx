@@ -1,6 +1,7 @@
 import { Chrome } from '@/assets/icons'
 import { ActiveSessionsList } from '@/components/profile-settings/devices/ActiveSessions'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 import {
   useDeleteAllSessionsMutation,
   useGetAllSessionsQuery,
@@ -16,7 +17,10 @@ export const DevicesSessionsContent = ({}: Props) => {
    * интернацинализация
    */
   const { t } = useTranslation()
-
+  /**
+   * кастомный хук контроля ширины окна
+   */
+  const windowWidth = useWindowWidth()
   /**
    * Запрос за текущей и активными сессиями
    */
@@ -44,7 +48,12 @@ export const DevicesSessionsContent = ({}: Props) => {
           </div>
         </div>
         <div className={s.terminateButton}>
-          <Button onClick={deleteSessionsHandler} type={'button'} variant={'outline'}>
+          <Button
+            fullWidth={windowWidth <= 360}
+            onClick={deleteSessionsHandler}
+            type={'button'}
+            variant={'outline'}
+          >
             {t.profile.devices.terminateAllSessions}
           </Button>
         </div>
