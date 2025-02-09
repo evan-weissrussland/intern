@@ -1,6 +1,9 @@
 import { LocaleType } from '@/locales/ru'
 
 export const en: LocaleType = {
+  captcha: {
+    label: "I'm not a robot",
+  },
   common: {
     cancel: 'Cancel',
     email: 'Email',

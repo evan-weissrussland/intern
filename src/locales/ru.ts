@@ -1,4 +1,7 @@
 export const ru = {
+  captcha: {
+    label: 'Я не робот',
+  },
   common: {
     cancel: 'Отменить',
     email: 'Почта',

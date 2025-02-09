@@ -12,6 +12,15 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
           return { url: '/v1/auth/me' }
         },
       }),
+      forgotPass: builder.mutation<any, any>({
+        query: body => {
+          return {
+            body,
+            method: 'POST',
+            url: '/v1/auth/password-recovery',
+          }
+        },
+      }),
       login: builder.mutation<any, any>({
         async onQueryStarted(arg, { dispatch, queryFulfilled }) {
           const res = await queryFulfilled
@@ -34,12 +43,12 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
           }
         },
       }),
+
       loginWithGithub: builder.query<void, string>({
         query: redirect_url => {
           return { url: `/v1/auth/github/login?redirect_url=${redirect_url}` }
         },
       }),
-
       loginWithGoogle: builder.mutation<{ accessToken: string; email: string }, string>({
         async onQueryStarted(arg, { dispatch, queryFulfilled }) {
           const res = await queryFulfilled
@@ -63,7 +72,6 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
           }
         },
       }),
-
       logout: builder.mutation<void, void>({
         async onQueryStarted(arg, { dispatch, queryFulfilled }) {
           await dispatch(inctagramSessionsService.endpoints.deleteAllSessions.initiate())
@@ -101,6 +109,7 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
 
 export const {
   useAuthMeQuery,
+  useForgotPassMutation,
   useLazyLoginWithGithubQuery,
   useLoginMutation,
   useLoginWithGoogleMutation,
