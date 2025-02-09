@@ -2,11 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { GetLayout, PageWrapper } from '@/components'
-import { Captcha } from '@/components/auth/captcha'
+import { forgotSchema } from '@/components/auth/forgotPassword/forgot-schema'
+import { FormForgotValues } from '@/components/auth/forgotPassword/types'
 import { FormInput } from '@/components/controll/formTextField'
 import { useTranslation } from '@/hooks/useTranslation'
-import { forgotSchema } from '@/pages/forgotPassword/forgot-schema'
-import { FormForgotValues } from '@/pages/forgotPassword/types'
 import { useForgotPassMutation } from '@/services/inctagram.auth.service'
 import { Button, Card, Typography } from '@chrizzo/ui-kit'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -15,9 +14,11 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
 
-import s from '@/pages/forgotPassword/forgot-pass.module.scss'
+import s from '@/components/auth/forgotPassword/forgot-pass.module.scss'
 
-export function ForgotPassword() {
+import { Captcha } from '../../components/auth/forgotPassword/captcha'
+
+function ForgotPassword() {
   /**
    * ref. Пробрасываем в капчу. Там используем для запуска капчи. Здесь используем для сброса капчи после
    * нажатия на отправку формы
