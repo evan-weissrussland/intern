@@ -12,7 +12,15 @@ import s from '@/components/Layout/layout.module.scss'
 
 import { useAppDispatch } from '../../../store'
 
-const publicRouts = ['/', '/login', '/signUp', '/privacyPolicy', '/termsOfService', '/profile/[id]']
+const publicRouts = [
+  '/',
+  '/login',
+  '/signUp',
+  '/privacyPolicy',
+  '/termsOfService',
+  '/profile/[id]',
+  '/forgotPassword',
+]
 
 export const LayoutNew: NextPage<PropsWithChildren> = ({ children }) => {
   const { data, isFetching, isLoading } = useAuthMeQuery()
