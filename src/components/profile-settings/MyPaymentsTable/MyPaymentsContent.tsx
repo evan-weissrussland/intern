@@ -6,10 +6,16 @@ import {
   PagSizePaginationType,
   PageSizeType,
 } from '@/components/profile-settings/MyPaymentsTable/types'
+import {
+  changeTypeOfDate,
+  usePaymentPeriod,
+  usePaymentService,
+} from '@/components/profile-settings/account-managment/utils/utils'
 import { useTranslation } from '@/hooks/useTranslation'
 import { useGetMyAllSubscriptionsQuery } from '@/services/inctagram.subscriptions.service'
 import { Typography } from '@chrizzo/ui-kit'
 import * as TabsPrimitive from '@radix-ui/react-tabs'
+import clsx from 'clsx'
 
 import s from '@/components/profile-settings/account-managment/accountManagment.module.scss'
 
@@ -69,23 +75,65 @@ export const MyPaymentsContent = ({ mobile }: Props) => {
    * массив названий столбцов
    */
   const titlesHeadCells = titlesTableHeadCells.map(t => {
+    const Component = (
+      <Typography className={s.dateAllPayment} variant={'regularBold14'}>
+        {t.id ? getCellsName(t.title) : t.title}
+      </Typography>
+    )
+
+    if (mobile) {
+      return <div key={t.id}>{Component}</div>
+    }
+    if (!mobile) {
+      return (
+        <th className={s.th} key={t.id}>
+          {Component}
+        </th>
+      )
+    }
+  })
+  /**
+   * таблица для мобильной версии
+   */
+  const paym = filtredSubscribtions?.map(p => {
     return (
-      <th className={s.th} key={t.id}>
-        <Typography className={s.dateAllPayment} variant={'regularBold14'}>
-          {t.id ? getCellsName(t.title) : t.title}
-        </Typography>
-      </th>
+      <div className={s.mobileTableWr} key={p.subscriptionId + Math.random()}>
+        <div className={s.mobileTableTitlesHead}>{titlesHeadCells}</div>
+        <div className={s.mobileTableCell}>
+          <Typography className={s.dateAllPayment} variant={'regularBold14'}>
+            {changeTypeOfDate(p.dateOfPayment)}
+          </Typography>
+          <Typography className={s.dateAllPayment} variant={'regularBold14'}>
+            {changeTypeOfDate(p.endDateOfSubscription)}
+          </Typography>
+          <Typography className={s.dateAllPayment} variant={'regularBold14'}>
+            {p.subscriptionType}
+          </Typography>
+          <Typography className={s.dateAllPayment} variant={'regularBold14'}>
+            {p.price}
+          </Typography>
+          <Typography className={s.dateAllPayment} variant={'regularBold14'}>
+            {p.paymentType}
+          </Typography>
+        </div>
+      </div>
     )
   })
 
   return (
-    <TabsPrimitive.Content className={s.wrapperMyAllPay} value={'myPayments'}>
-      <table className={s.tablePayments}>
-        <thead className={s.thead}>
-          <tr className={s.tr}>{titlesHeadCells}</tr>
-        </thead>
-        <tbody className={s.tbody}>{payments}</tbody>
-      </table>
+    <TabsPrimitive.Content
+      className={clsx(s.wrapperMyAllPay, mobile && s.mobileWr)}
+      value={'myPayments'}
+    >
+      {!mobile && (
+        <table className={s.tablePayments}>
+          <thead className={s.thead}>
+            <tr className={s.tr}>{titlesHeadCells}</tr>
+          </thead>
+          <tbody className={s.tbody}>{payments}</tbody>
+        </table>
+      )}
+      {mobile && paym}
       {!mobile && (
         <Paginator
           currentPage={currentPage}
