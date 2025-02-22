@@ -12,16 +12,14 @@ import s from '@/components/Layout/layout.module.scss'
 
 import { useAppDispatch } from '../../../store'
 
-const publicRouts = [
-  '/',
-  '/login',
-  '/signUp',
-  '/privacyPolicy',
-  '/termsOfService',
-  '/profile/[id]',
-  '/forgotPassword',
-  '/create-new-pass',
-]
+/**
+ * публичные страницы, с которых должен быть редирект на профиль юзера, если юзер залогинен
+ */
+const publicRoutes = ['/login', '/signUp', '/forgotPassword', '/create-new-pass']
+/**
+ * публичные страницы, на которые юзер может зайти, если он не залогинен
+ */
+const publicRouts = ['/', '/privacyPolicy', '/termsOfService', '/profile/[id]', ...publicRoutes]
 
 export const LayoutNew: NextPage<PropsWithChildren> = ({ children }) => {
   const { data, isFetching, isLoading } = useAuthMeQuery()
@@ -45,6 +43,11 @@ export const LayoutNew: NextPage<PropsWithChildren> = ({ children }) => {
    * от публичного.
    */
   const isRedirectToLoginflag = !data && !isFetching && !isLoading && !publicRouts.includes(path)
+  /**
+   * Флаг редиректа на страницу профиля юзера: если есть data (юзер залогинен) и юзер вводит в URL публичного адрес
+   */
+  const isRedirectToMyProfileFlag =
+    !!data && !isFetching && !isLoading && publicRoutes.includes(path)
 
   return (
     <div className={clsx(s.container, style)}>
@@ -57,7 +60,11 @@ export const LayoutNew: NextPage<PropsWithChildren> = ({ children }) => {
       ) : (
         <>
           <Header isAuthMe={!!data} />
-          <MainComponent authMeData={data} redirectToLogin={isRedirectToLoginflag}>
+          <MainComponent
+            authMeData={data}
+            redirectToLogin={isRedirectToLoginflag}
+            redirectToProfile={isRedirectToMyProfileFlag}
+          >
             {children}
           </MainComponent>
         </>
