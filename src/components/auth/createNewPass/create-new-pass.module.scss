@@ -1,0 +1,45 @@
+@mixin toast($backGroundColor, $borderColor, $maxWidth) {
+  background: $backGroundColor;
+  border: 1px solid $borderColor;
+  color: var(--color-light-100);
+  border-radius: 2px;
+  max-width: $maxWidth;
+  width: 100%;
+}
+.errorToast {
+  @include toast(var(--color-danger-900), var(--color-danger-500), 427px);
+}
+.wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+}
+
+.card {
+  max-width: 378px;
+  //min-width: 360px;
+  width: 100%;
+  border: 1px solid var(--color-dark-300);
+}
+
+.forgot {
+  color: var(--color-light-900);
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 41px;
+}
+
+.title {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 37px;
+}
+
+.form {
+  margin-bottom: 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+

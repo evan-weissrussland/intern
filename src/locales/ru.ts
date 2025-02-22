@@ -14,6 +14,12 @@ export const ru = {
     signOut: 'Выйти',
     username: 'Логин', //?
   },
+  createNewPass: {
+    description: 'Пароль должен быть не менее 6 и не более 20 символов',
+    formInput: 'Новый пароль',
+    inputConfirm: 'Подьверждение пароля',
+    title: 'Создать Новый Пароль',
+  },
   forgotPassword: {
     common: {
       inProgress: 'Отправка запроса...',

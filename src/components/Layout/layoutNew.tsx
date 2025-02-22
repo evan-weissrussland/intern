@@ -20,6 +20,7 @@ const publicRouts = [
   '/termsOfService',
   '/profile/[id]',
   '/forgotPassword',
+  '/create-new-pass',
 ]
 
 export const LayoutNew: NextPage<PropsWithChildren> = ({ children }) => {

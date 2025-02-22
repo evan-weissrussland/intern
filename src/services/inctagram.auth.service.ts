@@ -12,6 +12,15 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
           return { url: '/v1/auth/me' }
         },
       }),
+      createNewPass: builder.mutation<any, any>({
+        query: body => {
+          return {
+            body,
+            method: 'POST',
+            url: '/v1/auth/new-password',
+          }
+        },
+      }),
       forgotPass: builder.mutation<any, any>({
         query: body => {
           return {
@@ -109,6 +118,7 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
 
 export const {
   useAuthMeQuery,
+  useCreateNewPassMutation,
   useForgotPassMutation,
   useLazyLoginWithGithubQuery,
   useLoginMutation,

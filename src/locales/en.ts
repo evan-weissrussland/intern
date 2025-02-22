@@ -16,6 +16,12 @@ export const en: LocaleType = {
     signOut: 'Sign out',
     username: 'Username',
   },
+  createNewPass: {
+    description: 'Your password must be between 6 and 20 characters',
+    formInput: 'New password',
+    inputConfirm: 'Password confirmation',
+    title: 'Create New Password',
+  },
   forgotPassword: {
     common: {
       inProgress: 'Sending the request...',
