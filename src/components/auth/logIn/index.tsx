@@ -1,10 +1,12 @@
 import { useForm } from 'react-hook-form'
 
-import { PageWrapper, SocialAuthButtons } from '@/components'
+import { SocialAuthButtons } from '@/components'
 import { logInSchema } from '@/components/auth/logIn/logIn-schema'
 import { FormValues } from '@/components/auth/logIn/types'
 import { FormInput } from '@/components/controll/formTextField'
+import { ScrollWrapper } from '@/components/profile-settings'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { useLoginMutation } from '@/services/inctagram.auth.service'
 import { ErrorData } from '@/types'
 import { Button, Card, Typography } from '@chrizzo/ui-kit'
@@ -75,8 +77,10 @@ export function LogIn() {
     }
   }
 
+  const windowWidth = useWindowWidth()
+
   return (
-    <PageWrapper>
+    <ScrollWrapper className={''} height={'calc(100vh - 61px)'} mobile={windowWidth <= 360}>
       <div className={s.wrapper}>
         <Card className={s.card} variant={'dark500'}>
           <Typography className={s.title} variant={'h1'}>
@@ -111,6 +115,6 @@ export function LogIn() {
           </Button>
         </Card>
       </div>
-    </PageWrapper>
+    </ScrollWrapper>
   )
 }
