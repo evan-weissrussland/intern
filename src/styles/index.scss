@@ -14,3 +14,17 @@ li[data-sonner-toast] {
   align-items: center;
   height: 100%;
 }
+/**
+для всплывашки
+ */
+@mixin toast($backGroundColor, $borderColor, $maxWidth) {
+  background: $backGroundColor;
+  border: 1px solid $borderColor;
+  color: var(--color-light-100);
+  border-radius: 2px;
+  max-width: $maxWidth;
+  width: 100%;
+}
+.errorToast {
+  @include toast(var(--color-danger-900), var(--color-danger-500), 427px);
+}

@@ -10,20 +10,11 @@ import s from './mailVerificationError.module.scss'
 
 type MailVerificationErrorProps = {
   email: string
+  resentCallback: () => void
 }
 
-export const MailVerificationError = memo(({ email }: MailVerificationErrorProps) => {
+export const MailVerificationError = memo(({ resentCallback }: MailVerificationErrorProps) => {
   const { t } = useTranslation()
-  // const ['аналогично'] = 'название хука'()
-  const { push } = useRouter()
-
-  const resendPasswordClick = async () => {
-    try {
-      // await 'название хука'({ параметры })
-    } catch (error) {
-      console.error(error)
-    }
-  }
 
   return (
     <div className={s.pageWrapper}>
@@ -34,7 +25,7 @@ export const MailVerificationError = memo(({ email }: MailVerificationErrorProps
         <Typography className={s.description} variant={'regular16'}>
           {t.signUp.expiredDescription}
         </Typography>
-        <Button className={s.button} onClick={resendPasswordClick} variant={'primary'}>
+        <Button className={s.button} onClick={() => resentCallback()} variant={'primary'}>
           <Typography className={s.signin} variant={'h3'}>
             {t.signUp.resendVerificationLink}
           </Typography>

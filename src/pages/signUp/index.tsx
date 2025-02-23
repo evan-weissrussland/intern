@@ -7,7 +7,7 @@ export function SignUp() {
 
   return (
     <ScrollWrapper className={''} height={'calc(100vh - 61px)'} mobile={windowWidth <= 360}>
-      <SingUp onSubmit={() => {}} />
+      <SingUp />
     </ScrollWrapper>
   )
 }

@@ -15,7 +15,13 @@ import { useAppDispatch } from '../../../store'
 /**
  * публичные страницы, с которых должен быть редирект на профиль юзера, если юзер залогинен
  */
-const publicRoutes = ['/login', '/signUp', '/forgotPassword', '/create-new-pass']
+const publicRoutes = [
+  '/login',
+  '/signUp',
+  '/forgotPassword',
+  '/create-new-pass',
+  '/auth/[registration-confirmation]',
+]
 /**
  * публичные страницы, на которые юзер может зайти, если он не залогинен
  */
