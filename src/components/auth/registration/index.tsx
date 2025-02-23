@@ -31,6 +31,25 @@ const signUpSchema = z
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
+  .refine(
+    data => {
+      /**
+       * всплывашка
+       */
+      toast.custom(
+        jsx => <Toast onDismiss={() => toast.dismiss(jsx)} title={'You need to agree to Policy'} />,
+        {
+          className: 'errorToast',
+        }
+      )
+
+      return data.rememberMe
+    },
+    {
+      message: 'You need to agree to Policy',
+      path: ['rememberMe'],
+    }
+  )
 
 export type SignUpFormType = z.infer<typeof signUpSchema>
 
