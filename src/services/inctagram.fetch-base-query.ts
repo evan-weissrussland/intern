@@ -49,7 +49,7 @@ export const baseQueryWithReauth: BaseQueryFn<
     extraOptions
   )
 
-  if (result.error && result.error.status === 401) {
+  if (result.error && result.error.status === 401 && !isLogoutRequest) {
     // checking whether the mutex is locked
     if (!mutex.isLocked()) {
       const release = await mutex.acquire()
