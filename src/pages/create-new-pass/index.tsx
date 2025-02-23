@@ -1,11 +1,12 @@
 import { useForm } from 'react-hook-form'
 
-import { PageWrapper } from '@/components'
 import { createPassSchema } from '@/components/auth/createNewPass/createPass-schema'
 import { FormCreatePassValues } from '@/components/auth/createNewPass/types'
 import { FormInput } from '@/components/controll/formTextField'
+import { ScrollWrapper } from '@/components/profile-settings'
 import { Toast } from '@/components/toast/Toast'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { useCreateNewPassMutation } from '@/services/inctagram.auth.service'
 import { Button, Card, Typography } from '@chrizzo/ui-kit'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -48,9 +49,13 @@ export function CreateNewPassword() {
         )
       })
   }
+  /**
+   * контроль ширины окна
+   */
+  const windowWidth = useWindowWidth()
 
   return (
-    <PageWrapper>
+    <ScrollWrapper className={''} height={'calc(100vh - 61px)'} mobile={windowWidth <= 360}>
       <div className={s.wrapper}>
         <Card className={s.card} variant={'dark500'}>
           <Typography className={s.title} variant={'h1'}>
@@ -80,7 +85,7 @@ export function CreateNewPassword() {
           </Button>
         </Card>
       </div>
-    </PageWrapper>
+    </ScrollWrapper>
   )
 }
 

@@ -2,6 +2,9 @@
   width: 314px;
   padding: 8px 7px 12px;
   border: 1px solid transparent;
+  @media (max-width: 370px) {
+    width: 310px;
+  }
 
   &.error {
     border: 1px solid #ff0000;
