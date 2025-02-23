@@ -49,6 +49,11 @@ export const baseQueryWithReauth: BaseQueryFn<
     extraOptions
   )
 
+  /**
+   *  !isLogoutRequest снизу нужен для исключения запроса за update-token. Если этого условия нет, то после
+   *  вылогинивания идёт редирект на страницу логина, а потом редирект на страницу профиля
+   *  (MainComponent.tsx успевает отработать логика редиректа на страницу профиля)
+   */
   if (result.error && result.error.status === 401 && !isLogoutRequest) {
     // checking whether the mutex is locked
     if (!mutex.isLocked()) {
