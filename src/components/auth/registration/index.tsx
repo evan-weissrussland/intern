@@ -1,14 +1,20 @@
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { SocialAuthButtons } from '@/components/auth'
 import { FormCheckbox } from '@/components/controll/formCheckbox'
 import { FormInput } from '@/components/controll/formTextField'
+import { Toast } from '@/components/toast/Toast'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useRegistrationMutation } from '@/services/inctagram.auth.service'
 import { Button, Card, Typography } from '@chrizzo/ui-kit'
 import { DevTool } from '@hookform/devtools'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/router'
 import { omit } from 'remeda'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import s from './singUp.module.scss'
@@ -19,7 +25,7 @@ const signUpSchema = z
     email: z.string().email('Invalid email address'),
     password: z.string().min(3, 'Password has to be at least 3 characters long'),
     rememberMe: z.boolean().default(false),
-    username: z.string().min(3, 'Username has to be at least 3 characters long'),
+    userName: z.string().min(3, 'Username has to be at least 3 characters long'),
   })
   .refine(data => data.password === data.confirmPassword, {
     message: 'Passwords do not match',
@@ -28,23 +34,63 @@ const signUpSchema = z
 
 export type SignUpFormType = z.infer<typeof signUpSchema>
 
-type Props = {
-  onSubmit: (data: Omit<SignUpFormType, 'confirmPassword'>) => void
-}
-
-export const SingUp = (props: Props) => {
+export const SingUp = () => {
+  const router = useRouter()
+  const [registration] = useRegistrationMutation()
   const {
     control,
     formState: { errors },
-
     handleSubmit,
   } = useForm<SignUpFormType>({ resolver: zodResolver(signUpSchema) })
 
-  const onHandleSubmit = handleSubmit(data => {
-    props.onSubmit(omit(data, ['confirmPassword']))
-  })
+  /**
+   * стейт открытия модалки об отправке ссылки на почту
+   */
+  const [isShowModal, setIsShowModal] = useState(false)
+
+  const onHandleSubmit = async (data: SignUpFormType) => {
+    registration(omit(data, ['confirmPassword', 'rememberMe']))
+      .unwrap()
+      .then(() => {
+        localStorage.setItem('email', data.email)
+        void router.push('/signUp?showModal=true')
+      })
+      .catch(e => {
+        /**
+         * всплывашка
+         */
+        toast.custom(
+          jsx => <Toast onDismiss={() => toast.dismiss(jsx)} title={e.data.messages[0].message} />,
+          {
+            className: 'errorToast',
+          }
+        )
+      })
+  }
 
   const { t } = useTranslation()
+
+  /**
+   * внизу логика открытия модального окна через обработку query-параметра. Если есть
+   * query-параметр showModal, то открываем модальное окно и меняем флаг успешного запроса
+   * на true
+   */
+  const params = useSearchParams()
+  const toShowModal = params.get('showModal')
+
+  useEffect(() => {
+    if (toShowModal) {
+      setIsShowModal(true)
+    }
+  }, [params])
+
+  /**
+   * закрыть модальное окно
+   */
+  const closeModal = () => {
+    setIsShowModal(false)
+    void router.push('/signUp')
+  }
 
   return (
     <div className={s.wrapper}>
@@ -53,7 +99,7 @@ export const SingUp = (props: Props) => {
           {t.signUp.title}
         </Typography>
         <SocialAuthButtons />
-        <form onSubmit={onHandleSubmit}>
+        <form onSubmit={handleSubmit(onHandleSubmit)}>
           <DevTool control={control} />
           <div className={s.wrap}>
             <FormInput
@@ -61,7 +107,7 @@ export const SingUp = (props: Props) => {
               control={control}
               error={errors.email?.message}
               label={t.signUp.userName}
-              name={'username'}
+              name={'userName'}
               placeholder={'username'}
             />
             <FormInput
@@ -117,8 +163,27 @@ export const SingUp = (props: Props) => {
           {t.signUp.signInButton}
         </Button>
       </Card>
+      {isShowModal && (
+        <div className={s.modalWrapper}>
+          <Card className={s.card}>
+            <div className={s.emailSentTitleBlock}>
+              <Typography variant={'h1'}>Email sent</Typography>
+              <button onClick={closeModal} type={'button'}>
+                X
+              </button>
+            </div>
+            <hr className={s.hrLine} />
+            <div className={s.descriptionSentBlock}>
+              <Typography variant={'regular16'}>
+                We have sent a link to confirm your email to {localStorage.getItem('email')}
+              </Typography>
+              <Button className={s.buttonOk} onClick={closeModal} type={'button'}>
+                <Typography variant={'h3'}>OK</Typography>
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   )
 }
-const emailRegex =
-  /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/

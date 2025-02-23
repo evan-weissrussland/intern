@@ -50,3 +50,53 @@
 .SingInButton {
   width: 100%;
 }
+
+
+.modalWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: calc(
+          60px + 36px + 24px + 36px + 49px
+  ); // 60 - хедер,36 - pading между хедером и картой ForgotPass, 24 - padding-top для карты ForgotPass,
+  //36 - высотка title Forgot Pass, 49 - длина от title ForgotPass до модалки по фигме
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.65);
+
+  .card {
+    justify-content: flex-start;
+    border: 1px solid #4c4c4c;
+    background: var(--color-dark-300);
+    padding: 0 24px 36px;
+    margin: 0 15px;
+  }
+
+  .emailSentTitleBlock {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+  }
+  .hrLine {
+    background: #4c4c4c;
+    width: calc(100% + 48px);
+    border: none;
+    outline: none;
+    height: 1px;
+    transform: translate(-24px);
+  }
+  .descriptionSentBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding-top: 30px;
+
+    .buttonOk {
+      align-self: flex-end;
+      width: 96px;
+    }
+  }
+}

@@ -9,7 +9,7 @@ export function SignIn() {
   return (
     <>
       {emailSuccess && <MailVerificationSuccess />}
-      {emailError && <MailVerificationError email={''} />}
+      {emailError && <MailVerificationError email={''} resentCallback={() => {}} />}
       {!emailSuccess && !emailError && <LogIn />}
     </>
   )

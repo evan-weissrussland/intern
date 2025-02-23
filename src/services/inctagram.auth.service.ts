@@ -12,6 +12,15 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
           return { url: '/v1/auth/me' }
         },
       }),
+      checkRecoveryCode: builder.mutation<any, { recoveryCode: string }>({
+        query: body => {
+          return {
+            body,
+            method: 'POST',
+            url: '/v1/auth/check-recovery-code',
+          }
+        },
+      }),
       createNewPass: builder.mutation<any, any>({
         query: body => {
           return {
@@ -30,6 +39,7 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
           }
         },
       }),
+
       login: builder.mutation<any, any>({
         async onQueryStarted(arg, { dispatch, queryFulfilled }) {
           const res = await queryFulfilled
@@ -112,16 +122,47 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
           }
         },
       }),
+      registration: builder.mutation<any, any>({
+        query: body => {
+          return {
+            body,
+            method: 'POST',
+            url: '/v1/auth/registration',
+          }
+        },
+      }),
+      registrationConfirmation: builder.mutation<any, { confirmationCode: string }>({
+        query: body => {
+          return {
+            body,
+            method: 'POST',
+            url: '/v1/auth/registration-confirmation',
+          }
+        },
+      }),
+      registrationEmailResending: builder.mutation<any, { baseUrl: string; email: string }>({
+        query: body => {
+          return {
+            body,
+            method: 'POST',
+            url: '/v1/auth/registration-email-resending',
+          }
+        },
+      }),
     }
   },
 })
 
 export const {
   useAuthMeQuery,
+  useCheckRecoveryCodeMutation,
   useCreateNewPassMutation,
   useForgotPassMutation,
   useLazyLoginWithGithubQuery,
   useLoginMutation,
   useLoginWithGoogleMutation,
   useLogoutMutation,
+  useRegistrationConfirmationMutation,
+  useRegistrationEmailResendingMutation,
+  useRegistrationMutation,
 } = inctagramAuthService
