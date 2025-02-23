@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { SocialAuthButtons } from '@/components/auth'
+import { SignUpFormType, signUpSchema } from '@/components/auth/registration/registration-shema'
 import { FormCheckbox } from '@/components/controll/formCheckbox'
 import { FormInput } from '@/components/controll/formTextField'
 import { Toast } from '@/components/toast/Toast'
@@ -15,58 +16,32 @@ import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
 import { omit } from 'remeda'
 import { toast } from 'sonner'
-import { z } from 'zod'
 
 import s from './singUp.module.scss'
 
-const signUpSchema = z
-  .object({
-    confirmPassword: z.string().min(3, 'Password has to be at least 3 characters long'),
-    email: z.string().email('Invalid email address'),
-    password: z.string().min(3, 'Password has to be at least 3 characters long'),
-    rememberMe: z.boolean().default(false),
-    userName: z.string().min(3, 'Username has to be at least 3 characters long'),
-  })
-  .refine(data => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  })
-  .refine(
-    data => {
-      /**
-       * всплывашка
-       */
-      toast.custom(
-        jsx => <Toast onDismiss={() => toast.dismiss(jsx)} title={'You need to agree to Policy'} />,
-        {
-          className: 'errorToast',
-        }
-      )
-
-      return data.rememberMe
-    },
-    {
-      message: 'You need to agree to Policy',
-      path: ['rememberMe'],
-    }
-  )
-
-export type SignUpFormType = z.infer<typeof signUpSchema>
-
 export const SingUp = () => {
   const router = useRouter()
+  /**
+   * хук RTKQ регистрации
+   */
   const [registration] = useRegistrationMutation()
+  /**
+   * use-hook-form
+   */
   const {
     control,
     formState: { errors },
     handleSubmit,
-  } = useForm<SignUpFormType>({ resolver: zodResolver(signUpSchema) })
+  } = useForm<SignUpFormType>({ mode: 'onSubmit', resolver: zodResolver(signUpSchema) })
 
   /**
    * стейт открытия модалки об отправке ссылки на почту
    */
   const [isShowModal, setIsShowModal] = useState(false)
-
+  /**
+   * Обработчик формы. Сначала zod валидирует поля, и если всё норм, то уже отрабатывает эта функция
+   * @param data - данные из полей формы
+   */
   const onHandleSubmit = async (data: SignUpFormType) => {
     registration(omit(data, ['confirmPassword', 'rememberMe']))
       .unwrap()
@@ -86,7 +61,9 @@ export const SingUp = () => {
         )
       })
   }
-
+  /**
+   * интернационализация
+   */
   const { t } = useTranslation()
 
   /**
@@ -170,6 +147,11 @@ export const SingUp = () => {
               }
               name={'rememberMe'}
             />
+            {errors.rememberMe && (
+              <Typography style={{ color: 'red' }} variant={'small'}>
+                {errors.rememberMe?.message}
+              </Typography>
+            )}
             <Button className={s.SingUpButton} type={'submit'}>
               {t.signUp.signUp}
             </Button>

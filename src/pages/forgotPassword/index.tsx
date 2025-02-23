@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { GetLayout, PageWrapper } from '@/components'
+import { Captcha } from '@/components/auth/forgotPassword/captcha'
 import { forgotSchema } from '@/components/auth/forgotPassword/forgot-schema'
 import { FormForgotValues } from '@/components/auth/forgotPassword/types'
 import { FormInput } from '@/components/controll/formTextField'
+import { ScrollWrapper } from '@/components/profile-settings'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { useForgotPassMutation } from '@/services/inctagram.auth.service'
 import { Button, Card, Typography } from '@chrizzo/ui-kit'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -15,8 +17,6 @@ import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
 
 import s from '@/components/auth/forgotPassword/forgot-pass.module.scss'
-
-import { Captcha } from '../../components/auth/forgotPassword/captcha'
 
 function ForgotPassword() {
   /**
@@ -49,18 +49,17 @@ function ForgotPassword() {
   /**
    * Переменные для обработки форм из react-hook-form
    */
-  const {
-    control,
-    formState: { errors },
-    handleSubmit,
-    setError,
-    setValue,
-    watch,
-  } = useForm<FormForgotValues>({
-    mode: 'onTouched',
-    resolver: zodResolver(forgotSchema),
-  })
+  const { control, formState, handleSubmit, setError, setValue, watch } = useForm<FormForgotValues>(
+    {
+      mode: 'onTouched',
+      resolver: zodResolver(forgotSchema),
+    }
+  )
 
+  /**
+   * useEffect внизу нужен для отображения почты в инпуте, после того, как успешно отправили запрос forgotPassword.
+   * Потому что прячется капча, а инпут с почтой остаётся.
+   */
   useEffect(() => {
     if (isSuccessForgotPass) {
       const email = localStorage.getItem('email')
@@ -72,7 +71,7 @@ function ForgotPassword() {
   }, [isSuccessForgotPass])
 
   /**
-   * контроль за полем email. Вызывает ререндер при onChange в поле
+   * контроль за полем email. Вызывает ререндер при onChange в поле. Не помню для чего я его написал
    */
   const watchShowEmail = watch('email', '')
 
@@ -82,9 +81,8 @@ function ForgotPassword() {
   const [forgotPass] = useForgotPassMutation()
 
   /**
-   * хук запроса на сервер о повторной отправке ссылки на почту
+   * обработчик повторной отправке ссылки на почту
    */
-  // const againSendLinkHandler = useAgainLinkSend()
   const againSendLinkHandler = () => {}
 
   /**
@@ -154,9 +152,13 @@ function ForgotPassword() {
     setIsShowModal(false)
     void router.push('/forgotPassword')
   }
+  /**
+   * хук контроля ширины окна. Для изменений для модилок
+   */
+  const windowWidth = useWindowWidth()
 
   return (
-    <PageWrapper>
+    <ScrollWrapper className={''} height={'calc(100vh - 61px)'} mobile={windowWidth <= 360}>
       <div className={s.wrapper}>
         <Card className={s.card} variant={'dark500'}>
           <Typography className={s.title} variant={'h1'}>
@@ -231,7 +233,7 @@ function ForgotPassword() {
           </div>
         )}
       </div>
-    </PageWrapper>
+    </ScrollWrapper>
   )
 }
 
