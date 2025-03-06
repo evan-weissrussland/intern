@@ -29,7 +29,6 @@ type Props = {
 }
 
 export function GeneralInfoForm(props: Props) {
-  //todo props or hook?
   /**
    * хук RTKQ для изменения данных профиля
    */
@@ -52,10 +51,48 @@ export function GeneralInfoForm(props: Props) {
     reset,
     setValue,
     trigger,
+    watch,
   } = useForm<UserGeneralInfoData>({
     mode: 'onChange',
     resolver: zodResolver(userGeneralInfoSchema),
   })
+
+  /**
+   * контроль за полями формы. Вызывает ререндер при onChange в поле. Нужно для фиксации вводимой информации,
+   * после чего её нужно сохранить в локалсторэдже. Это нужно для того, чтобы можно было
+   * сохранить эти данные в полях, если мы заполнили поля, но не отправили изменения на сервер, а потом изменили
+   * аватарку. После изменения аватарки подтягиваются данные с сервера и мы теряем введённые ранее данные
+   */
+  const [
+    watchShowFirstName,
+    watchShowLastName,
+    watchShowUserName,
+    watchShowAboutMe,
+    watchShowCity,
+    watchShowCountry,
+  ] = watch(['firstName', 'lastName', 'userName', 'aboutMe', 'city', 'country'])
+
+  if (
+    watchShowFirstName ||
+    watchShowLastName ||
+    watchShowUserName ||
+    watchShowAboutMe ||
+    watchShowCity ||
+    watchShowCountry
+  ) {
+    const settings = {
+      watchShowAboutMe,
+      watchShowCity,
+      watchShowCountry,
+      watchShowFirstName,
+      watchShowLastName,
+      watchShowUserName,
+    }
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('settingsMyProfile', JSON.stringify(settings))
+    }
+  }
 
   /**
    * хук интернационализации
@@ -103,7 +140,6 @@ export function GeneralInfoForm(props: Props) {
         }
       )
     } catch (error) {
-      //todo set fields errors
       /**
        * всплывашка
        */
@@ -189,10 +225,27 @@ export function GeneralInfoForm(props: Props) {
    *это нужно для автоматического заполнения полей формы текущими данными с сервера.
    * Использовать defaultValue в useForm в текущей архитектуре компонента не получилось,
    * т.к. изначально в компонент приходят пустые данные и они идут в defaultValue,
-   * а переопределить их потом нельзя
+   * а переопределить их потом нельзя. Если ввели данные в поля, но не передали их на сервер (они сохранились
+   * в локалсторэдже), а потом поменяли аватарку, то заполняем поля данными из локалсторэйджа.
+   * Если же мы только зашли в настройки, то в локалсторэйдже нет данных и поля заполняем данными с сервера
    */
   useEffect(() => {
-    if (props.profile) {
+    const firstNameFromLocalStorage = localStorage.getItem('settingsMyProfile')
+
+    if (firstNameFromLocalStorage) {
+      const jsonParsedData = JSON.parse(firstNameFromLocalStorage)
+
+      reset({
+        aboutMe: jsonParsedData.watchShowAboutMe,
+        city: jsonParsedData.watchShowCity,
+        country: jsonParsedData.watchShowCountry,
+        firstName: jsonParsedData.watchShowFirstName,
+        lastName: jsonParsedData.watchShowLastName,
+        userName: jsonParsedData.watchShowUserName,
+      })
+    }
+
+    if (props.profile && !firstNameFromLocalStorage) {
       reset({
         aboutMe: props.profile.aboutMe ?? '',
         city: props.profile.city ?? '',
@@ -222,6 +275,29 @@ export function GeneralInfoForm(props: Props) {
         const parsedSavedDataFromForm = JSON.parse(savedDataFromForm)
 
         reset(parsedSavedDataFromForm)
+      }
+    }
+    /**
+     * если компонент размонтируется из-за перехода на другую страницу, то удаляем локалсторэйдж,
+     * если компонент размонтируется из-за отправки аватарки, то не удаляем, он нам понадобится для
+     * заполнения поля firsName после смены аватарки, т.к. придут данные с сервера для поля firstName, но
+     * они не должны перезатереть данные из локалсторэёджа
+     */
+
+    return () => {
+      if (!window.location.pathname.includes('generalInformation')) {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('settingsMyProfile')
+        }
+      }
+      if (
+        !window.location.pathname.includes('privacyPolicy') &&
+        !window.location.pathname.includes('generalInformation')
+      ) {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('dataOfBirth')
+        }
+        // eslint-disable-next-line max-lines
       }
     }
   }, [])
