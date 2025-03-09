@@ -68,6 +68,7 @@ export const inctagramUsersFollowingsService = inctagramService.injectEndpoints(
       }),
     }
   },
+  overrideExisting: true,
 })
 
 export const {

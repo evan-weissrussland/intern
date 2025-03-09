@@ -9,6 +9,7 @@ import { DropdownNotifications } from '@/components/dropdown-notifications'
 import { useTranslation } from '@/hooks/useTranslation'
 import { useWindowWidth } from '@/hooks/useWindowWidth'
 import { useGetNotificationsQuery } from '@/services/inctagram.notifications.service'
+import { sockets } from '@/services/socket/socket'
 import { Button, Select, Typography } from '@chrizzo/ui-kit'
 import clsx from 'clsx'
 import Link from 'next/link'
@@ -103,6 +104,10 @@ export const Header = ({ isAuthMe }: { isAuthMe?: boolean }) => {
    * дефолтный язык для селекта
    */
   const defaultLocale = flags.find(l => locale === l.locale)?.language
+
+  sockets?.socket?.on('notification', (data: any) => {
+    console.log('sockets.NOTIFICATION', data)
+  })
 
   return (
     <header className={s.header}>

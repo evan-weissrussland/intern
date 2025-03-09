@@ -15,6 +15,7 @@ export const inctagramPublicUserService = inctagramService.injectEndpoints({
       }),
     }
   },
+  overrideExisting: true,
 })
 
 export const { useGetPublicProfileForUserByIdQuery, useGetTotalCountRegistredUsersQuery } =

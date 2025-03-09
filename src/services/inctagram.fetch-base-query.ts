@@ -1,5 +1,6 @@
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
+import { sockets } from '@/services/socket/socket'
 // eslint-disable-next-line no-duplicate-imports
 import { fetchBaseQuery } from '@reduxjs/toolkit/query'
 import { Mutex } from 'async-mutex'
@@ -84,6 +85,8 @@ export const baseQueryWithReauth: BaseQueryFn<
            */
           if (typeof window !== 'undefined') {
             localStorage.setItem('token', refreshResult.data.accessToken)
+            sockets.closeConnection()
+            sockets.socketInit(refreshResult.data.accessToken)
           }
           result = await baseQuery(args, api, extraOptions)
         }
