@@ -81,6 +81,7 @@ export const inctagramPublicPostsService = inctagramService.injectEndpoints({
       }),
     }
   },
+  overrideExisting: true,
 })
 
 export const { useGetAllPostsQuery, useGetCommentsForPostQuery, useGetPostsByUserIdQuery } =
