@@ -1,6 +1,7 @@
 import { authActions } from '@/services/auth.api'
 import { inctagramService } from '@/services/inctagram.service'
 import { inctagramSessionsService } from '@/services/inctagram.sessions.service'
+import { sockets } from '@/services/socket/socket'
 import { ResponseAuthMe } from '@/services/types'
 
 export const inctagramAuthService = inctagramService.injectEndpoints({
@@ -53,6 +54,7 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
             localStorage.setItem('token', res.data.accessToken)
           }
           dispatch(inctagramAuthService.util.invalidateTags(['login']))
+          sockets.socketInit(res.data.accessToken)
         },
         query: body => {
           return {
@@ -80,7 +82,7 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
           if (typeof window !== 'undefined') {
             localStorage.setItem('token', res.data.accessToken)
           }
-
+          sockets.socketInit(res.data.accessToken)
           dispatch(inctagramAuthService.util.invalidateTags(['login']))
         },
         query: code => {
@@ -114,6 +116,7 @@ export const inctagramAuthService = inctagramService.injectEndpoints({
             })
           )
           dispatch(inctagramAuthService.util.resetApiState())
+          sockets?.closeConnection()
         },
         query: () => {
           return {
