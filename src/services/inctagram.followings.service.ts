@@ -2,6 +2,7 @@ import {
   FollowersUsersType,
   RequestForFollowersUsers,
   RequestType,
+  UsersQueryParamsType,
   UsersType,
 } from '@/components/modalFollowers/types'
 import { inctagramService } from '@/services/inctagram.service'
@@ -44,9 +45,10 @@ export const inctagramUsersFollowingsService = inctagramService.injectEndpoints(
           }
         },
       }),
-      getProfileUsers: builder.query<RequestType<UsersType>, void>({
-        query: () => {
-          return { url: `/v1/users` }
+      getProfileUsers: builder.query<RequestType<UsersType>, UsersQueryParamsType>({
+        keepUnusedDataFor: 1,
+        query: args => {
+          return { params: args ? { ...args } : undefined, url: `/v1/users` }
         },
       }),
       unfollowFromUser: builder.mutation<void, number>({
@@ -76,5 +78,6 @@ export const {
   useGetFollowersUsersQuery,
   useGetFollowingUsersQuery,
   useGetProfileUsersQuery,
+  useLazyGetProfileUsersQuery,
   useUnfollowFromUserMutation,
 } = inctagramUsersFollowingsService
