@@ -16,6 +16,7 @@ export const useLogout = () => {
           localStorage.removeItem('dataOfBirth')
           localStorage.removeItem('settingsMyProfile')
           localStorage.removeItem('settingProfile')
+          localStorage.removeItem('searchedProfileUsersList')
         }
         void router.push('/login')
       })

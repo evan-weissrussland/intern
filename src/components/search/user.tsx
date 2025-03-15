@@ -19,10 +19,24 @@ export const User = ({ items = [] }: Props) => {
   const router = useRouter()
   /**
    * Переход на страницу юзера
-   * @param id - id юзера
+   * @param user - id юзера
    */
-  const navigateToProfileUserHandler = (id: number) => {
-    void router.push(`/profile/${id}`)
+  const navigateToProfileUserHandler = (user: UsersType) => {
+    const usersListFromLocalStorage = localStorage.getItem('searchedProfileUsersList')
+
+    if (usersListFromLocalStorage) {
+      const parsedUsersList: UsersType[] = JSON.parse(usersListFromLocalStorage)
+      const newUsersList = parsedUsersList.find(u => u.id === user.id)
+
+      if (!newUsersList) {
+        parsedUsersList.unshift(user)
+
+        localStorage.setItem('searchedProfileUsersList', JSON.stringify(parsedUsersList))
+      }
+    } else {
+      localStorage.setItem('searchedProfileUsersList', JSON.stringify([user]))
+    }
+    void router.push(`/profile/${user.id}`)
   }
 
   return useMemo(() => {
@@ -32,7 +46,7 @@ export const User = ({ items = [] }: Props) => {
           className={s.li}
           key={f.id}
           onClick={() => {
-            navigateToProfileUserHandler(f.id)
+            navigateToProfileUserHandler(f)
           }}
         >
           <Image
