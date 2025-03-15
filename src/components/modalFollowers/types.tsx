@@ -43,6 +43,6 @@ export interface FollowersUsersType extends CommonItemType {
 }
 
 export interface UsersType extends CommonItemType {
-  firstname: string
-  lastname: string
+  firstName: string
+  lastName: string
 }
