@@ -109,9 +109,10 @@ type Propss = {
   className: string
   height?: string
   mobile: boolean
+  scroll?: boolean
 } & PropsWithChildren
-export const ScrollWrapper = ({ children, className, height, mobile }: Propss) => {
-  if (mobile) {
+export const ScrollWrapper = ({ children, className, height, mobile, scroll }: Propss) => {
+  if (scroll || mobile) {
     return (
       <Scroll className={className} height={height} noScrollTumbs={mobile}>
         {children}
