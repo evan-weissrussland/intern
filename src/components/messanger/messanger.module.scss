@@ -1,0 +1,154 @@
+.wrapper {
+  padding: 35px 64px 43px 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.titleBlock {
+}
+
+.contentBlock {
+  flex-grow: 1;
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--color-dark-300);
+  border-radius: 2px;
+
+  .searchBlock {
+    height: 72px;
+    max-width: 269px;
+    width: 100%;
+    padding: 17px 12px 19px;
+    background: var(--color-dark-500);
+  }
+
+  .userBlock {
+    height: 72px;
+    width: calc(100% - 269px);
+    background: var(--color-dark-500);
+    outline: 1px solid var(--color-dark-300);
+    border-radius: 0 2px 0 0;
+
+    .li {
+      list-style: none;
+      display: inline-flex;
+      gap: 12px;
+      padding: 12px 13px 12px 12px;
+      align-items: center;
+
+      .message {
+        display: none;
+      }
+    }
+  }
+
+  .usersListBlock {
+    height: calc(100% - 73px);
+    max-width: 268px;
+    width: 100%;
+    background: var(--color-dark-500);
+    align-self: flex-end;
+    outline: 1px solid var(--color-dark-300);
+    border-radius: 0 0 0 2px;
+    list-style: none;
+  }
+
+  .messageBlock {
+    height: calc(100% - 73px);
+    flex-grow: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    .contentMessageBlock {
+      flex-grow: 1;
+      //background: blue;
+    }
+
+    .inputMessageBlock {
+      align-self: flex-end;
+      min-height: 48px;
+      //background: red;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .messageInput {
+        flex-grow: 1;
+        input {
+        outline: none;
+        }
+      }
+
+      .sendMessageTitle {
+        color: var(--color-accent-500);
+      }
+    }
+  }
+}
+
+.chooseTitle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 8px;
+  background: var(--color-dark-300);
+  padding: 12px 24px;
+  display: inline-block;
+}
+
+.title {
+  margin-bottom: 13px;
+}
+
+.recent {
+  margin-top: 30px;
+}
+
+.usersList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+
+  .li {
+    display: flex;
+    gap: 12px;
+    border-bottom: 1px solid var(--color-dark-300);
+    padding: 12px 13px 12px 12px;
+
+    &.active {
+      background: var(--color-dark-300);
+    }
+  }
+}
+
+
+.image {
+  border-radius: 50%;
+}
+
+.userName {
+}
+
+.message {
+  color: var(--color-light-900);
+}
+
+.emptyPlaceTitle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--color-light-900);
+}
+
+.scroll {
+  width: 269px;
+  height: calc(100vh - 263px);
+
+  div[class^='scroll_viewport'] {
+    padding-right: 0;
+  }
+}
